@@ -11,8 +11,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User registerUser(String firstName, String lastName, String email, String address, String password, String cvu, String criptoWalletAddress) {
-        var newUser = new User(firstName, lastName, email, address, password, cvu, criptoWalletAddress);
+    public User registerUser(String firstName, String lastName, String email, String address, String password, String cvu, String cryptoWalletAddress) {
+        var newUser = new User(firstName, lastName, email, address, password, cvu, cryptoWalletAddress);
 
         return userRepository.save(newUser);
     }
