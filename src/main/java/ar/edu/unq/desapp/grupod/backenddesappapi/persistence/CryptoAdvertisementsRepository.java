@@ -14,13 +14,13 @@ public interface CryptoAdvertisementsRepository extends CrudRepository<CryptoAdv
     Boolean existsByCryptoActiveSymbol(String cryptoActiveSymbol);
 
     default List<CryptoAdvertisement> findBuyAdvertisementsWithSymbol(String cryptoActiveSymbol) {
-        return findByCryptoActiveSymbolAndTypeLike(cryptoActiveSymbol, CryptoAdvertisement.BUY_ADVERTISE_TYPE);
+        return findByCryptoActiveSymbolAndType(cryptoActiveSymbol, CryptoAdvertisement.BUY_ADVERTISE_TYPE);
     }
 
     default List<CryptoAdvertisement> findSellAdvertisementsWithSymbol(String cryptoActiveSymbol) {
-        return findByCryptoActiveSymbolAndTypeLike(cryptoActiveSymbol, CryptoAdvertisement.SELL_ADVERTISE_TYPE);
+        return findByCryptoActiveSymbolAndType(cryptoActiveSymbol, CryptoAdvertisement.SELL_ADVERTISE_TYPE);
     }
 
-    List<CryptoAdvertisement> findByCryptoActiveSymbolAndTypeLike(String cryptoActiveSymbol, String cellAdvertise);
+    List<CryptoAdvertisement> findByCryptoActiveSymbolAndType(String cryptoActiveSymbol, String cellAdvertise);
 
 }
