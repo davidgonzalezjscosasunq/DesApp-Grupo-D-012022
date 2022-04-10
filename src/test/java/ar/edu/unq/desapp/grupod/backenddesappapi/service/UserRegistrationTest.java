@@ -14,14 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class UserRegistrationTest {
 
-    public static final String VALID_FIRST_NAME = "Pepe";
-    public static final String VALID_LAST_NAME = "Ramirez";
-    public static final String VALID_EMAIL = "pepe@domain.com";
-    public static final String VALID_ADDRESS = "Some Address 123";
-    public static final String VALID_PASSWORD = "password";
-    public static final String VALID_CVU = "0123456789012345678912";
-    public static final String VALID_CRIPTO_WALLET_ADDRESS = "12345678";
-
     @Autowired
     UserService userService;
 
@@ -35,9 +27,9 @@ public class UserRegistrationTest {
 
     @Test
     void aUserCanBeRegistered() {
-        var user = userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS);
+        var user = userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
 
-        assertTrue(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertTrue(userService.hasUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL));
     }
 
     @Test
@@ -48,7 +40,7 @@ public class UserRegistrationTest {
                 "User first name must have between 3 and 30 letters",
                 () -> registerUserWithFirstName(anInvalidNameWith2Letters));
 
-        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+        assertHasNoUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL);
     }
 
     @Test
@@ -58,7 +50,7 @@ public class UserRegistrationTest {
         assertThrowsDomainExeption("User first name must have between 3 and 30 letters",
                 () -> registerUserWithFirstName(anInvalidNameWith31Letters));
 
-        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+        assertHasNoUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL);
     }
 
     @Test
@@ -69,7 +61,7 @@ public class UserRegistrationTest {
                 "User last name must have between 3 and 30 letters",
                 () -> registerUserWithLastName(anInvalidNameWith2Letters));
 
-        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+        assertHasNoUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL);
     }
 
     @Test
@@ -80,7 +72,7 @@ public class UserRegistrationTest {
                 "User last name must have between 3 and 30 letters",
                 () -> registerUserWithLastName(anInvalidNameWith31Letters));
 
-        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+        assertHasNoUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL);
     }
 
     @Test
@@ -102,7 +94,7 @@ public class UserRegistrationTest {
                 "Address must have between 10 and 30 characters",
                 () -> registerUserWithAddress(invalidShortAddress));
 
-        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+        assertHasNoUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL);
     }
 
     @Test
@@ -113,7 +105,7 @@ public class UserRegistrationTest {
                 "Address must have between 10 and 30 characters",
                 () -> registerUserWithAddress(invalidLongAddress));
 
-        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+        assertHasNoUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL);
     }
 
     @Test
@@ -124,7 +116,7 @@ public class UserRegistrationTest {
                 "Invalid CVU",
                 () -> registerUserWithCVU(cvuNumberWithIncorrectLength));
 
-        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+        assertHasNoUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL);
     }
 
     @Test
@@ -132,9 +124,9 @@ public class UserRegistrationTest {
         var invalidCVUWithNonDigitCharacter = "012345678901234567890X";
 
         assertThrowsDomainExeption("Invalid CVU", () ->
-                userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, invalidCVUWithNonDigitCharacter, VALID_CRIPTO_WALLET_ADDRESS));
+                userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, invalidCVUWithNonDigitCharacter, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS));
 
-        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+        assertHasNoUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL);
     }
 
     @Test
@@ -145,7 +137,7 @@ public class UserRegistrationTest {
                 "Invalid crypto wallet address",
                 () -> registerUserWithCryptoWalletAddress(cryptoWalletAddressWithIncorrectLength));
 
-        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+        assertHasNoUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL);
     }
 
     @Test
@@ -156,7 +148,7 @@ public class UserRegistrationTest {
                 "Invalid crypto wallet address",
                 () -> registerUserWithCryptoWalletAddress(cryptoWalletAddressWithNonDigitCharacter));
 
-        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+        assertHasNoUserRegisteredWithEmail(UserTestFactory.VALID_EMAIL);
     }
 
     private void assertHasNoUserRegisteredWithEmail(String email) {
@@ -170,27 +162,27 @@ public class UserRegistrationTest {
     }
 
     private User registerUserWithFirstName(String firstName) {
-        return userService.registerUser(firstName, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS);
+        return userService.registerUser(firstName, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
     }
 
     private User registerUserWithLastName(String lastName) {
-        return userService.registerUser(VALID_FIRST_NAME, lastName, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS);
+        return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, lastName, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
     }
 
     private User registerUserWithEmail(String email) {
-        return userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, email, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS);
+        return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, email, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
     }
 
     private User registerUserWithAddress(String address) {
-        return userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, address, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS);
+        return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, address, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
     }
 
     private User registerUserWithCVU(String cvu) {
-        return userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, cvu, VALID_CRIPTO_WALLET_ADDRESS);
+        return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, cvu, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
     }
 
     private User registerUserWithCryptoWalletAddress(String cryptoWalletAddress) {
-        return userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, cryptoWalletAddress);
+        return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, cryptoWalletAddress);
     }
 
 }
