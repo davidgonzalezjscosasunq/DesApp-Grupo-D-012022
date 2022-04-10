@@ -1,8 +1,11 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -41,143 +44,153 @@ public class UserRegistrationTest {
     void aUserFirstNameCannotHaveLessThan3Letters() {
         var anInvalidNameWith2Letters = "ab";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                userService.registerUser(anInvalidNameWith2Letters, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS)
-        );
+        assertThrowsDomainExeption(
+                "User first name must have between 3 and 30 letters",
+                () -> registerUserWithFirstName(anInvalidNameWith2Letters));
 
-        assertEquals("User first name must have between 3 and 30 letters", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
     }
 
     @Test
     void aUserFirstNameCannotHaveMoreThan30Letters() {
         var anInvalidNameWith31Letters = "abcdefghijabcdefghijabcdefghijk";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                        userService.registerUser(anInvalidNameWith31Letters, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS)
-        );
+        assertThrowsDomainExeption("User first name must have between 3 and 30 letters",
+                () -> registerUserWithFirstName(anInvalidNameWith31Letters));
 
-        assertEquals("User first name must have between 3 and 30 letters", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
     }
 
     @Test
     void aUserLastNameCannotHaveLessThan3Letters() {
         var anInvalidNameWith2Letters = "ab";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                        userService.registerUser(VALID_FIRST_NAME, anInvalidNameWith2Letters, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS)
-        );
+        assertThrowsDomainExeption(
+                "User last name must have between 3 and 30 letters",
+                () -> registerUserWithLastName(anInvalidNameWith2Letters));
 
-        assertEquals("User last name must have between 3 and 30 letters", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
     }
 
     @Test
     void aUserLastNameCannotHaveMoreThan30Letters() {
         var anInvalidNameWith31Letters = "abcdefghijabcdefghijabcdefghijk";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                        userService.registerUser(VALID_FIRST_NAME, anInvalidNameWith31Letters, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS)
-        );
+        assertThrowsDomainExeption(
+                "User last name must have between 3 and 30 letters",
+                () -> registerUserWithLastName(anInvalidNameWith31Letters));
 
-        assertEquals("User last name must have between 3 and 30 letters", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
     }
 
     @Test
     void aUserCannotHaveAnInvalidEmail() {
         var invalidEmail = "@invalid@email.com@";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                        userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, invalidEmail, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS)
-        );
+        assertThrowsDomainExeption(
+                "Invalid email format",
+                () -> registerUserWithEmail(invalidEmail));
 
-        assertEquals("Invalid email format", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(invalidEmail));
+        assertHasNoUserRegisteredWithEmail(invalidEmail);
     }
 
     @Test
     void aUserAddressCannotHaveLessThan10Characters() {
         var invalidShortAddress = "abc 12349";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                        userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, invalidShortAddress, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS)
-        );
+        assertThrowsDomainExeption(
+                "Address must have between 10 and 30 characters",
+                () -> registerUserWithAddress(invalidShortAddress));
 
-        assertEquals("Address must have between 10 and 30 characters", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
     }
 
     @Test
     void aUserAddressCannotHaveMoreThan30Characters() {
-        var invalidShortAddress = "a012345678901234567890123456789";
+        var invalidLongAddress = "a012345678901234567890123456789";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                        userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, invalidShortAddress, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS)
-        );
+        assertThrowsDomainExeption(
+                "Address must have between 10 and 30 characters",
+                () -> registerUserWithAddress(invalidLongAddress));
 
-        assertEquals("Address must have between 10 and 30 characters", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
     }
 
     @Test
     void aUserCVUCannotHaveANumberOfDigitsDifferentTo22Digits() {
         var cvuNumberWithIncorrectLength = "012345678901234567890";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                        userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, cvuNumberWithIncorrectLength, VALID_CRIPTO_WALLET_ADDRESS)
-        );
+        assertThrowsDomainExeption(
+                "Invalid CVU",
+                () -> registerUserWithCVU(cvuNumberWithIncorrectLength));
 
-        assertEquals("Invalid CVU", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
     }
 
     @Test
     void aUserCVUCannotContainAnyNonDigitCharacter() {
         var invalidCVUWithNonDigitCharacter = "012345678901234567890X";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                        userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, invalidCVUWithNonDigitCharacter, VALID_CRIPTO_WALLET_ADDRESS)
-        );
+        assertThrowsDomainExeption("Invalid CVU", () ->
+                userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, invalidCVUWithNonDigitCharacter, VALID_CRIPTO_WALLET_ADDRESS));
 
-        assertEquals("Invalid CVU", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
     }
 
     @Test
     void aUserCryptoWalletAddressCannotHaveANumberOfDigitsDifferentTo8Digits() {
         var cryptoWalletAddressWithIncorrectLength = "1234567";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                        userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, cryptoWalletAddressWithIncorrectLength)
-        );
+        assertThrowsDomainExeption(
+                "Invalid crypto wallet address",
+                () -> registerUserWithCryptoWalletAddress(cryptoWalletAddressWithIncorrectLength));
 
-        assertEquals("Invalid crypto wallet address", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
     }
 
     @Test
     void aUserCryptoWalletAddressCannotContainAnyNonDigitCharacter() {
         var cryptoWalletAddressWithNonDigitCharacter = "1234567x";
 
-        var error = assertThrows(
-                RuntimeException.class, () ->
-                        userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, cryptoWalletAddressWithNonDigitCharacter)
-        );
+        assertThrowsDomainExeption(
+                "Invalid crypto wallet address",
+                () -> registerUserWithCryptoWalletAddress(cryptoWalletAddressWithNonDigitCharacter));
 
-        assertEquals("Invalid crypto wallet address", error.getMessage());
-        assertFalse(userService.hasUserRegisteredWithEmail(VALID_EMAIL));
+        assertHasNoUserRegisteredWithEmail(VALID_EMAIL);
+    }
+
+    private void assertHasNoUserRegisteredWithEmail(String email) {
+        assertFalse(userService.hasUserRegisteredWithEmail(email));
+    }
+
+    private void assertThrowsDomainExeption(String expectedErrorMessage, Executable executableToTest) {
+        var error = assertThrows(ModelException.class, executableToTest);
+
+        assertEquals(expectedErrorMessage, error.getMessage());
+    }
+
+    private User registerUserWithFirstName(String firstName) {
+        return userService.registerUser(firstName, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS);
+    }
+
+    private User registerUserWithLastName(String lastName) {
+        return userService.registerUser(VALID_FIRST_NAME, lastName, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS);
+    }
+
+    private User registerUserWithEmail(String email) {
+        return userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, email, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS);
+    }
+
+    private User registerUserWithAddress(String address) {
+        return userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, address, VALID_PASSWORD, VALID_CVU, VALID_CRIPTO_WALLET_ADDRESS);
+    }
+
+    private User registerUserWithCVU(String cvu) {
+        return userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, cvu, VALID_CRIPTO_WALLET_ADDRESS);
+    }
+
+    private User registerUserWithCryptoWalletAddress(String cryptoWalletAddress) {
+        return userService.registerUser(VALID_FIRST_NAME, VALID_LAST_NAME, VALID_EMAIL, VALID_ADDRESS, VALID_PASSWORD, VALID_CVU, cryptoWalletAddress);
     }
 
 }
