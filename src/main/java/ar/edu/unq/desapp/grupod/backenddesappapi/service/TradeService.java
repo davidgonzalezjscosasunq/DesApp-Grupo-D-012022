@@ -1,7 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
-import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TradeAdvertisementRepository;
+import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.CryptoAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class TradeService {
     UserRepository userRepository;
 
     @Autowired
-    TradeAdvertisementRepository tradeAdvertisementRepository;
+    CryptoAdvertisementsRepository cryptoAdvertisementsRepository;
 
     // TODO: modelar dinero
     public CryptoAdvertisement postSellAdvertisement(String cryptoActiveSymbol, Integer quantityToSell, Double sellingPrice, String sellerFirstName, String sellerLastName) {
@@ -27,7 +27,7 @@ public class TradeService {
 
         var newSellAdvertisement = CryptoAdvertisement.sellAdvertise(cryptoActiveSymbol, quantityToSell, sellingPrice, seller);
 
-        return tradeAdvertisementRepository.save(newSellAdvertisement);
+        return cryptoAdvertisementsRepository.save(newSellAdvertisement);
     }
 
     public CryptoAdvertisement postBuyAdvertisement(String cryptoActiveSymbol, int quantityToBuy, double buyPrice, String buyerFirstName, String buyerLastName) {
@@ -35,15 +35,15 @@ public class TradeService {
 
         var newSellAdvertisement = CryptoAdvertisement.buyAdvertise(cryptoActiveSymbol, quantityToBuy, buyPrice, buyer);
 
-        return tradeAdvertisementRepository.save(newSellAdvertisement);
+        return cryptoAdvertisementsRepository.save(newSellAdvertisement);
     }
 
     public List<CryptoAdvertisement> findSellAdvertisementsWithSymbol(String cryptoActiveSymbol) {
-        return tradeAdvertisementRepository.findSellAdvertisementsWithSymbol(cryptoActiveSymbol);
+        return cryptoAdvertisementsRepository.findSellAdvertisementsWithSymbol(cryptoActiveSymbol);
     }
 
     public List<CryptoAdvertisement> findBuyAdvertisementsWithSymbol(String cryptoActiveSymbol) {
-        return tradeAdvertisementRepository.findBuyAdvertisementsWithSymbol(cryptoActiveSymbol);
+        return cryptoAdvertisementsRepository.findBuyAdvertisementsWithSymbol(cryptoActiveSymbol);
     }
 
 }

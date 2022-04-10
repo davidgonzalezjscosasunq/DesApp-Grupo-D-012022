@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TradeAdvertisementRepository extends CrudRepository<CryptoAdvertisement, Long> {
+public interface CryptoAdvertisementsRepository extends CrudRepository<CryptoAdvertisement, Long> {
 
     List<CryptoAdvertisement> findByCryptoActiveSymbol(String cryptoActiveSymbol);
 

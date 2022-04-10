@@ -3,7 +3,7 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
-import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TradeAdvertisementRepository;
+import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.CryptoAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ public class TradeAdvertisingPostTest {
     UserRepository userRepository;
 
     @Autowired
-    TradeAdvertisementRepository tradeAdvertisementRepository;
+    CryptoAdvertisementsRepository tradeAdvertisementRepository;
 
     @AfterEach
     void tearDown() {
@@ -163,7 +163,7 @@ public class TradeAdvertisingPostTest {
         assertEquals(expectedErrorMessage, error.getMessage());
     }
 
-    private void assertHasNoAdvertisementsFor(String cryptoActiveSymbol, TradeAdvertisementRepository tradeAdvertisementRepository) {
+    private void assertHasNoAdvertisementsFor(String cryptoActiveSymbol, CryptoAdvertisementsRepository tradeAdvertisementRepository) {
         assertFalse(tradeAdvertisementRepository.existsByCryptoActiveSymbol(cryptoActiveSymbol));
     }
 
