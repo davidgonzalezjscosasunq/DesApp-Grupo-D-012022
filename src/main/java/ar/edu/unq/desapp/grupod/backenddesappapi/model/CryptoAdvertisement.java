@@ -3,7 +3,10 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 import javax.persistence.*;
 
 @Entity
-public class SellAdvertisement {
+public class CryptoAdvertisement {
+
+    public static final String BUY_ADVERTISE_TYPE = "BUY_ADVERTISE";
+    public static final String SELL_ADVERTISE_TYPE = "CELL_ADVERTISE";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,19 +21,29 @@ public class SellAdvertisement {
 
     private String publisherFirstName;
     private String publisherLastName;
+    private String type;
 
-    private SellAdvertisement() {}
+    private CryptoAdvertisement() {}
 
-    public SellAdvertisement(String cryptoActiveSymbol, Integer quantity, Double price, User publisher) {
+    public CryptoAdvertisement(String type, String cryptoActiveSymbol, Integer quantity, Double price, User publisher) {
         assertIsValidQuantity(quantity);
         assertIsValidPrice(price);
 
+        this.type = type;
         this.cryptoActiveSymbol = cryptoActiveSymbol;
         this.quantity = quantity;
         this.price = price;
         //this.publisher = publisher; // TODO: arreglar. Genera problemas porque la ejecucion del metodo del service no es transaccional
         this.publisherFirstName = publisher.firstName();
         this.publisherLastName = publisher.lastName();
+    }
+
+    public static CryptoAdvertisement buyAdvertise(String cryptoActiveSymbol, int quantityToBuy, double buyPrice, User buyer) {
+        return new CryptoAdvertisement(BUY_ADVERTISE_TYPE, cryptoActiveSymbol, quantityToBuy, buyPrice, buyer);
+    }
+
+    public static CryptoAdvertisement sellAdvertise(String cryptoActiveSymbol, int quantityToBuy, double buyPrice, User buyer) {
+        return new CryptoAdvertisement(SELL_ADVERTISE_TYPE, cryptoActiveSymbol, quantityToBuy, buyPrice, buyer);
     }
 
     public String publisherFirstName() {
