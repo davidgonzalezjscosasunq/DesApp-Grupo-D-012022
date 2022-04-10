@@ -106,7 +106,7 @@ public class TradeAdvertisingPostTest {
         var notRegisteredUserFirstName = seller.firstName() + "abc";
 
         assertThrowsDomainExeption(
-                "User not found",
+                "User0 not found",
                 () -> tradeService.postSellAdvertisement(CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE, notRegisteredUserFirstName, seller.lastName()));
 
         assertHasNoAdvertisementsFor(CRYPTO_ACTIVE_SYMBOL, tradeAdvertisementRepository);
