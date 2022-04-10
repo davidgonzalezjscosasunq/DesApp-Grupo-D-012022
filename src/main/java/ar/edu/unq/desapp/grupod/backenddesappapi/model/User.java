@@ -37,6 +37,14 @@ public class User {
         this.cryptoWalletAddress = cryptoWalletAddress;
     }
 
+    public String firstName() {
+        return firstName;
+    }
+
+    public String lastName() {
+        return lastName;
+    }
+
     private void assertIsValidFirstName(String name) {
         new PersonNameStringValidator().assertIsValidFirstName(name);
     }

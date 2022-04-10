@@ -33,6 +33,16 @@ public class UserRegistrationTest {
     }
 
     @Test
+    void aUserCanFoundByName() {
+        var registeredUser = userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
+
+        var foundUser = userService.findUserNamed(registeredUser.firstName(), registeredUser.lastName());
+
+        assertEquals(registeredUser.firstName(), foundUser.firstName());
+        assertEquals(registeredUser.lastName(), foundUser.lastName());
+    }
+
+    @Test
     void aUserFirstNameCannotHaveLessThan3Letters() {
         var anInvalidNameWith2Letters = "ab";
 
