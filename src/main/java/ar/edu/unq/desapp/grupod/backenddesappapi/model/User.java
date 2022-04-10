@@ -16,7 +16,7 @@ public class User {
     private String address;
     private String password;
     private String cvu;
-    private String criptoWalletAddress;
+    private String cryptoWalletAddress;
 
     private User() {}
 
@@ -34,7 +34,7 @@ public class User {
         this.address = address;
         this.password = password;
         this.cvu = cvu;
-        this.criptoWalletAddress = cryptoWalletAddress;
+        this.cryptoWalletAddress = cryptoWalletAddress;
     }
 
     private void assertIsValidFirstName(String name) {
