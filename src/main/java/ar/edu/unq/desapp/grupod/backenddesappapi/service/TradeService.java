@@ -39,11 +39,11 @@ public class TradeService {
     }
 
     public List<CryptoAdvertisement> findSellAdvertisementsWithSymbol(String cryptoActiveSymbol) {
-        return tradeAdvertisementRepository.findByCryptoActiveSymbolAndTypeLike(cryptoActiveSymbol, CryptoAdvertisement.SELL_ADVERTISE_TYPE);
+        return tradeAdvertisementRepository.findSellAdvertisementsWithSymbol(cryptoActiveSymbol);
     }
 
     public List<CryptoAdvertisement> findBuyAdvertisementsWithSymbol(String cryptoActiveSymbol) {
-        return tradeAdvertisementRepository.findByCryptoActiveSymbolAndTypeLike(cryptoActiveSymbol, CryptoAdvertisement.BUY_ADVERTISE_TYPE);
+        return tradeAdvertisementRepository.findBuyAdvertisementsWithSymbol(cryptoActiveSymbol);
     }
 
 }
