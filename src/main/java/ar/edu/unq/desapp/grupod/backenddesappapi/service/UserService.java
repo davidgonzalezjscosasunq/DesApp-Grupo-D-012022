@@ -17,7 +17,4 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-    public Boolean hasUserRegisteredWithEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
 }
