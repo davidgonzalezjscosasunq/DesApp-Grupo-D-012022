@@ -1,9 +1,12 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -17,4 +20,7 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
+    public User findUserNamed(String firstName, String lastName) {
+        return userRepository.findByFirstNameAndLastName(firstName, lastName).orElseThrow(() -> new ModelException("User not found"));
+    }
 }

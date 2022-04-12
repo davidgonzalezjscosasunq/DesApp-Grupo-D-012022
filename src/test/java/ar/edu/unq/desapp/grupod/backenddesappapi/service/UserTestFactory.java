@@ -8,4 +8,8 @@ public class UserTestFactory {
     public static final String VALID_PASSWORD = "password";
     public static final String VALID_CVU = "0123456789012345678912";
     public static final String VALID_CRIPTO_WALLET_ADDRESS = "12345678";
+
+    public static String emailFor(String firstName, String lastName) {
+        return firstName + lastName + "@domain.com";
+    }
 }
