@@ -21,8 +21,8 @@ public class TradeService {
     CryptoAdvertisementsRepository cryptoAdvertisementsRepository;
 
     // TODO: modelar dinero
-    public CryptoAdvertisement postSellAdvertisement(String cryptoActiveSymbol, Integer quantityToSell, Double sellingPrice, String sellerFirstName, String sellerLastName) {
-        var seller = userService.findUserNamed(sellerFirstName, sellerLastName);
+    public CryptoAdvertisement postSellAdvertisement(Long sellerId, String cryptoActiveSymbol, Integer quantityToSell, Double sellingPrice) {
+        var seller = userService.findUserById(sellerId);
         //var seller = userRepository.findByFirstNameAndLastName(sellerFirstName, sellerLastName).orElseThrow(() -> new ModelException("User not found"));
 
         var newSellAdvertisement = CryptoAdvertisement.sellAdvertise(cryptoActiveSymbol, quantityToSell, sellingPrice, seller);
@@ -30,8 +30,8 @@ public class TradeService {
         return cryptoAdvertisementsRepository.save(newSellAdvertisement);
     }
 
-    public CryptoAdvertisement postBuyAdvertisement(String cryptoActiveSymbol, int quantityToBuy, double buyPrice, String buyerFirstName, String buyerLastName) {
-        var buyer = userService.findUserNamed(buyerFirstName, buyerLastName);
+    public CryptoAdvertisement postBuyAdvertisement(Long buyerId, String cryptoActiveSymbol, int quantityToBuy, double buyPrice) {
+        var buyer = userService.findUserById(buyerId);
 
         var newSellAdvertisement = CryptoAdvertisement.buyAdvertise(cryptoActiveSymbol, quantityToBuy, buyPrice, buyer);
 
