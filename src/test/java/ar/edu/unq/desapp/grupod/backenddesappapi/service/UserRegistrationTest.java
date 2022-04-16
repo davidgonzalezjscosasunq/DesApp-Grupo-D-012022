@@ -33,10 +33,10 @@ public class UserRegistrationTest {
     }
 
     @Test
-    void aUserCanFoundByName() {
+    void aUserCanFoundById() {
         var registeredUser = userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
 
-        var foundUser = userService.findUserNamed(registeredUser.firstName(), registeredUser.lastName());
+        var foundUser = userService.findUserById(registeredUser.id());
 
         assertEquals(registeredUser.firstName(), foundUser.firstName());
         assertEquals(registeredUser.lastName(), foundUser.lastName());

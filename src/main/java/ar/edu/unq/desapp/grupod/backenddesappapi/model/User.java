@@ -37,6 +37,10 @@ public class User {
         this.cryptoWalletAddress = cryptoWalletAddress;
     }
 
+    public Long id() {
+        return id;
+    }
+
     public String firstName() {
         return firstName;
     }
