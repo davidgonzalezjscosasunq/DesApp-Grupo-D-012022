@@ -1,6 +1,8 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.BuyOrder;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.CryptoAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,4 +48,10 @@ public class TradeService {
         return cryptoAdvertisementsRepository.findBuyAdvertisementsWithSymbol(cryptoActiveSymbol);
     }
 
+    public BuyOrder placeBuyOrder(Long buyerId, Long assetSymbol, int quantityToBuy) {
+        var buyer = userService.findUserById(buyerId);
+        var cryptoAssertAdverticement = cryptoAdvertisementsRepository.findById(assetSymbol).orElseThrow(() -> new ModelException("Adverticement not found"));
+
+        return new BuyOrder(buyer, cryptoAssertAdverticement, quantityToBuy);
+    }
 }

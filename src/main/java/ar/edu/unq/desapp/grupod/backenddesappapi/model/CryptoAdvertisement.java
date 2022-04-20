@@ -38,6 +38,10 @@ public class CryptoAdvertisement {
         this.publisherLastName = publisher.lastName();
     }
 
+    public Long id() {
+        return id;
+    }
+
     public static CryptoAdvertisement buyAdvertise(String cryptoActiveSymbol, int quantityToBuy, double buyPrice, User buyer) {
         return new CryptoAdvertisement(BUY_ADVERTISE_TYPE, cryptoActiveSymbol, quantityToBuy, buyPrice, buyer);
     }
@@ -74,5 +78,9 @@ public class CryptoAdvertisement {
 
     private void assertIsValidPrice(Double sellingPrice) {
         if (sellingPrice <= 0) throw new ModelException("Price amount of money must be positive");
+    }
+
+    public boolean wasPublishedBy(User user) {
+        return publisherFirstName.equals(user.firstName());
     }
 }
