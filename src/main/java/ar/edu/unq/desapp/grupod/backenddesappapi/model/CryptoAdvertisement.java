@@ -83,4 +83,12 @@ public class CryptoAdvertisement {
     public boolean wasPublishedBy(User user) {
         return publisherFirstName.equals(user.firstName());
     }
+
+    public void decreaseQuantity(Integer quantityToDecrease) {
+        quantity -= quantityToDecrease;
+    }
+
+    public boolean isSoldOut() {
+        return quantity == 0;
+    }
 }

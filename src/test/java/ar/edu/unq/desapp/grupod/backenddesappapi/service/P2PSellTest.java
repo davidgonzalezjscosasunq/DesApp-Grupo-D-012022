@@ -3,6 +3,8 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
+import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.CryptoAdvertisementsRepository;
+import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TradingOrdersRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class P2PTradeTest {
+public class P2PSellTest {
 
     public static final String CRYPTO_ACTIVE_SYMBOL = "NEOUSDT";
     public static final double VALID_ADVERTISEMENT_PRICE = 2.0;
@@ -31,16 +33,23 @@ public class P2PTradeTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    CryptoAdvertisementsRepository cryptoAdvertisementsRepository;
+
+    @Autowired
+    TradingOrdersRepository tradingOrdersRepository;
+
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
+        cryptoAdvertisementsRepository.deleteAll();
+        tradingOrdersRepository.deleteAll();
     }
 
     @Test
-    void aUserCanPlaceABuyOrderForAnotherUser() {
+    void aUserCanPlaceABuyOrderForASellAdvertisementPublishedByAnotherUser() {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
-
         var aSellAdverticement = publishSellAdverticementFor(aSeller);
 
         var aSellOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
@@ -50,7 +59,38 @@ public class P2PTradeTest {
     }
 
     @Test
-    void aUserCannotPlaceABuyOrderForHimself() {
+    void whenASellerConfirmsASellOrderForSomeAvailableQuantityOfSomeAdvertisementItsAvailableQuantityIsDecreased() {
+        var aBuyer = registerPepe();
+        var aSeller = registerJuan();
+
+        var originallQuantityToSell = 3;
+        var quantityToBuy = 1;
+        var aSellAdverticement = publishSellAdverticementFor(aSeller, originallQuantityToSell);
+        var aBuyOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuy);
+
+        tradeService.confirmSuccessfulSell(aSeller.id(), aBuyOrder.id());
+
+        var foundSellAdvertisements = tradeService.findSellAdvertisementsWithSymbol(aSellAdverticement.cryptoActiveSymbol());
+        assertEquals(1, foundSellAdvertisements.size());
+        assertEquals(originallQuantityToSell - quantityToBuy, foundSellAdvertisements.get(0).quantity());
+    }
+
+    @Test
+    void whenASellerConfirmsASellOrderForAllAvailableQuantityOfSomeAdvertisementItIsRemovedFromTheListOfPublishedAdvertisements() {
+        var aBuyer = registerPepe();
+        var aSeller = registerJuan();
+
+        var aSellAdverticement = publishSellAdverticementFor(aSeller);
+        var aBuyOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
+
+        tradeService.confirmSuccessfulSell(aSeller.id(), aBuyOrder.id());
+
+        var foundSellAdvertisements = tradeService.findSellAdvertisementsWithSymbol(aSellAdverticement.cryptoActiveSymbol());
+        assertTrue(foundSellAdvertisements.isEmpty());
+    }
+
+    @Test
+    void aUserCannotPlaceABuyOrderForASellAdvertisementPublishedByHimself() {
         var aUser = registerPepe();
 
         var aSellAdverticement = publishSellAdverticementFor(aUser);
@@ -102,14 +142,32 @@ public class P2PTradeTest {
         );
     }
 
+    @Test
+    void aUserCannotConfirmABuyOrderPlacedByHimself() {
+        var aBuyer = registerPepe();
+        var aSeller = registerJuan();
+
+        var aSellAdverticement = publishSellAdverticementFor(aSeller);
+        var aBuyOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
+
+        assertThrowsDomainExeption(
+                "A user cannot confirm an order placed by himself",
+                () -> tradeService.confirmSuccessfulSell(aBuyer.id(), aBuyOrder.id())
+        );
+    }
+
     private void assertThrowsDomainExeption(String expectedErrorMessage, Executable executableToTest) {
         var error = assertThrows(ModelException.class, executableToTest);
 
         assertEquals(expectedErrorMessage, error.getMessage());
     }
 
+    private CryptoAdvertisement publishSellAdverticementFor(User aBuyer, Integer quantityToSell) {
+        return tradeService.postSellAdvertisement(aBuyer.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
+    }
+
     private CryptoAdvertisement publishSellAdverticementFor(User aBuyer) {
-        return tradeService.postBuyAdvertisement(aBuyer.id(), CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE);
+        return publishSellAdverticementFor(aBuyer, VALID_ADVERTISEMENT_QUANTITY);
     }
 
     private User registerJuan() {

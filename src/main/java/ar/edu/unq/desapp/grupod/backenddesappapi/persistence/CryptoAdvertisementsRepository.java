@@ -18,9 +18,11 @@ public interface CryptoAdvertisementsRepository extends CrudRepository<CryptoAdv
     }
 
     default List<CryptoAdvertisement> findSellAdvertisementsWithSymbol(String cryptoActiveSymbol) {
-        return findByCryptoActiveSymbolAndType(cryptoActiveSymbol, CryptoAdvertisement.SELL_ADVERTISE_TYPE);
+        return findByCryptoActiveSymbolAndTypeAndQuantityNot(cryptoActiveSymbol, CryptoAdvertisement.SELL_ADVERTISE_TYPE, 0);
     }
 
     List<CryptoAdvertisement> findByCryptoActiveSymbolAndType(String cryptoActiveSymbol, String cellAdvertise);
+
+    List<CryptoAdvertisement> findByCryptoActiveSymbolAndTypeAndQuantityNot(String cryptoActiveSymbol, String cellAdvertise, Integer quantity);
 
 }

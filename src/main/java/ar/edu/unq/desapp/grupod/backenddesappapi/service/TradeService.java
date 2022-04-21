@@ -4,6 +4,7 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.BuyOrder;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.CryptoAdvertisementsRepository;
+import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TradingOrdersRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,9 @@ public class TradeService {
     @Autowired
     CryptoAdvertisementsRepository cryptoAdvertisementsRepository;
 
+    @Autowired
+    TradingOrdersRepository tradingOrdersRepository;
+    
     // TODO: modelar dinero
     public CryptoAdvertisement postSellAdvertisement(Long sellerId, String cryptoActiveSymbol, Integer quantityToSell, Double sellingPrice) {
         var seller = userService.findUserById(sellerId);
@@ -48,10 +52,23 @@ public class TradeService {
         return cryptoAdvertisementsRepository.findBuyAdvertisementsWithSymbol(cryptoActiveSymbol);
     }
 
-    public BuyOrder placeBuyOrder(Long buyerId, Long assetSymbol, int quantityToBuy) {
+    public BuyOrder placeBuyOrder(Long buyerId, Long advertisementId, int quantityToBuy) {
         var buyer = userService.findUserById(buyerId);
-        var cryptoAssertAdverticement = cryptoAdvertisementsRepository.findById(assetSymbol).orElseThrow(() -> new ModelException("Adverticement not found"));
+        var cryptoAssertAdverticement = cryptoAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new ModelException("Adverticement not found"));
 
-        return new BuyOrder(buyer, cryptoAssertAdverticement, quantityToBuy);
+        var newBuyOrder = new BuyOrder(buyer, cryptoAssertAdverticement, quantityToBuy);
+
+        return tradingOrdersRepository.save(newBuyOrder);
+    }
+
+    public void confirmSuccessfulSell(Long sellerId, Long ifOfBuyOrderToConfirm) {
+        var seller = userService.findUserById(sellerId);
+        var buyOrderToConfirm = tradingOrdersRepository.findById(ifOfBuyOrderToConfirm).get();
+
+        var advertisement = cryptoAdvertisementsRepository.findById(buyOrderToConfirm.cryptoAssertAdverticement).get();
+
+        buyOrderToConfirm.confirmFor(seller, advertisement);
+
+        cryptoAdvertisementsRepository.save(advertisement);
     }
 }
