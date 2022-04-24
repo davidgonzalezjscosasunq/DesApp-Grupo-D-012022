@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class BuyOrder {
+public class Transaction {
     public static final String PENDING_STATE = "PENDING";
     public static final String CONFIRMED_STATE = "CONFIRMED";
 
@@ -25,16 +25,16 @@ public class BuyOrder {
     //private CryptoAdvertisement cryptoAssertAdverticement;
     //private Integer quantityToBuy;
 
-    private BuyOrder() {}
+    private Transaction() {}
 
-    public BuyOrder(User buyer, CryptoAdvertisement cryptoAssetAdverticement, Integer quantity) {
+    public Transaction(User buyer, CryptoAdvertisement cryptoAssetAdverticement, Integer quantity) {
         assertAdvertisementWasNotPublishedByBuyer(buyer, cryptoAssetAdverticement);
         assertIsValidQuantity(quantity);
         assertIsValidAdvertisement(cryptoAssetAdverticement);
 
         this.buyer = buyer.id();
         this.cryptoAssertAdvertisement = cryptoAssetAdverticement.id();
-        this.cryptoAssertAdvertisementSymbol = cryptoAssetAdverticement.cryptoActiveSymbol();
+        this.cryptoAssertAdvertisementSymbol = cryptoAssetAdverticement.assetSymbol();
         this.cryptoAssertAdvertisementQuantity = cryptoAssetAdverticement.quantity();
         this.quantity = quantity;
         this.state = PENDING_STATE;

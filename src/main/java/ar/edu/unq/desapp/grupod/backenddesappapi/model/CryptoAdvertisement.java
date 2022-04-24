@@ -25,15 +25,16 @@ public class CryptoAdvertisement {
 
     private CryptoAdvertisement() {}
 
-    public CryptoAdvertisement(String type, String cryptoActiveSymbol, Integer quantity, Double price, User publisher) {
+    public CryptoAdvertisement(String type, String assetSymbol, Integer quantity, Double price, User publisher) {
         assertIsValidQuantity(quantity);
         assertIsValidPrice(price);
 
         this.type = type;
-        this.cryptoActiveSymbol = cryptoActiveSymbol;
+        this.cryptoActiveSymbol = assetSymbol;
         this.quantity = quantity;
         this.price = price;
         //this.publisher = publisher; // TODO: arreglar. Genera problemas porque la ejecucion del metodo del service no es transaccional
+
         this.publisherFirstName = publisher.firstName();
         this.publisherLastName = publisher.lastName();
     }
@@ -60,7 +61,7 @@ public class CryptoAdvertisement {
         return publisherLastName;
     }
 
-    public String cryptoActiveSymbol() {
+    public String assetSymbol() {
         return cryptoActiveSymbol;
     }
 

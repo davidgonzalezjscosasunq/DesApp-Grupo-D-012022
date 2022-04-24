@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class BuyOrderConfirmationTest extends ServiceTest {
+public class TransactionConfirmationTest extends ServiceTest {
 
     @Test
     void aSellerCanConfirmABuyOrderForOneOfHisSellAdvertisements() {
@@ -14,11 +14,11 @@ public class BuyOrderConfirmationTest extends ServiceTest {
         var aSeller = registerJuan();
 
         var aSellAdverticement = publishSellAdverticementFor(aSeller);
-        var buyOrderToConfirm = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
+        var buyOrderToConfirm = tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
 
-        tradeService.confirmSuccessfulSell(aSeller.id(), buyOrderToConfirm.id());
+        tradeService.confirmTransaction(aSeller.id(), buyOrderToConfirm.id());
 
-        var orders = tradeService.ordersOf(aBuyer.id());
+        var orders = tradeService.findTransactionsInformedBy(aBuyer.id());
 
         assertFalse(orders.get(0).isPending());
         assertTrue(orders.get(0).isConfirmed());
@@ -33,11 +33,11 @@ public class BuyOrderConfirmationTest extends ServiceTest {
         var aSeller = registerJuan();
 
         var aSellAdverticement = publishSellAdverticementFor(aSeller, originalQuantityToSell);
-        var aBuyOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuy);
+        var aBuyOrder = tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), quantityToBuy);
 
-        tradeService.confirmSuccessfulSell(aSeller.id(), aBuyOrder.id());
+        tradeService.confirmTransaction(aSeller.id(), aBuyOrder.id());
 
-        var foundSellAdvertisements = tradeService.findSellAdvertisementsWithSymbol(aSellAdverticement.cryptoActiveSymbol());
+        var foundSellAdvertisements = tradeService.findSellAdvertisementsWithSymbol(aSellAdverticement.assetSymbol());
         assertEquals(1, foundSellAdvertisements.size());
         assertEquals(originalQuantityToSell - quantityToBuy, foundSellAdvertisements.get(0).quantity());
     }
@@ -48,11 +48,11 @@ public class BuyOrderConfirmationTest extends ServiceTest {
         var aSeller = registerJuan();
 
         var aSellAdverticement = publishSellAdverticementFor(aSeller);
-        var aBuyOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
+        var aBuyOrder = tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
 
-        tradeService.confirmSuccessfulSell(aSeller.id(), aBuyOrder.id());
+        tradeService.confirmTransaction(aSeller.id(), aBuyOrder.id());
 
-        var foundSellAdvertisements = tradeService.findSellAdvertisementsWithSymbol(aSellAdverticement.cryptoActiveSymbol());
+        var foundSellAdvertisements = tradeService.findSellAdvertisementsWithSymbol(aSellAdverticement.assetSymbol());
         assertTrue(foundSellAdvertisements.isEmpty());
     }
 
@@ -62,11 +62,11 @@ public class BuyOrderConfirmationTest extends ServiceTest {
         var aSeller = registerJuan();
 
         var aSellAdverticement = publishSellAdverticementFor(aSeller);
-        var aBuyOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
+        var aBuyOrder = tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
 
         assertThrowsDomainExeption(
                 "A user cannot confirm an order placed by himself",
-                () -> tradeService.confirmSuccessfulSell(aBuyer.id(), aBuyOrder.id())
+                () -> tradeService.confirmTransaction(aBuyer.id(), aBuyOrder.id())
         );
     }
 

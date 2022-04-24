@@ -1,6 +1,6 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.BuyOrder;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.Transaction;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.CryptoAdvertisementsRepository;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TradeService {
+public class TradingService {
 
     @Autowired
     UserService userService;
@@ -24,7 +24,7 @@ public class TradeService {
     CryptoAdvertisementsRepository cryptoAdvertisementsRepository;
 
     @Autowired
-    TradingOrdersRepository tradingOrdersRepository;
+    TradingOrdersRepository transactionsRepository;
 
     // TODO: modelar dinero
     public CryptoAdvertisement postSellAdvertisement(Long sellerId, String cryptoActiveSymbol, Integer quantityToSell, Double sellingPrice) {
@@ -35,23 +35,23 @@ public class TradeService {
         return postAdvertisement(CryptoAdvertisement.BUY_ADVERTISE_TYPE, buyerId, cryptoActiveSymbol, quantityToBuy, buyPrice);
     }
 
-    public BuyOrder placeBuyOrder(Long buyerId, Long advertisementId, int quantityToBuy) {
-        var buyer = userService.findUserById(buyerId);
-        var cryptoAssertAdverticement = cryptoAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new ModelException("Adverticement not found"));
+    public Transaction informTransaction(Long interestedUserId, Long advertisementId, int quantityToTransfer) {
+        var interestedUser = userService.findUserById(interestedUserId);
+        var cryptoAssertAdvertisement = cryptoAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new ModelException("Adverticement not found"));
 
-        var newBuyOrder = new BuyOrder(buyer, cryptoAssertAdverticement, quantityToBuy);
+        var newTransaction = new Transaction(interestedUser, cryptoAssertAdvertisement, quantityToTransfer);
 
-        return tradingOrdersRepository.save(newBuyOrder);
+        return transactionsRepository.save(newTransaction);
     }
 
-    public void confirmSuccessfulSell(Long sellerId, Long ifOfBuyOrderToConfirm) {
-        var seller = userService.findUserById(sellerId);
-        var buyOrderToConfirm = tradingOrdersRepository.findById(ifOfBuyOrderToConfirm).get();
-        var advertisement = cryptoAdvertisementsRepository.findById(buyOrderToConfirm.cryptoAssertAdvertisement).get();
+    public void confirmTransaction(Long advertisePublisherId, Long transactionToConfirmId) {
+        var publisher = userService.findUserById(advertisePublisherId);
+        var transaction = transactionsRepository.findById(transactionToConfirmId).get();
+        var advertisement = cryptoAdvertisementsRepository.findById(transaction.cryptoAssertAdvertisement).get();
 
-        buyOrderToConfirm.confirmBy(seller, advertisement);
+        transaction.confirmBy(publisher, advertisement);
 
-        tradingOrdersRepository.save(buyOrderToConfirm);
+        transactionsRepository.save(transaction);
         cryptoAdvertisementsRepository.save(advertisement);
     }
 
@@ -63,15 +63,15 @@ public class TradeService {
         return cryptoAdvertisementsRepository.findBuyAdvertisementsWithSymbol(cryptoActiveSymbol);
     }
 
-    public List<BuyOrder> ordersOf(Long userId) {
-        return tradingOrdersRepository.findAllByBuyer(userId);
+    public List<Transaction> findTransactionsInformedBy(Long userId) {
+        return transactionsRepository.findAllByBuyer(userId);
     }
 
     protected CryptoAdvertisement postAdvertisement(String advertisementType, Long publisherId, String cryptoActiveSymbol, int quantity, double price) {
         var publisher = userService.findUserById(publisherId);
 
-        var newBuyAdvertisement = new CryptoAdvertisement(advertisementType, cryptoActiveSymbol, quantity, price, publisher);
+        var newAdvertisement = new CryptoAdvertisement(advertisementType, cryptoActiveSymbol, quantity, price, publisher);
 
-        return cryptoAdvertisementsRepository.save(newBuyAdvertisement);
+        return cryptoAdvertisementsRepository.save(newAdvertisement);
     }
 }

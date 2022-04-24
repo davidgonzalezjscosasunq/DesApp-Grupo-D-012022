@@ -1,7 +1,5 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.BuyOrder;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -16,10 +14,10 @@ public class BuyOrderPlacingTest extends ServiceTest {
         var aSeller = registerJuan();
         var aSellAdverticement = publishSellAdverticementFor(aSeller);
 
-        var symbolToBuy = aSellAdverticement.cryptoActiveSymbol();
+        var symbolToBuy = aSellAdverticement.assetSymbol();
         var quantityToBuy = aSellAdverticement.quantity();
 
-        var aSellOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuy);
+        var aSellOrder = tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), quantityToBuy);
 
         assertIsPendingOrderWith(aBuyer, symbolToBuy, quantityToBuy, aSellOrder);
     }
@@ -34,12 +32,12 @@ public class BuyOrderPlacingTest extends ServiceTest {
         var sellAdvertisementQuantity = quantityOfTheFirstBuyOrder + quantityOfTheSecondBuyOrder;
 
         var aSellAdverticement = publishSellAdverticementFor(aSeller, sellAdvertisementQuantity);
-        var symbolToBuy = aSellAdverticement.cryptoActiveSymbol();
+        var symbolToBuy = aSellAdverticement.assetSymbol();
 
-        tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityOfTheFirstBuyOrder);
-        tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityOfTheSecondBuyOrder);
+        tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), quantityOfTheFirstBuyOrder);
+        tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), quantityOfTheSecondBuyOrder);
 
-        var orders = tradeService.ordersOf(aBuyer.id());
+        var orders = tradeService.findTransactionsInformedBy(aBuyer.id());
 
         assertEquals(2, orders.size());
         assertIsPendingOrderWith(aBuyer, symbolToBuy, quantityOfTheFirstBuyOrder, orders.get(0));
@@ -54,7 +52,7 @@ public class BuyOrderPlacingTest extends ServiceTest {
 
         assertThrowsDomainExeption(
                 "Buyer and seller can't be the same user",
-                () -> tradeService.placeBuyOrder(aUser.id(), aSellAdverticement.id(), aSellAdverticement.quantity())
+                () -> tradeService.informTransaction(aUser.id(), aSellAdverticement.id(), aSellAdverticement.quantity())
         );
 
         assertHasNoOrders(aUser);
@@ -71,7 +69,7 @@ public class BuyOrderPlacingTest extends ServiceTest {
 
         assertThrowsDomainExeption(
                 "Quantity to buy must be greater than zero",
-                () -> tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), invalidQuantityLesserThanOne)
+                () -> tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), invalidQuantityLesserThanOne)
         );
 
         assertHasNoOrders(aBuyer);
@@ -86,7 +84,7 @@ public class BuyOrderPlacingTest extends ServiceTest {
 
         assertThrowsDomainExeption(
                 "User not found",
-                () -> tradeService.placeBuyOrder(notRegisteredBuyerId, aSellAdverticement.id(), aSellAdverticement.quantity())
+                () -> tradeService.informTransaction(notRegisteredBuyerId, aSellAdverticement.id(), aSellAdverticement.quantity())
         );
     }
 
@@ -99,7 +97,7 @@ public class BuyOrderPlacingTest extends ServiceTest {
 
         assertThrowsDomainExeption(
                 "Adverticement not found",
-                () -> tradeService.placeBuyOrder(aBuyer.id(), notRegisterdSellAdvertisementId, quantityToBuy)
+                () -> tradeService.informTransaction(aBuyer.id(), notRegisterdSellAdvertisementId, quantityToBuy)
         );
 
         assertHasNoOrders(aBuyer);
@@ -113,7 +111,7 @@ public class BuyOrderPlacingTest extends ServiceTest {
 
         assertThrowsDomainExeption(
                 "Cannot place a buy order for a buy advertisement",
-                () -> tradeService.placeBuyOrder(aBuyer.id(), aBuyAdverticement.id(), aBuyAdverticement.quantity())
+                () -> tradeService.informTransaction(aBuyer.id(), aBuyAdverticement.id(), aBuyAdverticement.quantity())
         );
 
         assertHasNoOrders(aBuyer);

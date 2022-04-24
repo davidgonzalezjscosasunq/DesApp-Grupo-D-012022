@@ -1,7 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.factories.UserTestFactory;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.BuyOrder;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.Transaction;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
@@ -24,7 +24,7 @@ public class ServiceTest {
     public static final double FOURTY_PESOS = 40.0;
 
     @Autowired
-    TradeService tradeService;
+    TradingService tradeService;
 
     @Autowired
     UserService userService;
@@ -48,7 +48,7 @@ public class ServiceTest {
     protected void assertAdvertisementHas(String cryptoActiveSymbol, int quantity, double price, User publisher, CryptoAdvertisement cryptoAdvertisement) {
         assertEquals(publisher.firstName(), cryptoAdvertisement.publisherFirstName());
         assertEquals(publisher.lastName(), cryptoAdvertisement.publisherLastName());
-        assertEquals(cryptoActiveSymbol, cryptoAdvertisement.cryptoActiveSymbol());
+        assertEquals(cryptoActiveSymbol, cryptoAdvertisement.assetSymbol());
         assertEquals(quantity, cryptoAdvertisement.quantity());
         assertEquals(price, cryptoAdvertisement.price());
     }
@@ -116,11 +116,11 @@ public class ServiceTest {
     }
 
     protected void assertHasNoOrders(User aBuyer) {
-        var orders = tradeService.ordersOf(aBuyer.id());
+        var orders = tradeService.findTransactionsInformedBy(aBuyer.id());
         assertTrue(orders.isEmpty());
     }
 
-    protected void assertIsPendingOrderWith(User aBuyer, String symbolToBuy, int quantity, BuyOrder anOrder) {
+    protected void assertIsPendingOrderWith(User aBuyer, String symbolToBuy, int quantity, Transaction anOrder) {
         assertTrue(anOrder.wasPlaceBy(aBuyer));
         assertEquals(symbolToBuy, anOrder.symbol());
         assertEquals(quantity, anOrder.quantity());
