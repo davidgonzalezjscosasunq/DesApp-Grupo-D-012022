@@ -59,7 +59,7 @@ public class P2PSellTest {
     }
 
     @Test
-    void whenASellerConfirmsASellOrderForSomeAvailableQuantityOfSomeAdvertisementItsAvailableQuantityIsDecreased() {
+    void whenASellerConfirmsASellOrderToBuySomeQuantityFromAnAdvertisementItsAvailableQuantityIsDecreased() {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
@@ -76,7 +76,7 @@ public class P2PSellTest {
     }
 
     @Test
-    void whenASellerConfirmsASellOrderForAllAvailableQuantityOfSomeAdvertisementItIsRemovedFromTheListOfPublishedAdvertisements() {
+    void whenASellerConfirmsASellOrderToBuyAllAvailableQuantityFromAnAdvertisementItIsRemovedFromTheListOfPublishedAdvertisements() {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
