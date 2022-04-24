@@ -11,6 +11,9 @@ public class BuyOrder {
     private Long buyer;
     private Integer quantityToBuy;
     public Long cryptoAssertAdverticement;
+    private String cryptoAssertAdverticementSymbol;
+    private Integer cryptoAssertAdverticementQuantity;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -26,6 +29,8 @@ public class BuyOrder {
 
         this.buyer = buyer.id();
         this.cryptoAssertAdverticement = cryptoAssetAdverticement.id();
+        this.cryptoAssertAdverticementSymbol = cryptoAssetAdverticement.cryptoActiveSymbol();
+        this.cryptoAssertAdverticementQuantity = cryptoAssetAdverticement.quantity();
         this.quantityToBuy = quantityToBuy;
     }
 
@@ -35,6 +40,11 @@ public class BuyOrder {
 
     public Long id() {
         return id;
+    }
+
+
+    public String symbol() {
+        return cryptoAssertAdverticementSymbol;
     }
 
     public void confirmFor(User seller, CryptoAdvertisement advertisement) {
@@ -59,5 +69,9 @@ public class BuyOrder {
         if (seller.id() == buyer) {
             throw new ModelException("A user cannot confirm an order placed by himself");
         }
+    }
+
+    public Integer quantity() {
+        return cryptoAssertAdverticementQuantity;
     }
 }

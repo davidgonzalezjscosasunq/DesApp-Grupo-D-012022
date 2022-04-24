@@ -71,4 +71,8 @@ public class TradeService {
 
         cryptoAdvertisementsRepository.save(advertisement);
     }
+
+    public List<BuyOrder> pendingOrdersOf(Long userId) {
+        return tradingOrdersRepository.findAllByBuyer(userId);
+    }
 }

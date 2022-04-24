@@ -14,9 +14,39 @@ public class P2PSellTest extends ServiceTest {
         var aSeller = registerJuan();
         var aSellAdverticement = publishSellAdverticementFor(aSeller);
 
-        var aSellOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
+        var symbolToBuy = aSellAdverticement.cryptoActiveSymbol();
+        var quantityToBuy = aSellAdverticement.quantity();
+
+        var aSellOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuy);
 
         assertTrue(aSellOrder.wasPlaceBy(aSeller));
+        assertEquals(symbolToBuy, aSellOrder.symbol());
+        assertEquals(quantityToBuy, aSellOrder.quantity());
+    }
+
+    @Test
+    void aUserCanPlaceManyBuyOrdersForASellAdvertisementPublishedByAnotherUser() {
+        var aBuyer = registerPepe();
+        var aSeller = registerJuan();
+
+        var quantityToBuyForTheFirstOrder = 6;
+        var quantityToBuyForTheSecondOrder = 4;
+        var aSellAdverticement = publishSellAdverticementFor(aSeller, quantityToBuyForTheFirstOrder + quantityToBuyForTheSecondOrder);
+        var symbolToBuy = aSellAdverticement.cryptoActiveSymbol();
+
+        tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuyForTheFirstOrder);
+
+        tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuyForTheSecondOrder);
+
+        var pendingOrders = tradeService.pendingOrdersOf(aBuyer.id());
+
+        assertEquals(2, pendingOrders.size());
+
+        assertTrue(pendingOrders.get(0).wasPlaceBy(aSeller));
+        assertEquals(symbolToBuy, pendingOrders.get(0).symbol());
+
+        assertTrue(pendingOrders.get(1).wasPlaceBy(aSeller));
+        assertEquals(symbolToBuy, pendingOrders.get(1).symbol());
     }
 
     @Test
