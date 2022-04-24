@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.factories.UserTestFactory;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.BuyOrder;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
@@ -117,5 +118,12 @@ public class ServiceTest {
     protected void assertHasNoOrders(User aBuyer) {
         var orders = tradeService.ordersOf(aBuyer.id());
         assertTrue(orders.isEmpty());
+    }
+
+    protected void assertIsPendingOrderWith(User aBuyer, String symbolToBuy, int quantity, BuyOrder anOrder) {
+        assertTrue(anOrder.wasPlaceBy(aBuyer));
+        assertEquals(symbolToBuy, anOrder.symbol());
+        assertEquals(quantity, anOrder.quantity());
+        assertTrue(anOrder.isPending());
     }
 }

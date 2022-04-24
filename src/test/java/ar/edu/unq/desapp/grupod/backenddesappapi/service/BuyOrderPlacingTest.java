@@ -119,11 +119,4 @@ public class BuyOrderPlacingTest extends ServiceTest {
         assertHasNoOrders(aBuyer);
     }
 
-    private void assertIsPendingOrderWith(User aBuyer, String symbolToBuy, int quantity, BuyOrder anOrder) {
-        assertTrue(anOrder.wasPlaceBy(aBuyer));
-        assertEquals(symbolToBuy, anOrder.symbol());
-        assertEquals(quantity, anOrder.quantity());
-        assertTrue(anOrder.isPending());
-    }
-
 }
