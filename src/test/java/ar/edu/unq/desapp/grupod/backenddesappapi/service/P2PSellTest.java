@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class P2PSellTest extends P2PTest {
+public class P2PSellTest extends ServiceTest {
 
     @Test
     void aUserCanPlaceABuyOrderForASellAdvertisementPublishedByAnotherUser() {

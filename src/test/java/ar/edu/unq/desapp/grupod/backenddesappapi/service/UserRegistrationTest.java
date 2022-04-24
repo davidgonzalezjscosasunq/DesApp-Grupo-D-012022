@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class UserRegistrationTest extends P2PTest {
+public class UserRegistrationTest extends ServiceTest {
 
     @Test
     void aUserCanBeRegistered() {

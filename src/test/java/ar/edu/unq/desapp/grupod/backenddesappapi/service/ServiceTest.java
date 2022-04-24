@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class P2PTest {
+public class ServiceTest {
 
     public static final String CRYPTO_ACTIVE_SYMBOL = "NEOUSDT";
     public static final double VALID_ADVERTISEMENT_PRICE = 2.0;
