@@ -20,17 +20,12 @@ public class BuyOrder {
 
     private BuyOrder() {}
 
-    public BuyOrder(User buyer, CryptoAdvertisement cryptoAssertAdverticement, Integer quantityToBuy) {
-        if (cryptoAssertAdverticement.wasPublishedBy(buyer)) {
-            throw new ModelException("Buyer and seller can't be the same user");
-        }
-
-        if (quantityToBuy <= 0) {
-            throw new ModelException("Quantity to buy must be greater than zero");
-        }
+    public BuyOrder(User buyer, CryptoAdvertisement cryptoAssetAdverticement, Integer quantityToBuy) {
+        assertAdvertisementWasNotPublishedByBuyer(buyer, cryptoAssetAdverticement);
+        assertIsValidQuantity(quantityToBuy);
 
         this.buyer = buyer.id();
-        this.cryptoAssertAdverticement = cryptoAssertAdverticement.id();
+        this.cryptoAssertAdverticement = cryptoAssetAdverticement.id();
         this.quantityToBuy = quantityToBuy;
     }
 
@@ -46,6 +41,18 @@ public class BuyOrder {
         assertIsNotTheBuyer(seller);
 
         advertisement.decreaseQuantity(quantityToBuy);
+    }
+
+    private void assertAdvertisementWasNotPublishedByBuyer(User buyer, CryptoAdvertisement cryptoAssetAdverticement) {
+        if (cryptoAssetAdverticement.wasPublishedBy(buyer)) {
+            throw new ModelException("Buyer and seller can't be the same user");
+        }
+    }
+
+    private void assertIsValidQuantity(Integer quantityToBuy) {
+        if (quantityToBuy <= 0) {
+            throw new ModelException("Quantity to buy must be greater than zero");
+        }
     }
 
     private void assertIsNotTheBuyer(User seller) {
