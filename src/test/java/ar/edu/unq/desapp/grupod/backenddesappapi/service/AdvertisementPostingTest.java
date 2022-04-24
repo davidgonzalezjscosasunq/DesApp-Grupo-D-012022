@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class TradeAdvertisingPostTest extends ServiceTest {
+public class AdvertisementPostingTest extends ServiceTest {
 
     @Test
     void aBuyAdvertisementCanBePostedByARegisteredUser() {
