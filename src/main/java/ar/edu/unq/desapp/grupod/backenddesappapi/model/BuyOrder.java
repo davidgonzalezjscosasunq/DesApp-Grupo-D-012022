@@ -8,15 +8,19 @@ import javax.persistence.Id;
 
 @Entity
 public class BuyOrder {
+    public static final String PENDING_STATE = "PENDING";
+    public static final String CONFIRMED_STATE = "CONFIRMED";
+
     private Long buyer;
     private Integer quantityToBuy;
-    public Long cryptoAssertAdverticement;
-    private String cryptoAssertAdverticementSymbol;
-    private Integer cryptoAssertAdverticementQuantity;
+    public Long cryptoAssertAdvertisement;
+    private String cryptoAssertAdvertisementSymbol;
+    private Integer cryptoAssertAdvertisementQuantity;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private String state;
     //private User buyer;
     //private CryptoAdvertisement cryptoAssertAdverticement;
     //private Integer quantityToBuy;
@@ -28,10 +32,11 @@ public class BuyOrder {
         assertIsValidQuantity(quantityToBuy);
 
         this.buyer = buyer.id();
-        this.cryptoAssertAdverticement = cryptoAssetAdverticement.id();
-        this.cryptoAssertAdverticementSymbol = cryptoAssetAdverticement.cryptoActiveSymbol();
-        this.cryptoAssertAdverticementQuantity = cryptoAssetAdverticement.quantity();
+        this.cryptoAssertAdvertisement = cryptoAssetAdverticement.id();
+        this.cryptoAssertAdvertisementSymbol = cryptoAssetAdverticement.cryptoActiveSymbol();
+        this.cryptoAssertAdvertisementQuantity = cryptoAssetAdverticement.quantity();
         this.quantityToBuy = quantityToBuy;
+        this.state = PENDING_STATE;
     }
 
     public Boolean wasPlaceBy(User user) {
@@ -44,13 +49,14 @@ public class BuyOrder {
 
 
     public String symbol() {
-        return cryptoAssertAdverticementSymbol;
+        return cryptoAssertAdvertisementSymbol;
     }
 
-    public void confirmFor(User seller, CryptoAdvertisement advertisement) {
+    public void confirmBy(User seller, CryptoAdvertisement advertisement) {
         assertIsNotTheBuyer(seller);
 
         advertisement.decreaseQuantity(quantityToBuy);
+        state = CONFIRMED_STATE;
     }
 
     private void assertAdvertisementWasNotPublishedByBuyer(User buyer, CryptoAdvertisement cryptoAssetAdverticement) {
@@ -72,6 +78,14 @@ public class BuyOrder {
     }
 
     public Integer quantity() {
-        return cryptoAssertAdverticementQuantity;
+        return cryptoAssertAdvertisementQuantity;
+    }
+
+    public Boolean isPending() {
+        return state == PENDING_STATE;
+    }
+
+    public Boolean isConfirmed() {
+        return state == CONFIRMED_STATE;
     }
 }

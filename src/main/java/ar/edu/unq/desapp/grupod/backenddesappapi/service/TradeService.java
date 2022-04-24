@@ -64,15 +64,15 @@ public class TradeService {
     public void confirmSuccessfulSell(Long sellerId, Long ifOfBuyOrderToConfirm) {
         var seller = userService.findUserById(sellerId);
         var buyOrderToConfirm = tradingOrdersRepository.findById(ifOfBuyOrderToConfirm).get();
+        var advertisement = cryptoAdvertisementsRepository.findById(buyOrderToConfirm.cryptoAssertAdvertisement).get();
 
-        var advertisement = cryptoAdvertisementsRepository.findById(buyOrderToConfirm.cryptoAssertAdverticement).get();
+        buyOrderToConfirm.confirmBy(seller, advertisement);
 
-        buyOrderToConfirm.confirmFor(seller, advertisement);
-
+        tradingOrdersRepository.save(buyOrderToConfirm);
         cryptoAdvertisementsRepository.save(advertisement);
     }
 
-    public List<BuyOrder> pendingOrdersOf(Long userId) {
+    public List<BuyOrder> ordersOf(Long userId) {
         return tradingOrdersRepository.findAllByBuyer(userId);
     }
 }
