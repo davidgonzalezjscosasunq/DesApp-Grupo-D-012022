@@ -66,8 +66,7 @@ public class BuyOrderPlacingTest extends ServiceTest {
                 () -> tradeService.placeBuyOrder(aUser.id(), aSellAdverticement.id(), aSellAdverticement.quantity())
         );
 
-        var orders = tradeService.ordersOf(aUser.id());
-        assertTrue(orders.isEmpty());
+        assertHasNoOrders(aUser);
     }
 
     @Test
@@ -84,8 +83,7 @@ public class BuyOrderPlacingTest extends ServiceTest {
                 () -> tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), invalidQuantityLesserThanOne)
         );
 
-        var orders = tradeService.ordersOf(aBuyer.id());
-        assertTrue(orders.isEmpty());
+        assertHasNoOrders(aBuyer);
     }
 
     @Test
@@ -113,8 +111,7 @@ public class BuyOrderPlacingTest extends ServiceTest {
                 () -> tradeService.placeBuyOrder(aBuyer.id(), notRegisterdSellAdvertisementId, quantityToBuy)
         );
 
-        var orders = tradeService.ordersOf(aBuyer.id());
-        assertTrue(orders.isEmpty());
+        assertHasNoOrders(aBuyer);
     }
 
     @Test
@@ -128,9 +125,7 @@ public class BuyOrderPlacingTest extends ServiceTest {
                 () -> tradeService.placeBuyOrder(aBuyer.id(), aBuyAdverticement.id(), aBuyAdverticement.quantity())
         );
 
-        var orders = tradeService.ordersOf(aBuyer.id());
-        assertTrue(orders.isEmpty());
+        assertHasNoOrders(aBuyer);
     }
-
 
 }

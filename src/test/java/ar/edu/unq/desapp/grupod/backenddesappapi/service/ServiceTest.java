@@ -113,4 +113,9 @@ public class ServiceTest {
     protected User registerUserWithCryptoWalletAddress(String cryptoWalletAddress) {
         return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, cryptoWalletAddress);
     }
+
+    protected void assertHasNoOrders(User aBuyer) {
+        var orders = tradeService.ordersOf(aBuyer.id());
+        assertTrue(orders.isEmpty());
+    }
 }
