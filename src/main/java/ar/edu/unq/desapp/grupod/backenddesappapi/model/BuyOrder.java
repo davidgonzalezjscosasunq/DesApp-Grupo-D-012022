@@ -12,7 +12,7 @@ public class BuyOrder {
     public static final String CONFIRMED_STATE = "CONFIRMED";
 
     private Long buyer;
-    private Integer quantityToBuy;
+    private Integer quantity;
     public Long cryptoAssertAdvertisement;
     private String cryptoAssertAdvertisementSymbol;
     private Integer cryptoAssertAdvertisementQuantity;
@@ -27,16 +27,16 @@ public class BuyOrder {
 
     private BuyOrder() {}
 
-    public BuyOrder(User buyer, CryptoAdvertisement cryptoAssetAdverticement, Integer quantityToBuy) {
+    public BuyOrder(User buyer, CryptoAdvertisement cryptoAssetAdverticement, Integer quantity) {
         assertAdvertisementWasNotPublishedByBuyer(buyer, cryptoAssetAdverticement);
-        assertIsValidQuantity(quantityToBuy);
+        assertIsValidQuantity(quantity);
         assertIsValidAdvertisement(cryptoAssetAdverticement);
 
         this.buyer = buyer.id();
         this.cryptoAssertAdvertisement = cryptoAssetAdverticement.id();
         this.cryptoAssertAdvertisementSymbol = cryptoAssetAdverticement.cryptoActiveSymbol();
         this.cryptoAssertAdvertisementQuantity = cryptoAssetAdverticement.quantity();
-        this.quantityToBuy = quantityToBuy;
+        this.quantity = quantity;
         this.state = PENDING_STATE;
     }
 
@@ -56,7 +56,7 @@ public class BuyOrder {
     public void confirmBy(User seller, CryptoAdvertisement advertisement) {
         assertIsNotTheBuyer(seller);
 
-        advertisement.decreaseQuantity(quantityToBuy);
+        advertisement.decreaseQuantity(quantity);
         state = CONFIRMED_STATE;
     }
 
@@ -85,7 +85,7 @@ public class BuyOrder {
     }
 
     public Integer quantity() {
-        return cryptoAssertAdvertisementQuantity;
+        return quantity;
     }
 
     public Boolean isPending() {

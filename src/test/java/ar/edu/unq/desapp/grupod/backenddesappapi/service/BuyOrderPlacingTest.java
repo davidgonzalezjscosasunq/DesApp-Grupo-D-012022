@@ -1,5 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.BuyOrder;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,10 +21,7 @@ public class BuyOrderPlacingTest extends ServiceTest {
 
         var aSellOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuy);
 
-        assertTrue(aSellOrder.wasPlaceBy(aBuyer));
-        assertEquals(symbolToBuy, aSellOrder.symbol());
-        assertEquals(quantityToBuy, aSellOrder.quantity());
-        assertTrue(aSellOrder.isPending());
+        assertIsPendingOrderWith(aBuyer, symbolToBuy, quantityToBuy, aSellOrder);
     }
 
     @Test
@@ -43,16 +42,8 @@ public class BuyOrderPlacingTest extends ServiceTest {
         var orders = tradeService.ordersOf(aBuyer.id());
 
         assertEquals(2, orders.size());
-
-        assertTrue(orders.get(0).wasPlaceBy(aBuyer));
-        assertEquals(symbolToBuy, orders.get(0).symbol());
-        assertTrue(orders.get(0).isPending());
-        assertFalse(orders.get(0).isConfirmed());
-
-        assertTrue(orders.get(1).wasPlaceBy(aBuyer));
-        assertEquals(symbolToBuy, orders.get(1).symbol());
-        assertTrue(orders.get(1).isPending());
-        assertFalse(orders.get(0).isConfirmed());
+        assertIsPendingOrderWith(aBuyer, symbolToBuy, quantityOfTheFirstBuyOrder, orders.get(0));
+        assertIsPendingOrderWith(aBuyer, symbolToBuy, quantityOfTheSecondBuyOrder, orders.get(1));
     }
 
     @Test
@@ -126,6 +117,13 @@ public class BuyOrderPlacingTest extends ServiceTest {
         );
 
         assertHasNoOrders(aBuyer);
+    }
+
+    private void assertIsPendingOrderWith(User aBuyer, String symbolToBuy, int quantity, BuyOrder anOrder) {
+        assertTrue(anOrder.wasPlaceBy(aBuyer));
+        assertEquals(symbolToBuy, anOrder.symbol());
+        assertEquals(quantity, anOrder.quantity());
+        assertTrue(anOrder.isPending());
     }
 
 }
