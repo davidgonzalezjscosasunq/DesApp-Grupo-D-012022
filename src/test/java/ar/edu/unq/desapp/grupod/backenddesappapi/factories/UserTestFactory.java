@@ -1,4 +1,4 @@
-package ar.edu.unq.desapp.grupod.backenddesappapi.service;
+package ar.edu.unq.desapp.grupod.backenddesappapi.factories;
 
 public class UserTestFactory {
     public static final String VALID_FIRST_NAME = "Pepe";
