@@ -17,7 +17,6 @@ public class P2PSellTest extends ServiceTest {
         var aSellOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
 
         assertTrue(aSellOrder.wasPlaceBy(aSeller));
-        assertTrue(aSellOrder.isAssetOwner(aSeller));
     }
 
     @Test

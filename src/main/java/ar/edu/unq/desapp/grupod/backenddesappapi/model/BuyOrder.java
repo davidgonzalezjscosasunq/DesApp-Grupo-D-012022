@@ -38,10 +38,6 @@ public class BuyOrder {
         return true;
     }
 
-    public Boolean isAssetOwner(User user) {
-        return true;
-    }
-
     public Long id() {
         return id;
     }
