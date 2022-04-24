@@ -11,7 +11,8 @@ public class CryptoAdvertisement {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String cryptoActiveSymbol;
+    private String type;
+    private String cryptoActiveSymbol; // TODO: ver por que rompe cuando hago un rename
     private Integer quantity;
     private Double price;
 
@@ -21,16 +22,15 @@ public class CryptoAdvertisement {
 
     private String publisherFirstName;
     private String publisherLastName;
-    private String type;
 
     private CryptoAdvertisement() {}
 
-    public CryptoAdvertisement(String type, String assetSymbol, Integer quantity, Double price, User publisher) {
+    public CryptoAdvertisement(String type, String symbol, Integer quantity, Double price, User publisher) {
         assertIsValidQuantity(quantity);
         assertIsValidPrice(price);
 
         this.type = type;
-        this.cryptoActiveSymbol = assetSymbol;
+        this.cryptoActiveSymbol = symbol;
         this.quantity = quantity;
         this.price = price;
         //this.publisher = publisher; // TODO: arreglar. Genera problemas porque la ejecucion del metodo del service no es transaccional

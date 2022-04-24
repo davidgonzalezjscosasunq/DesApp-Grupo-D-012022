@@ -6,7 +6,7 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.CryptoAdvertisementsRepository;
-import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TradingOrdersRepository;
+import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.function.Executable;
@@ -24,7 +24,7 @@ public class ServiceTest {
     public static final double FOURTY_PESOS = 40.0;
 
     @Autowired
-    TradingService tradeService;
+    TradingService tradingService;
 
     @Autowired
     UserService userService;
@@ -36,13 +36,13 @@ public class ServiceTest {
     CryptoAdvertisementsRepository cryptoAdvertisementsRepository;
 
     @Autowired
-    TradingOrdersRepository tradingOrdersRepository;
+    TransactionsRepository transactionsRepository;
 
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
         cryptoAdvertisementsRepository.deleteAll();
-        tradingOrdersRepository.deleteAll();
+        transactionsRepository.deleteAll();
     }
 
     protected void assertAdvertisementHas(String cryptoActiveSymbol, int quantity, double price, User publisher, CryptoAdvertisement cryptoAdvertisement) {
@@ -68,7 +68,7 @@ public class ServiceTest {
     }
 
     protected CryptoAdvertisement publishSellAdverticementFor(User aSeller, Integer quantityToSell) {
-        return tradeService.postSellAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
+        return tradingService.postSellAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
     }
 
     protected CryptoAdvertisement publishSellAdverticementFor(User aSeller) {
@@ -80,7 +80,15 @@ public class ServiceTest {
     }
 
     protected CryptoAdvertisement publishBuyAdverticementFor(User aSeller, Integer quantityToSell) {
-        return tradeService.postBuyAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
+        return tradingService.postBuyAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
+    }
+
+    protected CryptoAdvertisement publishAdvertisementFor(User publisher) {
+        return publishSellAdverticementFor(publisher);
+    }
+
+    protected CryptoAdvertisement publishAdvertisementFor(User publisher, Integer quantity) {
+        return publishSellAdverticementFor(publisher, quantity);
     }
 
     protected User registerJuan() {
@@ -115,13 +123,13 @@ public class ServiceTest {
         return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, cryptoWalletAddress);
     }
 
-    protected void assertHasNoOrders(User aBuyer) {
-        var orders = tradeService.findTransactionsInformedBy(aBuyer.id());
+    protected void assertHasNoInformedTransactions(User aBuyer) {
+        var orders = tradingService.findTransactionsInformedBy(aBuyer.id());
         assertTrue(orders.isEmpty());
     }
 
-    protected void assertIsPendingOrderWith(User aBuyer, String symbolToBuy, int quantity, Transaction anOrder) {
-        assertTrue(anOrder.wasPlaceBy(aBuyer));
+    protected void assertIsPendingTransactionWith(User aBuyer, String symbolToBuy, int quantity, Transaction anOrder) {
+        assertTrue(anOrder.wasInformedBy(aBuyer));
         assertEquals(symbolToBuy, anOrder.symbol());
         assertEquals(quantity, anOrder.quantity());
         assertTrue(anOrder.isPending());

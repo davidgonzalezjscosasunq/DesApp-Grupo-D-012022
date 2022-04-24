@@ -11,9 +11,9 @@ public class Transaction {
     public static final String PENDING_STATE = "PENDING";
     public static final String CONFIRMED_STATE = "CONFIRMED";
 
-    private Long buyer;
+    private Long buyer; // TODO: ver por que rompe cuando hago un rename
     private Integer quantity;
-    public Long cryptoAssertAdvertisement;
+    private Long cryptoAssertAdvertisement;
     private String cryptoAssertAdvertisementSymbol;
     private Integer cryptoAssertAdvertisementQuantity;
 
@@ -27,12 +27,11 @@ public class Transaction {
 
     private Transaction() {}
 
-    public Transaction(User buyer, CryptoAdvertisement cryptoAssetAdverticement, Integer quantity) {
-        assertAdvertisementWasNotPublishedByBuyer(buyer, cryptoAssetAdverticement);
+    public Transaction(User interestedUser, CryptoAdvertisement cryptoAssetAdverticement, Integer quantity) {
+        assertAdvertisementWasNotPublishedBy(interestedUser, cryptoAssetAdverticement);
         assertIsValidQuantity(quantity);
-        assertIsValidAdvertisement(cryptoAssetAdverticement);
 
-        this.buyer = buyer.id();
+        this.buyer = interestedUser.id();
         this.cryptoAssertAdvertisement = cryptoAssetAdverticement.id();
         this.cryptoAssertAdvertisementSymbol = cryptoAssetAdverticement.assetSymbol();
         this.cryptoAssertAdvertisementQuantity = cryptoAssetAdverticement.quantity();
@@ -40,7 +39,7 @@ public class Transaction {
         this.state = PENDING_STATE;
     }
 
-    public Boolean wasPlaceBy(User user) {
+    public Boolean wasInformedBy(User user) {
         return buyer == user.id();
     }
 
@@ -71,15 +70,15 @@ public class Transaction {
         state = CONFIRMED_STATE;
     }
 
-    private void assertAdvertisementWasNotPublishedByBuyer(User buyer, CryptoAdvertisement cryptoAssetAdverticement) {
-        if (cryptoAssetAdverticement.wasPublishedBy(buyer)) {
-            throw new ModelException("Buyer and seller can't be the same user");
+    private void assertAdvertisementWasNotPublishedBy(User user, CryptoAdvertisement cryptoAssetAdvertisement) {
+        if (cryptoAssetAdvertisement.wasPublishedBy(user)) {
+            throw new ModelException("A user cannot inform a transaction for an advertisement published by himself");
         }
     }
 
-    private void assertIsValidQuantity(Integer quantityToBuy) {
-        if (quantityToBuy <= 0) {
-            throw new ModelException("Quantity to buy must be greater than zero");
+    private void assertIsValidQuantity(Integer quantity) {
+        if (quantity <= 0) {
+            throw new ModelException("A transaction quantity must be greater than zero");
         }
     }
 
@@ -89,9 +88,7 @@ public class Transaction {
         }
     }
 
-    private void assertIsValidAdvertisement(CryptoAdvertisement cryptoAssetAdverticement) {
-        if (cryptoAssetAdverticement.isABuy()) {
-            throw new ModelException("Cannot place a buy order for a buy advertisement");
-        }
+    public Long cryptoAssertAdvertisementId() { // TODO: quitar cuando este solucionado lo de la persistencia que no anda
+        return cryptoAssertAdvertisement;
     }
 }

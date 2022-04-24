@@ -9,64 +9,64 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TransactionConfirmationTest extends ServiceTest {
 
     @Test
-    void aSellerCanConfirmABuyOrderForOneOfHisSellAdvertisements() {
+    void aSellerCanConfirmATransactionForOneOfHisSellAdvertisements() {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
-        var aSellAdverticement = publishSellAdverticementFor(aSeller);
-        var buyOrderToConfirm = tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
+        var aSellAdvertisement = publishSellAdverticementFor(aSeller);
+        var transactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), aSellAdvertisement.quantity());
 
-        tradeService.confirmTransaction(aSeller.id(), buyOrderToConfirm.id());
+        tradingService.confirmTransaction(aSeller.id(), transactionToConfirm.id());
 
-        var orders = tradeService.findTransactionsInformedBy(aBuyer.id());
+        var transactions = tradingService.findTransactionsInformedBy(aBuyer.id());
 
-        assertFalse(orders.get(0).isPending());
-        assertTrue(orders.get(0).isConfirmed());
+        assertFalse(transactions.get(0).isPending());
+        assertTrue(transactions.get(0).isConfirmed());
     }
 
     @Test
-    void whenASellerConfirmsABuyOrderToBuySomeQuantityFromAnAdvertisementItsAvailableQuantityIsDecreased() {
+    void whenASellerConfirmsATransactionToBuySomeQuantityFromAnAdvertisementItsAvailableQuantityIsDecreased() {
         var originalQuantityToSell = 3;
         var quantityToBuy = 1;
 
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
-        var aSellAdverticement = publishSellAdverticementFor(aSeller, originalQuantityToSell);
-        var aBuyOrder = tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), quantityToBuy);
+        var aSellAdvertisement = publishSellAdverticementFor(aSeller, originalQuantityToSell);
+        var aTransactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), quantityToBuy);
 
-        tradeService.confirmTransaction(aSeller.id(), aBuyOrder.id());
+        tradingService.confirmTransaction(aSeller.id(), aTransactionToConfirm.id());
 
-        var foundSellAdvertisements = tradeService.findSellAdvertisementsWithSymbol(aSellAdverticement.assetSymbol());
+        var foundSellAdvertisements = tradingService.findSellAdvertisementsWithSymbol(aSellAdvertisement.assetSymbol());
         assertEquals(1, foundSellAdvertisements.size());
         assertEquals(originalQuantityToSell - quantityToBuy, foundSellAdvertisements.get(0).quantity());
     }
 
     @Test
-    void whenASellerConfirmsASellOrderToBuyAllAvailableQuantityFromAnAdvertisementItIsRemovedFromTheListOfPublishedAdvertisements() {
+    void whenASellerConfirmsATransactionToBuyAllAvailableQuantityFromAnAdvertisementItIsRemovedFromTheListOfPublishedAdvertisements() {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
         var aSellAdverticement = publishSellAdverticementFor(aSeller);
-        var aBuyOrder = tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
+        var aTransactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
 
-        tradeService.confirmTransaction(aSeller.id(), aBuyOrder.id());
+        tradingService.confirmTransaction(aSeller.id(), aTransactionToConfirm.id());
 
-        var foundSellAdvertisements = tradeService.findSellAdvertisementsWithSymbol(aSellAdverticement.assetSymbol());
+        var foundSellAdvertisements = tradingService.findSellAdvertisementsWithSymbol(aSellAdverticement.assetSymbol());
         assertTrue(foundSellAdvertisements.isEmpty());
     }
 
     @Test
-    void aUserCannotConfirmABuyOrderPlacedByHimself() {
+    void aUserCannotConfirmATransactionPlacedByHimself() {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
-        var aSellAdverticement = publishSellAdverticementFor(aSeller);
-        var aBuyOrder = tradeService.informTransaction(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
+        var aSellAdvertisement = publishSellAdverticementFor(aSeller);
+        var aBuyOrder = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), aSellAdvertisement.quantity());
 
         assertThrowsDomainExeption(
                 "A user cannot confirm an order placed by himself",
-                () -> tradeService.confirmTransaction(aBuyer.id(), aBuyOrder.id())
+                () -> tradingService.confirmTransaction(aBuyer.id(), aBuyOrder.id())
         );
     }
 

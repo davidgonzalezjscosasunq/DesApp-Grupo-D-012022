@@ -4,7 +4,7 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.Transaction;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.CryptoAdvertisementsRepository;
-import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TradingOrdersRepository;
+import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,32 +24,32 @@ public class TradingService {
     CryptoAdvertisementsRepository cryptoAdvertisementsRepository;
 
     @Autowired
-    TradingOrdersRepository transactionsRepository;
+    TransactionsRepository transactionsRepository;
 
     // TODO: modelar dinero
-    public CryptoAdvertisement postSellAdvertisement(Long sellerId, String cryptoActiveSymbol, Integer quantityToSell, Double sellingPrice) {
-        return postAdvertisement(CryptoAdvertisement.SELL_ADVERTISE_TYPE, sellerId, cryptoActiveSymbol, quantityToSell, sellingPrice);
+    public CryptoAdvertisement postSellAdvertisement(Long sellerId, String assetSymbol, Integer quantityToSell, Double sellingPrice) {
+        return postAdvertisement(CryptoAdvertisement.SELL_ADVERTISE_TYPE, sellerId, assetSymbol, quantityToSell, sellingPrice);
     }
 
-    public CryptoAdvertisement postBuyAdvertisement(Long buyerId, String cryptoActiveSymbol, int quantityToBuy, double buyPrice) {
-        return postAdvertisement(CryptoAdvertisement.BUY_ADVERTISE_TYPE, buyerId, cryptoActiveSymbol, quantityToBuy, buyPrice);
+    public CryptoAdvertisement postBuyAdvertisement(Long buyerId, String assetSymbol, int quantityToBuy, double buyPrice) {
+        return postAdvertisement(CryptoAdvertisement.BUY_ADVERTISE_TYPE, buyerId, assetSymbol, quantityToBuy, buyPrice);
     }
 
     public Transaction informTransaction(Long interestedUserId, Long advertisementId, int quantityToTransfer) {
         var interestedUser = userService.findUserById(interestedUserId);
-        var cryptoAssertAdvertisement = cryptoAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new ModelException("Adverticement not found"));
+        var assetAdvertisement = cryptoAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new ModelException("Advertisement not found"));
 
-        var newTransaction = new Transaction(interestedUser, cryptoAssertAdvertisement, quantityToTransfer);
+        var newTransaction = new Transaction(interestedUser, assetAdvertisement, quantityToTransfer);
 
         return transactionsRepository.save(newTransaction);
     }
 
-    public void confirmTransaction(Long advertisePublisherId, Long transactionToConfirmId) {
-        var publisher = userService.findUserById(advertisePublisherId);
+    public void confirmTransaction(Long userId, Long transactionToConfirmId) {
+        var user = userService.findUserById(userId);
         var transaction = transactionsRepository.findById(transactionToConfirmId).get();
-        var advertisement = cryptoAdvertisementsRepository.findById(transaction.cryptoAssertAdvertisement).get();
+        var advertisement = cryptoAdvertisementsRepository.findById(transaction.cryptoAssertAdvertisementId()).get();
 
-        transaction.confirmBy(publisher, advertisement);
+        transaction.confirmBy(user, advertisement);
 
         transactionsRepository.save(transaction);
         cryptoAdvertisementsRepository.save(advertisement);

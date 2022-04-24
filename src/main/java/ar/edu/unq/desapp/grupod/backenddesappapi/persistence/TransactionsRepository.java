@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TradingOrdersRepository extends CrudRepository<Transaction, Long> {
+public interface TransactionsRepository extends CrudRepository<Transaction, Long> {
 
     List<Transaction> findAllByBuyer(Long userId);
 
