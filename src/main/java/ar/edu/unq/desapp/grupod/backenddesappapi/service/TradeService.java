@@ -39,9 +39,9 @@ public class TradeService {
     public CryptoAdvertisement postBuyAdvertisement(Long buyerId, String cryptoActiveSymbol, int quantityToBuy, double buyPrice) {
         var buyer = userService.findUserById(buyerId);
 
-        var newSellAdvertisement = CryptoAdvertisement.buyAdvertise(cryptoActiveSymbol, quantityToBuy, buyPrice, buyer);
+        var newBuyAdvertisement = CryptoAdvertisement.buyAdvertise(cryptoActiveSymbol, quantityToBuy, buyPrice, buyer);
 
-        return cryptoAdvertisementsRepository.save(newSellAdvertisement);
+        return cryptoAdvertisementsRepository.save(newBuyAdvertisement);
     }
 
     public List<CryptoAdvertisement> findSellAdvertisementsWithSymbol(String cryptoActiveSymbol) {
