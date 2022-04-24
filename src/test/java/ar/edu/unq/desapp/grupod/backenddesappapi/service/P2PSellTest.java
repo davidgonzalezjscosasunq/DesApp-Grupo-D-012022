@@ -22,19 +22,20 @@ public class P2PSellTest extends P2PTest {
 
     @Test
     void whenASellerConfirmsASellOrderToBuySomeQuantityFromAnAdvertisementItsAvailableQuantityIsDecreased() {
+        var originalQuantityToSell = 3;
+        var quantityToBuy = 1;
+
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
-        var originallQuantityToSell = 3;
-        var quantityToBuy = 1;
-        var aSellAdverticement = publishSellAdverticementFor(aSeller, originallQuantityToSell);
+        var aSellAdverticement = publishSellAdverticementFor(aSeller, originalQuantityToSell);
         var aBuyOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuy);
 
         tradeService.confirmSuccessfulSell(aSeller.id(), aBuyOrder.id());
 
         var foundSellAdvertisements = tradeService.findSellAdvertisementsWithSymbol(aSellAdverticement.cryptoActiveSymbol());
         assertEquals(1, foundSellAdvertisements.size());
-        assertEquals(originallQuantityToSell - quantityToBuy, foundSellAdvertisements.get(0).quantity());
+        assertEquals(originalQuantityToSell - quantityToBuy, foundSellAdvertisements.get(0).quantity());
     }
 
     @Test
