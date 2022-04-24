@@ -25,23 +25,14 @@ public class TradeService {
 
     @Autowired
     TradingOrdersRepository tradingOrdersRepository;
-    
+
     // TODO: modelar dinero
     public CryptoAdvertisement postSellAdvertisement(Long sellerId, String cryptoActiveSymbol, Integer quantityToSell, Double sellingPrice) {
-        var seller = userService.findUserById(sellerId);
-        //var seller = userRepository.findByFirstNameAndLastName(sellerFirstName, sellerLastName).orElseThrow(() -> new ModelException("User not found"));
-
-        var newSellAdvertisement = CryptoAdvertisement.sellAdvertise(cryptoActiveSymbol, quantityToSell, sellingPrice, seller);
-
-        return cryptoAdvertisementsRepository.save(newSellAdvertisement);
+        return postAdvertisement(CryptoAdvertisement.SELL_ADVERTISE_TYPE, sellerId, cryptoActiveSymbol, quantityToSell, sellingPrice);
     }
 
     public CryptoAdvertisement postBuyAdvertisement(Long buyerId, String cryptoActiveSymbol, int quantityToBuy, double buyPrice) {
-        var buyer = userService.findUserById(buyerId);
-
-        var newBuyAdvertisement = CryptoAdvertisement.buyAdvertise(cryptoActiveSymbol, quantityToBuy, buyPrice, buyer);
-
-        return cryptoAdvertisementsRepository.save(newBuyAdvertisement);
+        return postAdvertisement(CryptoAdvertisement.BUY_ADVERTISE_TYPE, buyerId, cryptoActiveSymbol, quantityToBuy, buyPrice);
     }
 
     public BuyOrder placeBuyOrder(Long buyerId, Long advertisementId, int quantityToBuy) {
@@ -74,5 +65,13 @@ public class TradeService {
 
     public List<BuyOrder> ordersOf(Long userId) {
         return tradingOrdersRepository.findAllByBuyer(userId);
+    }
+
+    protected CryptoAdvertisement postAdvertisement(String advertisementType, Long publisherId, String cryptoActiveSymbol, int quantity, double price) {
+        var publisher = userService.findUserById(publisherId);
+
+        var newBuyAdvertisement = new CryptoAdvertisement(advertisementType, cryptoActiveSymbol, quantity, price, publisher);
+
+        return cryptoAdvertisementsRepository.save(newBuyAdvertisement);
     }
 }
