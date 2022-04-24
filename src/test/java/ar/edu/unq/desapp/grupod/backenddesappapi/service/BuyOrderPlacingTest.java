@@ -117,4 +117,20 @@ public class BuyOrderPlacingTest extends ServiceTest {
         assertTrue(orders.isEmpty());
     }
 
+    @Test
+    void aUserCannotPlaceABuyOrderForABuyAdvertisement() {
+        var aBuyer = registerPepe();
+        var aSeller = registerJuan();
+        var aBuyAdverticement = publishBuyAdverticementFor(aSeller);
+
+        assertThrowsDomainExeption(
+                "Cannot place a buy order for a buy advertisement",
+                () -> tradeService.placeBuyOrder(aBuyer.id(), aBuyAdverticement.id(), aBuyAdverticement.quantity())
+        );
+
+        var orders = tradeService.ordersOf(aBuyer.id());
+        assertTrue(orders.isEmpty());
+    }
+
+
 }

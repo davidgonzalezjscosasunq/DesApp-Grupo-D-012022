@@ -66,12 +66,20 @@ public class ServiceTest {
         return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
     }
 
-    protected CryptoAdvertisement publishSellAdverticementFor(User aBuyer, Integer quantityToSell) {
-        return tradeService.postSellAdvertisement(aBuyer.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
+    protected CryptoAdvertisement publishSellAdverticementFor(User aSeller, Integer quantityToSell) {
+        return tradeService.postSellAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
     }
 
-    protected CryptoAdvertisement publishSellAdverticementFor(User aBuyer) {
-        return publishSellAdverticementFor(aBuyer, VALID_ADVERTISEMENT_QUANTITY);
+    protected CryptoAdvertisement publishSellAdverticementFor(User aSeller) {
+        return publishSellAdverticementFor(aSeller, VALID_ADVERTISEMENT_QUANTITY);
+    }
+
+    protected CryptoAdvertisement publishBuyAdverticementFor(User aBuyer) {
+        return publishBuyAdverticementFor(aBuyer, VALID_ADVERTISEMENT_QUANTITY);
+    }
+
+    protected CryptoAdvertisement publishBuyAdverticementFor(User aSeller, Integer quantityToSell) {
+        return tradeService.postBuyAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
     }
 
     protected User registerJuan() {

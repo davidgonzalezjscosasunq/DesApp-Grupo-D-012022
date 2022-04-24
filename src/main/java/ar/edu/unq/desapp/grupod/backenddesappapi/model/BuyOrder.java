@@ -30,6 +30,7 @@ public class BuyOrder {
     public BuyOrder(User buyer, CryptoAdvertisement cryptoAssetAdverticement, Integer quantityToBuy) {
         assertAdvertisementWasNotPublishedByBuyer(buyer, cryptoAssetAdverticement);
         assertIsValidQuantity(quantityToBuy);
+        assertIsValidAdvertisement(cryptoAssetAdverticement);
 
         this.buyer = buyer.id();
         this.cryptoAssertAdvertisement = cryptoAssetAdverticement.id();
@@ -74,6 +75,12 @@ public class BuyOrder {
     private void assertIsNotTheBuyer(User seller) {
         if (seller.id() == buyer) {
             throw new ModelException("A user cannot confirm an order placed by himself");
+        }
+    }
+
+    private void assertIsValidAdvertisement(CryptoAdvertisement cryptoAssetAdverticement) {
+        if (cryptoAssetAdverticement.isABuy()) {
+            throw new ModelException("Cannot place a buy order for a buy advertisement");
         }
     }
 

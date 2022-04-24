@@ -91,4 +91,8 @@ public class CryptoAdvertisement {
     public boolean isSoldOut() {
         return quantity == 0;
     }
+
+    public boolean isABuy() {
+        return type == BUY_ADVERTISE_TYPE;
+    }
 }
