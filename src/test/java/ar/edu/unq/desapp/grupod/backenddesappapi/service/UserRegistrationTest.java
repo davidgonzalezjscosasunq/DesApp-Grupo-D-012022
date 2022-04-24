@@ -1,30 +1,14 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.factories.UserTestFactory;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class UserRegistrationTest {
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @AfterEach
-    void tearDown() {
-        userRepository.deleteAll();
-    }
+public class UserRegistrationTest extends P2PTest {
 
     @Test
     void aUserCanBeRegistered() {
@@ -162,42 +146,12 @@ public class UserRegistrationTest {
         assertHasNoUsers(userRepository);
     }
 
-    private void assertThrowsDomainExeption(String expectedErrorMessage, Executable executableToTest) {
-        var error = assertThrows(ModelException.class, executableToTest);
-
-        assertEquals(expectedErrorMessage, error.getMessage());
-    }
-
     private void assertHasUsers(UserRepository userRepository) {
         assertTrue(userRepository.count() > 0);
     }
 
     private void assertHasNoUsers(UserRepository userRepository) {
         assertEquals(0, userRepository.count());
-    }
-
-    private User registerUserWithFirstName(String firstName) {
-        return userService.registerUser(firstName, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
-    }
-
-    private User registerUserWithLastName(String lastName) {
-        return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, lastName, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
-    }
-
-    private User registerUserWithEmail(String email) {
-        return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, email, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
-    }
-
-    private User registerUserWithAddress(String address) {
-        return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, address, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
-    }
-
-    private User registerUserWithCVU(String cvu) {
-        return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, cvu, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
-    }
-
-    private User registerUserWithCryptoWalletAddress(String cryptoWalletAddress) {
-        return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, cryptoWalletAddress);
     }
 
 }
