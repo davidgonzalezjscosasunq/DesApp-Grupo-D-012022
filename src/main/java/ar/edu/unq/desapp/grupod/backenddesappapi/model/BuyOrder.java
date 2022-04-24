@@ -35,7 +35,7 @@ public class BuyOrder {
     }
 
     public Boolean wasPlaceBy(User user) {
-        return true;
+        return buyer == user.id();
     }
 
     public Long id() {

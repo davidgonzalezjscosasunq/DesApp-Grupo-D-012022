@@ -19,7 +19,7 @@ public class P2PSellTest extends ServiceTest {
 
         var aSellOrder = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuy);
 
-        assertTrue(aSellOrder.wasPlaceBy(aSeller));
+        assertTrue(aSellOrder.wasPlaceBy(aBuyer));
         assertEquals(symbolToBuy, aSellOrder.symbol());
         assertEquals(quantityToBuy, aSellOrder.quantity());
     }
@@ -31,7 +31,9 @@ public class P2PSellTest extends ServiceTest {
 
         var quantityToBuyForTheFirstOrder = 6;
         var quantityToBuyForTheSecondOrder = 4;
-        var aSellAdverticement = publishSellAdverticementFor(aSeller, quantityToBuyForTheFirstOrder + quantityToBuyForTheSecondOrder);
+        var sellAdvertisementQuantity = quantityToBuyForTheFirstOrder + quantityToBuyForTheSecondOrder;
+
+        var aSellAdverticement = publishSellAdverticementFor(aSeller, sellAdvertisementQuantity);
         var symbolToBuy = aSellAdverticement.cryptoActiveSymbol();
 
         tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuyForTheFirstOrder);
@@ -42,11 +44,34 @@ public class P2PSellTest extends ServiceTest {
 
         assertEquals(2, pendingOrders.size());
 
-        assertTrue(pendingOrders.get(0).wasPlaceBy(aSeller));
+        assertTrue(pendingOrders.get(0).wasPlaceBy(aBuyer));
         assertEquals(symbolToBuy, pendingOrders.get(0).symbol());
 
-        assertTrue(pendingOrders.get(1).wasPlaceBy(aSeller));
+        assertTrue(pendingOrders.get(1).wasPlaceBy(aBuyer));
         assertEquals(symbolToBuy, pendingOrders.get(1).symbol());
+    }
+
+    @Test
+    void whenASellerConfirmsASellOrderTheBuyOrderIsNotPendingAnyMore() {
+        var aBuyer = registerPepe();
+        var aSeller = registerJuan();
+
+        var quantityToBuyForTheOrderToConfirm = 6;
+        var quantityToBuyForTheOrderNotToBeConfirmed = 4;
+        var aSellAdverticement = publishSellAdverticementFor(aSeller, quantityToBuyForTheOrderToConfirm + quantityToBuyForTheOrderNotToBeConfirmed);
+
+        var buyOrderNotToBeConfirmed = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuyForTheOrderNotToBeConfirmed);
+        var buyOrderToConfirm = tradeService.placeBuyOrder(aBuyer.id(), aSellAdverticement.id(), quantityToBuyForTheOrderToConfirm);
+
+        tradeService.confirmSuccessfulSell(aSeller.id(), buyOrderToConfirm.id());
+
+        var pendingOrders = tradeService.pendingOrdersOf(aBuyer.id());
+
+        assertEquals(1, pendingOrders.size());
+
+        assertTrue(pendingOrders.get(0).wasPlaceBy(aBuyer));
+        assertEquals(buyOrderNotToBeConfirmed.symbol(), pendingOrders.get(0).symbol());
+        assertEquals(buyOrderNotToBeConfirmed.quantity(), pendingOrders.get(0).quantity());
     }
 
     @Test
