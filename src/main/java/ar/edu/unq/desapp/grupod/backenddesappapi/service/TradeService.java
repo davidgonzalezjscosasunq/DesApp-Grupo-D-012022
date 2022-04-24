@@ -44,14 +44,6 @@ public class TradeService {
         return cryptoAdvertisementsRepository.save(newBuyAdvertisement);
     }
 
-    public List<CryptoAdvertisement> findSellAdvertisementsWithSymbol(String cryptoActiveSymbol) {
-        return cryptoAdvertisementsRepository.findSellAdvertisementsWithSymbol(cryptoActiveSymbol);
-    }
-
-    public List<CryptoAdvertisement> findBuyAdvertisementsWithSymbol(String cryptoActiveSymbol) {
-        return cryptoAdvertisementsRepository.findBuyAdvertisementsWithSymbol(cryptoActiveSymbol);
-    }
-
     public BuyOrder placeBuyOrder(Long buyerId, Long advertisementId, int quantityToBuy) {
         var buyer = userService.findUserById(buyerId);
         var cryptoAssertAdverticement = cryptoAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new ModelException("Adverticement not found"));
@@ -70,6 +62,14 @@ public class TradeService {
 
         tradingOrdersRepository.save(buyOrderToConfirm);
         cryptoAdvertisementsRepository.save(advertisement);
+    }
+
+    public List<CryptoAdvertisement> findSellAdvertisementsWithSymbol(String cryptoActiveSymbol) {
+        return cryptoAdvertisementsRepository.findSellAdvertisementsWithSymbol(cryptoActiveSymbol);
+    }
+
+    public List<CryptoAdvertisement> findBuyAdvertisementsWithSymbol(String cryptoActiveSymbol) {
+        return cryptoAdvertisementsRepository.findBuyAdvertisementsWithSymbol(cryptoActiveSymbol);
     }
 
     public List<BuyOrder> ordersOf(Long userId) {
