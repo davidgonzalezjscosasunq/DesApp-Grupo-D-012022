@@ -44,13 +44,24 @@ public class Transaction {
         return buyer == user.id();
     }
 
+    public Boolean isPending() {
+        return state == PENDING_STATE;
+    }
+
+    public Boolean isConfirmed() {
+        return state == CONFIRMED_STATE;
+    }
+
     public Long id() {
         return id;
     }
 
-
     public String symbol() {
         return cryptoAssertAdvertisementSymbol;
+    }
+
+    public Integer quantity() {
+        return quantity;
     }
 
     public void confirmBy(User seller, CryptoAdvertisement advertisement) {
@@ -82,17 +93,5 @@ public class Transaction {
         if (cryptoAssetAdverticement.isABuy()) {
             throw new ModelException("Cannot place a buy order for a buy advertisement");
         }
-    }
-
-    public Integer quantity() {
-        return quantity;
-    }
-
-    public Boolean isPending() {
-        return state == PENDING_STATE;
-    }
-
-    public Boolean isConfirmed() {
-        return state == CONFIRMED_STATE;
     }
 }
