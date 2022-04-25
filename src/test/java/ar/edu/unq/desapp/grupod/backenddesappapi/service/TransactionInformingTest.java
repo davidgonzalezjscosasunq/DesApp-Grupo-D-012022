@@ -1,7 +1,5 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -52,7 +50,7 @@ public class TransactionInformingTest extends ServiceTest {
 
         var anAdvertisement = publishAdvertisementFor(aUser);
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "A user cannot inform a transaction for an advertisement published by himself",
                 () -> tradingService.informTransaction(aUser.id(), anAdvertisement.id(), anAdvertisement.quantity())
         );
@@ -69,7 +67,7 @@ public class TransactionInformingTest extends ServiceTest {
 
         var invalidQuantityLesserThanOne = 0;
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "A transaction quantity must be greater than zero",
                 () -> tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), invalidQuantityLesserThanOne)
         );
@@ -84,7 +82,7 @@ public class TransactionInformingTest extends ServiceTest {
 
         var notRegisteredUserId = 123L;
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "User not found",
                 () -> tradingService.informTransaction(notRegisteredUserId, anAdvertisement.id(), anAdvertisement.quantity())
         );
@@ -97,7 +95,7 @@ public class TransactionInformingTest extends ServiceTest {
 
         var notRegisteredAdvertisementId = 123L;
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "Advertisement not found",
                 () -> tradingService.informTransaction(anInterestedUser.id(), notRegisteredAdvertisementId, quantity)
         );

@@ -31,7 +31,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserFirstNameCannotHaveLessThan3Letters() {
         var anInvalidNameWith2Letters = "ab";
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "User first name must have between 3 and 30 letters",
                 () -> registerUserWithFirstName(anInvalidNameWith2Letters));
 
@@ -42,7 +42,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserFirstNameCannotHaveMoreThan30Letters() {
         var anInvalidNameWith31Letters = "abcdefghijabcdefghijabcdefghijk";
 
-        assertThrowsDomainExeption("User first name must have between 3 and 30 letters",
+        assertThrowsDomainException("User first name must have between 3 and 30 letters",
                 () -> registerUserWithFirstName(anInvalidNameWith31Letters));
 
         assertHasNoUsers(userRepository);
@@ -52,7 +52,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserLastNameCannotHaveLessThan3Letters() {
         var anInvalidNameWith2Letters = "ab";
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "User last name must have between 3 and 30 letters",
                 () -> registerUserWithLastName(anInvalidNameWith2Letters));
 
@@ -63,7 +63,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserLastNameCannotHaveMoreThan30Letters() {
         var anInvalidNameWith31Letters = "abcdefghijabcdefghijabcdefghijk";
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "User last name must have between 3 and 30 letters",
                 () -> registerUserWithLastName(anInvalidNameWith31Letters));
 
@@ -74,7 +74,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserCannotHaveAnInvalidEmail() {
         var invalidEmail = "@invalid@email.com@";
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "Invalid email format",
                 () -> registerUserWithEmail(invalidEmail));
 
@@ -85,7 +85,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserAddressCannotHaveLessThan10Characters() {
         var invalidShortAddress = "abc 12349";
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "Address must have between 10 and 30 characters",
                 () -> registerUserWithAddress(invalidShortAddress));
 
@@ -96,7 +96,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserAddressCannotHaveMoreThan30Characters() {
         var invalidLongAddress = "a012345678901234567890123456789";
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "Address must have between 10 and 30 characters",
                 () -> registerUserWithAddress(invalidLongAddress));
 
@@ -107,7 +107,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserCVUCannotHaveANumberOfDigitsDifferentTo22Digits() {
         var cvuNumberWithIncorrectLength = "012345678901234567890";
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "Invalid CVU",
                 () -> registerUserWithCVU(cvuNumberWithIncorrectLength));
 
@@ -118,7 +118,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserCVUCannotContainAnyNonDigitCharacter() {
         var invalidCVUWithNonDigitCharacter = "012345678901234567890X";
 
-        assertThrowsDomainExeption("Invalid CVU", () ->
+        assertThrowsDomainException("Invalid CVU", () ->
                 userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, invalidCVUWithNonDigitCharacter, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS));
 
         assertHasNoUsers(userRepository);
@@ -128,7 +128,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserCryptoWalletAddressCannotHaveANumberOfDigitsDifferentTo8Digits() {
         var cryptoWalletAddressWithIncorrectLength = "1234567";
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "Invalid crypto wallet address",
                 () -> registerUserWithCryptoWalletAddress(cryptoWalletAddressWithIncorrectLength));
 
@@ -139,7 +139,7 @@ public class UserRegistrationTest extends ServiceTest {
     void aUserCryptoWalletAddressCannotContainAnyNonDigitCharacter() {
         var cryptoWalletAddressWithNonDigitCharacter = "1234567x";
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "Invalid crypto wallet address",
                 () -> registerUserWithCryptoWalletAddress(cryptoWalletAddressWithNonDigitCharacter));
 

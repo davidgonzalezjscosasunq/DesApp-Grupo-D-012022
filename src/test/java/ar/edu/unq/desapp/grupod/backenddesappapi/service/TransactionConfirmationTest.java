@@ -13,7 +13,7 @@ public class TransactionConfirmationTest extends ServiceTest {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
-        var aSellAdvertisement = publishSellAdverticementFor(aSeller);
+        var aSellAdvertisement = publishSellAdvertisementFor(aSeller);
         var transactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), aSellAdvertisement.quantity());
 
         tradingService.confirmTransaction(aSeller.id(), transactionToConfirm.id());
@@ -32,7 +32,7 @@ public class TransactionConfirmationTest extends ServiceTest {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
-        var aSellAdvertisement = publishSellAdverticementFor(aSeller, originalQuantityToSell);
+        var aSellAdvertisement = publishSellAdvertisementFor(aSeller, originalQuantityToSell);
         var aTransactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), quantityToBuy);
 
         tradingService.confirmTransaction(aSeller.id(), aTransactionToConfirm.id());
@@ -47,7 +47,7 @@ public class TransactionConfirmationTest extends ServiceTest {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
-        var aSellAdverticement = publishSellAdverticementFor(aSeller);
+        var aSellAdverticement = publishSellAdvertisementFor(aSeller);
         var aTransactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
 
         tradingService.confirmTransaction(aSeller.id(), aTransactionToConfirm.id());
@@ -61,10 +61,10 @@ public class TransactionConfirmationTest extends ServiceTest {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
-        var aSellAdvertisement = publishSellAdverticementFor(aSeller);
+        var aSellAdvertisement = publishSellAdvertisementFor(aSeller);
         var aBuyOrder = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), aSellAdvertisement.quantity());
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "A user cannot confirm an order placed by himself",
                 () -> tradingService.confirmTransaction(aBuyer.id(), aBuyOrder.id())
         );

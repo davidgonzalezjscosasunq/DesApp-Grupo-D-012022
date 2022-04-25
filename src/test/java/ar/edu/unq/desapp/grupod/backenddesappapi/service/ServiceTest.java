@@ -2,10 +2,10 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.factories.UserTestFactory;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.Transaction;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.CryptoAdvertisement;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
-import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.CryptoAdvertisementsRepository;
+import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.AssetAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -33,7 +33,7 @@ public class ServiceTest {
     UserRepository userRepository;
 
     @Autowired
-    CryptoAdvertisementsRepository cryptoAdvertisementsRepository;
+    AssetAdvertisementsRepository assetAdvertisementsRepository;
 
     @Autowired
     TransactionsRepository transactionsRepository;
@@ -41,54 +41,54 @@ public class ServiceTest {
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
-        cryptoAdvertisementsRepository.deleteAll();
+        assetAdvertisementsRepository.deleteAll();
         transactionsRepository.deleteAll();
     }
 
-    protected void assertAdvertisementHas(String cryptoActiveSymbol, int quantity, double price, User publisher, CryptoAdvertisement cryptoAdvertisement) {
+    protected void assertAdvertisementHas(String assetSymbol, int quantity, double price, User publisher, AssetAdvertisement cryptoAdvertisement) {
         assertEquals(publisher.firstName(), cryptoAdvertisement.publisherFirstName());
         assertEquals(publisher.lastName(), cryptoAdvertisement.publisherLastName());
-        assertEquals(cryptoActiveSymbol, cryptoAdvertisement.assetSymbol());
+        assertEquals(assetSymbol, cryptoAdvertisement.assetSymbol());
         assertEquals(quantity, cryptoAdvertisement.quantity());
         assertEquals(price, cryptoAdvertisement.price());
     }
 
-    protected void assertThrowsDomainExeption(String expectedErrorMessage, Executable executableToTest) {
+    protected void assertThrowsDomainException(String expectedErrorMessage, Executable executableToTest) {
         var error = assertThrows(ModelException.class, executableToTest);
 
         assertEquals(expectedErrorMessage, error.getMessage());
     }
 
-    protected void assertHasNoAdvertisementsFor(String cryptoActiveSymbol, CryptoAdvertisementsRepository tradeAdvertisementRepository) {
-        assertFalse(tradeAdvertisementRepository.existsByCryptoActiveSymbol(cryptoActiveSymbol));
+    protected void assertHasNoAdvertisementsFor(String assetSymbol, AssetAdvertisementsRepository tradeAdvertisementRepository) {
+        assertFalse(tradeAdvertisementRepository.existsByAssetSymbol(assetSymbol));
     }
 
     protected User registerUser() {
         return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, UserTestFactory.VALID_CRIPTO_WALLET_ADDRESS);
     }
 
-    protected CryptoAdvertisement publishSellAdverticementFor(User aSeller, Integer quantityToSell) {
+    protected AssetAdvertisement publishSellAdvertisementFor(User aSeller, Integer quantityToSell) {
         return tradingService.postSellAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
     }
 
-    protected CryptoAdvertisement publishSellAdverticementFor(User aSeller) {
-        return publishSellAdverticementFor(aSeller, VALID_ADVERTISEMENT_QUANTITY);
+    protected AssetAdvertisement publishSellAdvertisementFor(User aSeller) {
+        return publishSellAdvertisementFor(aSeller, VALID_ADVERTISEMENT_QUANTITY);
     }
 
-    protected CryptoAdvertisement publishBuyAdverticementFor(User aBuyer) {
-        return publishBuyAdverticementFor(aBuyer, VALID_ADVERTISEMENT_QUANTITY);
+    protected AssetAdvertisement publishBuyAdvertisementFor(User aBuyer) {
+        return publishBuyAdvertisementFor(aBuyer, VALID_ADVERTISEMENT_QUANTITY);
     }
 
-    protected CryptoAdvertisement publishBuyAdverticementFor(User aSeller, Integer quantityToSell) {
+    protected AssetAdvertisement publishBuyAdvertisementFor(User aSeller, Integer quantityToSell) {
         return tradingService.postBuyAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
     }
 
-    protected CryptoAdvertisement publishAdvertisementFor(User publisher) {
-        return publishSellAdverticementFor(publisher);
+    protected AssetAdvertisement publishAdvertisementFor(User publisher) {
+        return publishSellAdvertisementFor(publisher);
     }
 
-    protected CryptoAdvertisement publishAdvertisementFor(User publisher, Integer quantity) {
-        return publishSellAdverticementFor(publisher, quantity);
+    protected AssetAdvertisement publishAdvertisementFor(User publisher, Integer quantity) {
+        return publishSellAdvertisementFor(publisher, quantity);
     }
 
     protected User registerJuan() {

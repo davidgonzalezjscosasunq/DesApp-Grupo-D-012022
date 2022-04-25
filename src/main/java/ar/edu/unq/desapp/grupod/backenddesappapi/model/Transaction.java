@@ -11,7 +11,7 @@ public class Transaction {
     public static final String PENDING_STATE = "PENDING";
     public static final String CONFIRMED_STATE = "CONFIRMED";
 
-    private Long buyer; // TODO: ver por que rompe cuando hago un rename
+    private Long interestedUser; // TODO: ver por que rompe cuando hago un rename
     private Integer quantity;
     private Long cryptoAssertAdvertisement;
     private String cryptoAssertAdvertisementSymbol;
@@ -27,11 +27,11 @@ public class Transaction {
 
     private Transaction() {}
 
-    public Transaction(User interestedUser, CryptoAdvertisement cryptoAssetAdverticement, Integer quantity) {
+    public Transaction(User interestedUser, AssetAdvertisement cryptoAssetAdverticement, Integer quantity) {
         assertAdvertisementWasNotPublishedBy(interestedUser, cryptoAssetAdverticement);
         assertIsValidQuantity(quantity);
 
-        this.buyer = interestedUser.id();
+        this.interestedUser = interestedUser.id();
         this.cryptoAssertAdvertisement = cryptoAssetAdverticement.id();
         this.cryptoAssertAdvertisementSymbol = cryptoAssetAdverticement.assetSymbol();
         this.cryptoAssertAdvertisementQuantity = cryptoAssetAdverticement.quantity();
@@ -40,7 +40,7 @@ public class Transaction {
     }
 
     public Boolean wasInformedBy(User user) {
-        return buyer == user.id();
+        return interestedUser == user.id();
     }
 
     public Boolean isPending() {
@@ -63,14 +63,14 @@ public class Transaction {
         return quantity;
     }
 
-    public void confirmBy(User seller, CryptoAdvertisement advertisement) {
+    public void confirmBy(User seller, AssetAdvertisement advertisement) {
         assertIsNotTheBuyer(seller);
 
         advertisement.decreaseQuantity(quantity);
         state = CONFIRMED_STATE;
     }
 
-    private void assertAdvertisementWasNotPublishedBy(User user, CryptoAdvertisement cryptoAssetAdvertisement) {
+    private void assertAdvertisementWasNotPublishedBy(User user, AssetAdvertisement cryptoAssetAdvertisement) {
         if (cryptoAssetAdvertisement.wasPublishedBy(user)) {
             throw new ModelException("A user cannot inform a transaction for an advertisement published by himself");
         }
@@ -83,7 +83,7 @@ public class Transaction {
     }
 
     private void assertIsNotTheBuyer(User seller) {
-        if (seller.id() == buyer) {
+        if (seller.id() == interestedUser) {
             throw new ModelException("A user cannot confirm an order placed by himself");
         }
     }

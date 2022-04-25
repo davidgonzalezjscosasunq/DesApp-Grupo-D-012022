@@ -3,7 +3,7 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 import javax.persistence.*;
 
 @Entity
-public class CryptoAdvertisement {
+public class AssetAdvertisement {
 
     public static final String BUY_ADVERTISE_TYPE = "BUY_ADVERTISE";
     public static final String SELL_ADVERTISE_TYPE = "CELL_ADVERTISE";
@@ -12,7 +12,7 @@ public class CryptoAdvertisement {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String type;
-    private String cryptoActiveSymbol; // TODO: ver por que rompe cuando hago un rename
+    private String assetSymbol; // TODO: ver por que rompe cuando hago un rename
     private Integer quantity;
     private Double price;
 
@@ -23,14 +23,14 @@ public class CryptoAdvertisement {
     private String publisherFirstName;
     private String publisherLastName;
 
-    private CryptoAdvertisement() {}
+    private AssetAdvertisement() {}
 
-    public CryptoAdvertisement(String type, String symbol, Integer quantity, Double price, User publisher) {
+    public AssetAdvertisement(String type, String symbol, Integer quantity, Double price, User publisher) {
         assertIsValidQuantity(quantity);
         assertIsValidPrice(price);
 
         this.type = type;
-        this.cryptoActiveSymbol = symbol;
+        this.assetSymbol = symbol;
         this.quantity = quantity;
         this.price = price;
         //this.publisher = publisher; // TODO: arreglar. Genera problemas porque la ejecucion del metodo del service no es transaccional
@@ -54,7 +54,7 @@ public class CryptoAdvertisement {
     }
 
     public String assetSymbol() {
-        return cryptoActiveSymbol;
+        return assetSymbol;
     }
 
     public int quantity() {

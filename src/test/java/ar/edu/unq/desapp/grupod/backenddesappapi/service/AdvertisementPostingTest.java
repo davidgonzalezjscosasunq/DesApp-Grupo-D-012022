@@ -70,11 +70,11 @@ public class AdvertisementPostingTest extends ServiceTest {
     void aSellAdvertisementCannotBePostedForANotRegisteredUser() {
         var notRegisteredUserId = 123L;
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "User not found",
                 () -> tradingService.postSellAdvertisement(notRegisteredUserId, CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE));
 
-        assertHasNoAdvertisementsFor(CRYPTO_ACTIVE_SYMBOL, cryptoAdvertisementsRepository);
+        assertHasNoAdvertisementsFor(CRYPTO_ACTIVE_SYMBOL, assetAdvertisementsRepository);
     }
 
     @Test
@@ -82,11 +82,11 @@ public class AdvertisementPostingTest extends ServiceTest {
         var seller = registerUser();
         var invalidQuantity = 0;
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "Quantity cannot be lesser than 1",
                 () -> tradingService.postSellAdvertisement(seller.id(), CRYPTO_ACTIVE_SYMBOL, invalidQuantity, VALID_ADVERTISEMENT_PRICE));
 
-        assertHasNoAdvertisementsFor(CRYPTO_ACTIVE_SYMBOL, cryptoAdvertisementsRepository);
+        assertHasNoAdvertisementsFor(CRYPTO_ACTIVE_SYMBOL, assetAdvertisementsRepository);
     }
 
     @Test
@@ -94,11 +94,11 @@ public class AdvertisementPostingTest extends ServiceTest {
         var seller = registerUser();
         var invalidPrice = ZERO_PESOS;
 
-        assertThrowsDomainExeption(
+        assertThrowsDomainException(
                 "Price amount of money must be positive",
                 () -> tradingService.postSellAdvertisement(seller.id(), CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, invalidPrice));
 
-        assertHasNoAdvertisementsFor(CRYPTO_ACTIVE_SYMBOL, cryptoAdvertisementsRepository);
+        assertHasNoAdvertisementsFor(CRYPTO_ACTIVE_SYMBOL, assetAdvertisementsRepository);
     }
 
 }
