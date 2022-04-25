@@ -43,14 +43,6 @@ public class CryptoAdvertisement {
         return id;
     }
 
-    public static CryptoAdvertisement buyAdvertise(String cryptoActiveSymbol, int quantityToBuy, double buyPrice, User buyer) {
-        return new CryptoAdvertisement(BUY_ADVERTISE_TYPE, cryptoActiveSymbol, quantityToBuy, buyPrice, buyer);
-    }
-
-    public static CryptoAdvertisement sellAdvertise(String cryptoActiveSymbol, int quantityToBuy, double buyPrice, User buyer) {
-        return new CryptoAdvertisement(SELL_ADVERTISE_TYPE, cryptoActiveSymbol, quantityToBuy, buyPrice, buyer);
-    }
-
     public String publisherFirstName() {
         //return publisher.firstName();
         return publisherFirstName;
