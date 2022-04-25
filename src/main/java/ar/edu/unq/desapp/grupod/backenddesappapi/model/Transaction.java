@@ -1,46 +1,43 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Transaction {
     public static final String PENDING_STATE = "PENDING";
     public static final String CONFIRMED_STATE = "CONFIRMED";
 
-    private Long interestedUser; // TODO: ver por que rompe cuando hago un rename
-    private Integer quantity;
-    private Long cryptoAssertAdvertisement;
-    private String cryptoAssertAdvertisementSymbol;
-    private Integer cryptoAssertAdvertisementQuantity;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String state;
-    //private User buyer;
-    //private CryptoAdvertisement cryptoAssertAdverticement;
-    //private Integer quantityToBuy;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "interested_user_id", referencedColumnName = "id")
+    private User interestedUser;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "asset_advertisement_id", referencedColumnName = "id")
+    private AssetAdvertisement assetAdvertisement;
+
+    private Integer quantity;
 
     private Transaction() {}
 
-    public Transaction(User interestedUser, AssetAdvertisement cryptoAssetAdverticement, Integer quantity) {
-        assertAdvertisementWasNotPublishedBy(interestedUser, cryptoAssetAdverticement);
+    public Transaction(User interestedUser, AssetAdvertisement assetAdverticement, Integer quantity) {
+        assertAdvertisementWasNotPublishedBy(interestedUser, assetAdverticement);
         assertIsValidQuantity(quantity);
 
-        this.interestedUser = interestedUser.id();
-        this.cryptoAssertAdvertisement = cryptoAssetAdverticement.id();
-        this.cryptoAssertAdvertisementSymbol = cryptoAssetAdverticement.assetSymbol();
-        this.cryptoAssertAdvertisementQuantity = cryptoAssetAdverticement.quantity();
+        this.interestedUser = interestedUser;
+        this.assetAdvertisement = assetAdverticement;
         this.quantity = quantity;
+
         this.state = PENDING_STATE;
     }
 
     public Boolean wasInformedBy(User user) {
-        return interestedUser == user.id();
+        return interestedUser.id() == user.id();
     }
 
     public Boolean isPending() {
@@ -55,18 +52,18 @@ public class Transaction {
         return id;
     }
 
-    public String symbol() {
-        return cryptoAssertAdvertisementSymbol;
+    public String assetSymbol() {
+        return assetAdvertisement.assetSymbol();
     }
 
     public Integer quantity() {
         return quantity;
     }
 
-    public void confirmBy(User seller, AssetAdvertisement advertisement) {
-        assertIsNotTheBuyer(seller);
+    public void confirmBy(User user) {
+        assertIsThePublisher(user);
 
-        advertisement.decreaseQuantity(quantity);
+        assetAdvertisement.decreaseQuantity(quantity);
         state = CONFIRMED_STATE;
     }
 
@@ -82,13 +79,10 @@ public class Transaction {
         }
     }
 
-    private void assertIsNotTheBuyer(User seller) {
-        if (seller.id() == interestedUser) {
-            throw new ModelException("A user cannot confirm an order placed by himself");
+    private void assertIsThePublisher(User user) {
+        if (!assetAdvertisement.wasPublishedBy(user)) {
+            throw new ModelException("A user cannot confirm a transaction for an advertisement not published by himself");
         }
     }
 
-    public Long cryptoAssertAdvertisementId() { // TODO: quitar cuando este solucionado lo de la persistencia que no anda
-        return cryptoAssertAdvertisement;
-    }
 }

@@ -47,27 +47,31 @@ public class TransactionConfirmationTest extends ServiceTest {
         var aBuyer = registerPepe();
         var aSeller = registerJuan();
 
-        var aSellAdverticement = publishSellAdvertisementFor(aSeller);
-        var aTransactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdverticement.id(), aSellAdverticement.quantity());
+        var aSellAdvertisement = publishSellAdvertisementFor(aSeller);
+        var aTransactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), aSellAdvertisement.quantity());
 
         tradingService.confirmTransaction(aSeller.id(), aTransactionToConfirm.id());
 
-        var foundSellAdvertisements = tradingService.findSellAdvertisementsWithSymbol(aSellAdverticement.assetSymbol());
+        var foundSellAdvertisements = tradingService.findSellAdvertisementsWithSymbol(aSellAdvertisement.assetSymbol());
         assertTrue(foundSellAdvertisements.isEmpty());
     }
 
     @Test
-    void aUserCannotConfirmATransactionPlacedByHimself() {
-        var aBuyer = registerPepe();
-        var aSeller = registerJuan();
+    void aUserCannotConfirmATransactionForAnAdvertisementNotPublishedByHimself() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
 
-        var aSellAdvertisement = publishSellAdvertisementFor(aSeller);
-        var aBuyOrder = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), aSellAdvertisement.quantity());
+        var anAdvertisement = publishAdvertisementFor(aPublisher);
+        var aTransaction = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
 
         assertThrowsDomainException(
-                "A user cannot confirm an order placed by himself",
-                () -> tradingService.confirmTransaction(aBuyer.id(), aBuyOrder.id())
+                "A user cannot confirm a transaction for an advertisement not published by himself",
+                () -> tradingService.confirmTransaction(anInterestedUser.id(), aTransaction.id())
         );
+
+        var transactionNotConfirmed = tradingService.findTransactionsInformedBy(anInterestedUser.id()).get(0);
+        assertTrue(transactionNotConfirmed.isPending());
+        assertFalse(transactionNotConfirmed.isConfirmed());
     }
 
 }

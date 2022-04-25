@@ -8,10 +8,12 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsReposit
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class TradingService {
 
     @Autowired
@@ -47,12 +49,10 @@ public class TradingService {
     public void confirmTransaction(Long userId, Long transactionToConfirmId) {
         var user = userService.findUserById(userId);
         var transaction = transactionsRepository.findById(transactionToConfirmId).get();
-        var advertisement = assetAdvertisementsRepository.findById(transaction.cryptoAssertAdvertisementId()).get();
 
-        transaction.confirmBy(user, advertisement);
+        transaction.confirmBy(user);
 
         transactionsRepository.save(transaction);
-        assetAdvertisementsRepository.save(advertisement);
     }
 
     public List<AssetAdvertisement> findSellAdvertisementsWithSymbol(String assetSymbol) {
@@ -64,7 +64,7 @@ public class TradingService {
     }
 
     public List<Transaction> findTransactionsInformedBy(Long userId) {
-        return transactionsRepository.findAllByInterestedUser(userId);
+        return transactionsRepository.findAllByInterestedUserId(userId);
     }
 
     protected AssetAdvertisement postAdvertisement(String advertisementType, Long publisherId, String assetSymbol, int quantity, double price) {

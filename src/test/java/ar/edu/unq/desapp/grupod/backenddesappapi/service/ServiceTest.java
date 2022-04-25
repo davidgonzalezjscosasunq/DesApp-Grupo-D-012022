@@ -40,17 +40,16 @@ public class ServiceTest {
 
     @AfterEach
     void tearDown() {
-        userRepository.deleteAll();
-        assetAdvertisementsRepository.deleteAll();
         transactionsRepository.deleteAll();
+        assetAdvertisementsRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
-    protected void assertAdvertisementHas(String assetSymbol, int quantity, double price, User publisher, AssetAdvertisement cryptoAdvertisement) {
-        assertEquals(publisher.firstName(), cryptoAdvertisement.publisherFirstName());
-        assertEquals(publisher.lastName(), cryptoAdvertisement.publisherLastName());
-        assertEquals(assetSymbol, cryptoAdvertisement.assetSymbol());
-        assertEquals(quantity, cryptoAdvertisement.quantity());
-        assertEquals(price, cryptoAdvertisement.price());
+    protected void assertAdvertisementHas(String assetSymbol, int quantity, double price, User publisher, AssetAdvertisement assetAdvertisement) {
+        assertTrue(assetAdvertisement.wasPublishedBy(publisher));
+        assertEquals(assetSymbol, assetAdvertisement.assetSymbol());
+        assertEquals(quantity, assetAdvertisement.quantity());
+        assertEquals(price, assetAdvertisement.price());
     }
 
     protected void assertThrowsDomainException(String expectedErrorMessage, Executable executableToTest) {
@@ -130,7 +129,7 @@ public class ServiceTest {
 
     protected void assertIsPendingTransactionWith(User aBuyer, String symbolToBuy, int quantity, Transaction anOrder) {
         assertTrue(anOrder.wasInformedBy(aBuyer));
-        assertEquals(symbolToBuy, anOrder.symbol());
+        assertEquals(symbolToBuy, anOrder.assetSymbol());
         assertEquals(quantity, anOrder.quantity());
         assertTrue(anOrder.isPending());
     }
