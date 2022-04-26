@@ -37,7 +37,7 @@ public class RateService {
     }
 
 
-    public List<UsdResponse> getUsdConvertionToPesos (){
+    private List<UsdResponse> getUsdConvertionToPesos (){
         try {
             String url = "https://api.estadisticasbcra.com/usd";
 
