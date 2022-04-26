@@ -5,7 +5,7 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.validators.*;
 import javax.persistence.*;
 
 @Entity
-public class  User {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
