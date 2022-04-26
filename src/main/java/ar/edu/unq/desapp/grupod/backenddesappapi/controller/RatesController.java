@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.RateService;
 
-
 @RestController
 public class RatesController {
 
