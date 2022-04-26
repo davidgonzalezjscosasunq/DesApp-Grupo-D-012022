@@ -24,6 +24,9 @@ public class ServiceTest {
     public static final double FOURTY_PESOS = 40.0;
 
     @Autowired
+    Clock clock;
+
+    @Autowired
     TradingService tradingService;
 
     @Autowired

@@ -51,8 +51,10 @@ public class TradingService {
         var transaction = transactionsRepository.findById(transactionToConfirmId).get();
 
         transaction.confirmBy(user);
+        user.gainPoints();
 
         transactionsRepository.save(transaction);
+        userRepository.save(user);
     }
 
     public List<AssetAdvertisement> findSellAdvertisementsWithSymbol(String assetSymbol) {

@@ -57,6 +57,28 @@ public class TransactionConfirmationTest extends ServiceTest {
     }
 
     @Test
+    void aNewUserHasNoPoints() {
+        var aUser = registerUser();
+
+        assertEquals(0, userService.pointsOf(aUser.id()));
+    }
+
+    @Test
+    void whenAPublisherConfirmsATransactionInLessThan30MinutesSinceItWasInformedItGets10Points() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+
+        var anAdvertisement = publishSellAdvertisementFor(aPublisher);
+        var transactionToConfirm = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
+
+        clock.advanceMinutes(29);
+
+        tradingService.confirmTransaction(aPublisher.id(), transactionToConfirm.id());
+
+        assertEquals(10, userService.pointsOf(aPublisher.id()));
+    }
+
+    @Test
     void aUserCannotConfirmATransactionForAnAdvertisementNotPublishedByHimself() {
         var anInterestedUser = registerPepe();
         var aPublisher = registerJuan();
