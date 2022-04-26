@@ -25,9 +25,7 @@ public Object getCoinRate (String symbol) {
 
     Float priceInPesos = rate.price * lastDollarValueInPesos;
 
-    GetCoinRateResponse response = new GetCoinRateResponse();
-    response.setUsdPrice(rate.price);
-    response.setPesosPrice(priceInPesos);
+    GetCoinRateResponse response = new GetCoinRateResponse(rate.price, priceInPesos);
 
     return response;
 }

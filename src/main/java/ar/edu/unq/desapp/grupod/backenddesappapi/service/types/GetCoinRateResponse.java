@@ -4,11 +4,8 @@ public class GetCoinRateResponse {
     public Float usdPrice;
     public Float pesosPrice;
 
-    public void setPesosPrice(Float pesosPrice) {
-        this.pesosPrice = pesosPrice;
-    }
-
-    public void setUsdPrice(Float usdPrice) {
+    public GetCoinRateResponse(Float usdPrice, Float pesosPrice){
         this.usdPrice = usdPrice;
+        this.pesosPrice = pesosPrice;
     }
 }
