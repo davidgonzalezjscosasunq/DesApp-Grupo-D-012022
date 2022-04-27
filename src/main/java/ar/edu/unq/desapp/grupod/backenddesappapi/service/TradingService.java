@@ -66,6 +66,10 @@ public class TradingService {
         return assetAdvertisementsRepository.findBuyAdvertisementsWithSymbol(assetSymbol);
     }
 
+    public List<AssetAdvertisement> findAdvertisementsWithSymbol(String assetSymbol) {
+        return assetAdvertisementsRepository.findAllByAssetSymbol(assetSymbol);
+    }
+
     public List<Transaction> findTransactionsInformedBy(Long userId) {
         return transactionsRepository.findAllByInterestedUserId(userId);
     }
@@ -88,4 +92,5 @@ public class TradingService {
             user.receiveReputationPoints(5);
         }
     }
+
 }

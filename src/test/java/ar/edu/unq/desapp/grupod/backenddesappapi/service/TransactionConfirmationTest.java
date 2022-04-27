@@ -9,51 +9,51 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TransactionConfirmationTest extends ServiceTest {
 
     @Test
-    void aSellerCanConfirmATransactionForOneOfHisSellAdvertisements() {
-        var aBuyer = registerPepe();
-        var aSeller = registerJuan();
+    void aPublisherCanConfirmATransactionForOneOfHisAdvertisements() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
 
-        var aSellAdvertisement = publishSellAdvertisementFor(aSeller);
-        var transactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), aSellAdvertisement.quantity());
+        var anAdvertisement = publishAdvertisementFor(aPublisher);
+        var transactionToConfirm = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
 
-        tradingService.confirmTransaction(aSeller.id(), transactionToConfirm.id());
+        tradingService.confirmTransaction(aPublisher.id(), transactionToConfirm.id());
 
-        var transactions = tradingService.findTransactionsInformedBy(aBuyer.id());
+        var transactions = tradingService.findTransactionsInformedBy(anInterestedUser.id());
 
         assertFalse(transactions.get(0).isPending());
         assertTrue(transactions.get(0).isConfirmed());
     }
 
     @Test
-    void whenASellerConfirmsATransactionToBuySomeQuantityFromAnAdvertisementItsAvailableQuantityIsDecreased() {
-        var originalQuantityToSell = 3;
-        var quantityToBuy = 1;
+    void whenAPublisherConfirmsATransactionForSomeQuantityOfAnAdvertisementItsAvailableQuantityIsDecreased() {
+        var originalQuantityOfAdvertisement = 3;
+        var quantityOfTransaction = 1;
 
-        var aBuyer = registerPepe();
-        var aSeller = registerJuan();
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
 
-        var aSellAdvertisement = publishSellAdvertisementFor(aSeller, originalQuantityToSell);
-        var aTransactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), quantityToBuy);
+        var anAdvertisement = publishAdvertisementFor(aPublisher, originalQuantityOfAdvertisement);
+        var aTransactionToConfirm = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), quantityOfTransaction);
 
-        tradingService.confirmTransaction(aSeller.id(), aTransactionToConfirm.id());
+        tradingService.confirmTransaction(aPublisher.id(), aTransactionToConfirm.id());
 
-        var foundSellAdvertisements = tradingService.findSellAdvertisementsWithSymbol(aSellAdvertisement.assetSymbol());
-        assertEquals(1, foundSellAdvertisements.size());
-        assertEquals(originalQuantityToSell - quantityToBuy, foundSellAdvertisements.get(0).quantity());
+        var foundAdvertisements = tradingService.findAdvertisementsWithSymbol(anAdvertisement.assetSymbol());
+        assertEquals(1, foundAdvertisements.size());
+        assertEquals(originalQuantityOfAdvertisement - quantityOfTransaction, foundAdvertisements.get(0).quantity());
     }
 
     @Test
-    void whenASellerConfirmsATransactionToBuyAllAvailableQuantityFromAnAdvertisementItIsRemovedFromTheListOfPublishedAdvertisements() {
-        var aBuyer = registerPepe();
-        var aSeller = registerJuan();
+    void whenAPublisherConfirmsATransactionForAllAvailableQuantityOfAnAdvertisementItIsRemovedFromTheListOfPublishedAdvertisements() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
 
-        var aSellAdvertisement = publishSellAdvertisementFor(aSeller);
-        var aTransactionToConfirm = tradingService.informTransaction(aBuyer.id(), aSellAdvertisement.id(), aSellAdvertisement.quantity());
+        var anAdvertisement = publishAdvertisementFor(aPublisher);
+        var aTransactionToConfirm = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
 
-        tradingService.confirmTransaction(aSeller.id(), aTransactionToConfirm.id());
+        tradingService.confirmTransaction(aPublisher.id(), aTransactionToConfirm.id());
 
-        var foundSellAdvertisements = tradingService.findSellAdvertisementsWithSymbol(aSellAdvertisement.assetSymbol());
-        assertTrue(foundSellAdvertisements.isEmpty());
+        var foundAdvertisements = tradingService.findAdvertisementsWithSymbol(anAdvertisement.assetSymbol());
+        assertTrue(foundAdvertisements.isEmpty());
     }
 
     @Test

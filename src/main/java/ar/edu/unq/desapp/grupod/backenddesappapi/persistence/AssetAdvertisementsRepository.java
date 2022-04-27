@@ -19,8 +19,14 @@ public interface AssetAdvertisementsRepository extends CrudRepository<AssetAdver
         return findByAssetSymbolAndTypeAndQuantityNot(assetSymbol, AssetAdvertisement.SELL_ADVERTISE_TYPE, 0);
     }
 
+    default List<AssetAdvertisement> findAllByAssetSymbol(String assetSymbol) {
+        return findByAssetSymbolAndQuantityNot(assetSymbol, 0);
+    }
+
+    List<AssetAdvertisement> findByAssetSymbolAndQuantityNot(String assetSymbol, Integer quantity);
+
     List<AssetAdvertisement> findByAssetSymbolAndType(String assetSymbol, String assetAdvertisement);
 
-    List<AssetAdvertisement> findByAssetSymbolAndTypeAndQuantityNot(String assetSymbol, String cellAdvertise, Integer quantity);
+    List<AssetAdvertisement> findByAssetSymbolAndTypeAndQuantityNot(String assetSymbol, String advertisementType, Integer quantity);
 
 }
