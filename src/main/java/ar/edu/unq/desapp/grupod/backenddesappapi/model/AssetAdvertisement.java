@@ -54,6 +54,10 @@ public class AssetAdvertisement {
         return price;
     }
 
+    public User publisher() {
+        return publisher;
+    }
+
     public void decreaseQuantity(Integer quantityToDecrease) {
         quantity -= quantityToDecrease;
     }
@@ -65,4 +69,5 @@ public class AssetAdvertisement {
     private void assertIsValidPrice(Double sellingPrice) {
         if (sellingPrice <= 0) throw new ModelException("Price amount of money must be positive");
     }
+
 }

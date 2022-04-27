@@ -58,6 +58,17 @@ public class TradingService {
         userRepository.save(user);
     }
 
+    public void cancelTransaction(Long userId, Long transactionToCancelId) {
+        var user = userRepository.findById(userId).get();
+        var transaction = transactionsRepository.findById(transactionToCancelId).get();
+
+        transaction.cancelBy(user);
+
+        looseReputationPointsForCancelTransaction(transaction.publisher());
+
+        userRepository.save(user);
+    }
+
     public List<AssetAdvertisement> findSellAdvertisementsWithSymbol(String assetSymbol) {
         return assetAdvertisementsRepository.findSellAdvertisementsWithSymbol(assetSymbol);
     }
@@ -91,6 +102,10 @@ public class TradingService {
         } else {
             user.receiveReputationPoints(5);
         }
+    }
+
+    private void looseReputationPointsForCancelTransaction(User user) {
+        user.looseReputationPoints(20);
     }
 
 }

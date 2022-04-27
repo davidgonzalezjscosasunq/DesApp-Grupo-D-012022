@@ -66,6 +66,10 @@ public class Transaction {
         return quantity;
     }
 
+    public User publisher() {
+        return assetAdvertisement.publisher();
+    }
+
     public LocalDateTime startLocalDateTime() {
         return startLocalDateTime;
     }
@@ -75,6 +79,14 @@ public class Transaction {
 
         assetAdvertisement.decreaseQuantity(quantity);
         state = CONFIRMED_STATE;
+    }
+
+    public void cancelBy(User user) {
+        asserCanBeCancelledBy(user);
+    }
+
+    private boolean canBeCancelledBy(User user) {
+        return wasInformedBy(user) || assetAdvertisement.wasPublishedBy(user);
     }
 
     private void assertAdvertisementWasNotPublishedBy(User user, AssetAdvertisement cryptoAssetAdvertisement) {
@@ -92,6 +104,12 @@ public class Transaction {
     private void assertIsThePublisher(User user) {
         if (!assetAdvertisement.wasPublishedBy(user)) {
             throw new ModelException("A user cannot confirm a transaction for an advertisement not published by himself");
+        }
+    }
+
+    private void asserCanBeCancelledBy(User user) {
+        if (!canBeCancelledBy(user)) {
+            throw new ModelException("A transaction can only be cancelled by the user that informed it or the user that published the advertisement");
         }
     }
 

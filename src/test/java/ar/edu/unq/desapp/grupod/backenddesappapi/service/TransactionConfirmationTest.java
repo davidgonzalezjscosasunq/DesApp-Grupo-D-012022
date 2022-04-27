@@ -60,7 +60,7 @@ public class TransactionConfirmationTest extends ServiceTest {
     void aNewUserHasNoPoints() {
         var aUser = registerUser();
 
-        assertEquals(0, userService.repotatinoPointsOf(aUser.id()));
+        assertEquals(0, userService.reputationPointsOf(aUser.id()));
     }
 
     @Test
@@ -75,7 +75,7 @@ public class TransactionConfirmationTest extends ServiceTest {
 
         tradingService.confirmTransaction(aPublisher.id(), transactionToConfirm.id());
 
-        assertEquals(10, userService.repotatinoPointsOf(aPublisher.id()));
+        assertEquals(10, userService.reputationPointsOf(aPublisher.id()));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class TransactionConfirmationTest extends ServiceTest {
 
         tradingService.confirmTransaction(aPublisher.id(), transactionToConfirm.id());
 
-        assertEquals(5, userService.repotatinoPointsOf(aPublisher.id()));
+        assertEquals(5, userService.reputationPointsOf(aPublisher.id()));
     }
 
     @Test

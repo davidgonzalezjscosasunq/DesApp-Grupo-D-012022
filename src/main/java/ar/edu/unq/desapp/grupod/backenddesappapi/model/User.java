@@ -59,6 +59,10 @@ public class User {
         points += pointsToGain;
     }
 
+    public void looseReputationPoints(Integer pointsToLoose) {
+        points -= pointsToLoose;
+    }
+
     private void assertIsValidFirstName(String name) {
         new PersonNameStringValidator().assertIsValidFirstName(name);
     }

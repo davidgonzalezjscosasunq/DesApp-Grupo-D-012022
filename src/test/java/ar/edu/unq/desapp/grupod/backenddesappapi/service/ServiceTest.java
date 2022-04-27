@@ -90,8 +90,16 @@ public class ServiceTest {
         return publishSellAdvertisementFor(publisher, quantity);
     }
 
+    protected Transaction informTransactionForAllQuantity(User anInterestedUser, AssetAdvertisement anAdvertisement) {
+        return tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
+    }
+
     protected User registerJuan() {
         return userService.registerUser(UserTestFactory.JUAN_FIRST_NAME, UserTestFactory.JUAN_LAST_NAME, UserTestFactory.JUAN_EMAIL, UserTestFactory.JUAN_ADDRESS, UserTestFactory.JUAN_PASSWORD, UserTestFactory.JUAN_CVU, UserTestFactory.JUAN_CRIPTO_WALLET_ADDRESS);
+    }
+
+    protected User registerPedro() {
+        return registerUserWithFirstName("Pedro");
     }
 
     protected User registerPepe() {
