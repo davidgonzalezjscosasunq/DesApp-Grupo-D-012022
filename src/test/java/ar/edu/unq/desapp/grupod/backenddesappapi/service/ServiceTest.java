@@ -1,10 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.factories.UserTestFactory;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.Transaction;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisement;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.*;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.AssetAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;

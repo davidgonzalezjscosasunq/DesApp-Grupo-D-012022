@@ -60,11 +60,11 @@ public class TransactionConfirmationTest extends ServiceTest {
     void aNewUserHasNoPoints() {
         var aUser = registerUser();
 
-        assertEquals(0, userService.pointsOf(aUser.id()));
+        assertEquals(0, userService.repotatinoPointsOf(aUser.id()));
     }
 
     @Test
-    void whenAPublisherConfirmsATransactionInLessThan30MinutesSinceItWasInformedItGets10Points() {
+    void whenAPublisherConfirmsATransactionInLessThan30MinutesSinceItWasInformedItGets10ReputationPoints() {
         var anInterestedUser = registerPepe();
         var aPublisher = registerJuan();
 
@@ -75,7 +75,22 @@ public class TransactionConfirmationTest extends ServiceTest {
 
         tradingService.confirmTransaction(aPublisher.id(), transactionToConfirm.id());
 
-        assertEquals(10, userService.pointsOf(aPublisher.id()));
+        assertEquals(10, userService.repotatinoPointsOf(aPublisher.id()));
+    }
+
+    @Test
+    void whenAPublisherConfirmsATransaction30AfterItWasInformedItGets5ReputationPoints() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+
+        var anAdvertisement = publishSellAdvertisementFor(aPublisher);
+        var transactionToConfirm = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
+
+        clock.advanceMinutes(30);
+
+        tradingService.confirmTransaction(aPublisher.id(), transactionToConfirm.id());
+
+        assertEquals(5, userService.repotatinoPointsOf(aPublisher.id()));
     }
 
     @Test

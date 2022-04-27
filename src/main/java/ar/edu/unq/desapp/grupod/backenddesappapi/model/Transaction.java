@@ -1,7 +1,11 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
 
+import org.apache.tomcat.jni.Local;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 
 @Entity
 public class Transaction {
@@ -22,16 +26,18 @@ public class Transaction {
     private AssetAdvertisement assetAdvertisement;
 
     private Integer quantity;
+    private LocalDateTime startLocalDateTime;
 
     private Transaction() {}
 
-    public Transaction(User interestedUser, AssetAdvertisement assetAdverticement, Integer quantity) {
+    public Transaction(User interestedUser, AssetAdvertisement assetAdverticement, Integer quantity, LocalDateTime startLocalDateTime) {
         assertAdvertisementWasNotPublishedBy(interestedUser, assetAdverticement);
         assertIsValidQuantity(quantity);
 
         this.interestedUser = interestedUser;
         this.assetAdvertisement = assetAdverticement;
         this.quantity = quantity;
+        this.startLocalDateTime = startLocalDateTime;
 
         this.state = PENDING_STATE;
     }
@@ -58,6 +64,10 @@ public class Transaction {
 
     public Integer quantity() {
         return quantity;
+    }
+
+    public LocalDateTime startLocalDateTime() {
+        return startLocalDateTime;
     }
 
     public void confirmBy(User user) {

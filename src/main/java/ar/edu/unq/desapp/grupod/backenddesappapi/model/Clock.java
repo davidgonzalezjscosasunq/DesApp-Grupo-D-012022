@@ -1,4 +1,4 @@
-package ar.edu.unq.desapp.grupod.backenddesappapi.service;
+package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ public class Clock {
         return now;
     }
 
-    public void advanceMinutes(int numberOfMinutesToAdvanceTime) {
-
+    public void advanceMinutes(Integer numberOfMinutesToAdvanceTime) {
+        now = now.plusMinutes(numberOfMinutesToAdvanceTime);
     }
 }

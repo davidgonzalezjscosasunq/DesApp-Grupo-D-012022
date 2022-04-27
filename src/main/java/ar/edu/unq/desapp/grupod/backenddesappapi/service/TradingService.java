@@ -1,8 +1,6 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.Transaction;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisement;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.*;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.AssetAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
@@ -15,6 +13,9 @@ import java.util.List;
 @Service
 @Transactional
 public class TradingService {
+
+    @Autowired
+    Clock clock;
 
     @Autowired
     UserService userService;
@@ -41,7 +42,7 @@ public class TradingService {
         var interestedUser = userService.findUserById(interestedUserId);
         var assetAdvertisement = assetAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new ModelException("Advertisement not found"));
 
-        var newTransaction = new Transaction(interestedUser, assetAdvertisement, quantityToTransfer);
+        var newTransaction = new Transaction(interestedUser, assetAdvertisement, quantityToTransfer, clock.now());
 
         return transactionsRepository.save(newTransaction);
     }
@@ -51,7 +52,7 @@ public class TradingService {
         var transaction = transactionsRepository.findById(transactionToConfirmId).get();
 
         transaction.confirmBy(user);
-        user.gainPoints();
+        giveReputationPointsForConfirmedTransaction(user, transaction);
 
         transactionsRepository.save(transaction);
         userRepository.save(user);
@@ -75,5 +76,16 @@ public class TradingService {
         var newAdvertisement = new AssetAdvertisement(advertisementType, assetSymbol, quantity, price, publisher);
 
         return assetAdvertisementsRepository.save(newAdvertisement);
+    }
+
+    protected void giveReputationPointsForConfirmedTransaction(User user, Transaction transaction) {
+        var now = clock.now();
+        var limitTime = transaction.startLocalDateTime().plusMinutes(30);
+
+        if (now.isBefore(limitTime)) {
+            user.receiveReputationPoints(10);
+        } else {
+            user.receiveReputationPoints(5);
+        }
     }
 }

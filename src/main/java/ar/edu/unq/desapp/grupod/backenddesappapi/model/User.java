@@ -55,8 +55,8 @@ public class User {
         return points;
     }
 
-    public void gainPoints() {
-        points += 10;
+    public void receiveReputationPoints(int pointsToGain) {
+        points += pointsToGain;
     }
 
     private void assertIsValidFirstName(String name) {

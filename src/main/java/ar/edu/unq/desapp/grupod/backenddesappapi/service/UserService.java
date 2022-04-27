@@ -22,7 +22,7 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new ModelException("User not found"));
     }
 
-    public Integer pointsOf(Long userId) {
+    public Integer repotatinoPointsOf(Long userId) {
         var user = userRepository.findById(userId).get();
         return user.points();
     }
