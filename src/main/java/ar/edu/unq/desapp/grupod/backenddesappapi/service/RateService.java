@@ -38,17 +38,19 @@ public class RateService {
 
 
     private List<UsdResponse> getUsdConvertionToPesos (){
+        String url = "https://api.estadisticasbcra.com/usd";
+
+        String base64Creds = securityProperties.bcraToken;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + base64Creds);
+
+        HttpEntity request = new HttpEntity(headers);
+
+        final RestTemplate restTemplate = new RestTemplate();
+
         try {
-            String url = "https://api.estadisticasbcra.com/usd";
 
-            String base64Creds = securityProperties.bcraToken;
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", "Bearer " + base64Creds);
-
-            HttpEntity request = new HttpEntity(headers);
-
-            final RestTemplate restTemplate = new RestTemplate();
             final ResponseEntity<List<UsdResponse>> response = restTemplate.exchange(
                     url,
                     HttpMethod.GET,
