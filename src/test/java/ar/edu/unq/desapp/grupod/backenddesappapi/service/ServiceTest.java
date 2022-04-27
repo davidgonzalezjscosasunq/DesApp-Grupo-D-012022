@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.factories.UserTestFactory;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.*;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.SimulatedClock;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.AssetAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
@@ -21,7 +22,7 @@ public class ServiceTest {
     public static final double FOURTY_PESOS = 40.0;
 
     @Autowired
-    Clock clock;
+    SimulatedClock clock;
 
     @Autowired
     TradingService tradingService;

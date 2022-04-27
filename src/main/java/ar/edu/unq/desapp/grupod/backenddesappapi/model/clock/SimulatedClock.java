@@ -1,11 +1,11 @@
-package ar.edu.unq.desapp.grupod.backenddesappapi.model;
+package ar.edu.unq.desapp.grupod.backenddesappapi.model.clock;
 
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
-public class Clock {
+public class SimulatedClock implements Clock {
 
     private LocalDateTime now = LocalDateTime.now();
 

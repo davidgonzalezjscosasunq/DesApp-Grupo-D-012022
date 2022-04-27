@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.*;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.Clock;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.AssetAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
