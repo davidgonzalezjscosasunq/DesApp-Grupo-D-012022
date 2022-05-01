@@ -6,14 +6,14 @@ import java.util.Optional;
 
 @Entity
 public class Transaction {
-    public static final String PENDING_STATE = "PENDING";
-    public static final String CONFIRMED_STATE = "CONFIRMED";
-    private static final String CANCELLED_STATE = "CANCELLED";
+    public static final TransactionState PENDING_STATE = TransactionState.PENDING_STATE;
+    public static final TransactionState CONFIRMED_STATE = TransactionState.CONFIRMED_STATE;
+    private static final TransactionState CANCELLED_STATE = TransactionState.CANCELLED_STATE;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String state;
+    private TransactionState state;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "interested_user_id", referencedColumnName = "id")
@@ -118,11 +118,6 @@ public class Transaction {
     }
 
     public Optional<String> paymentAddress() {
-        switch (state) {
-            case PENDING_STATE: return Optional.empty();
-            case CONFIRMED_STATE: return Optional.of(assetAdvertisement.paymentAddress());
-            case CANCELLED_STATE: return Optional.empty();
-        }
-        return null;
+        return state.paymentAddressFor(assetAdvertisement);
     }
 }
