@@ -78,7 +78,7 @@ public class Transaction {
     }
 
     public void cancelBy(User user) {
-        asserCanBeCancelledBy(user);
+        assertCanBeCancelledBy(user);
     }
 
     private boolean canBeCancelledBy(User user) {
@@ -103,7 +103,7 @@ public class Transaction {
         }
     }
 
-    private void asserCanBeCancelledBy(User user) {
+    private void assertCanBeCancelledBy(User user) {
         if (!canBeCancelledBy(user)) {
             throw new ModelException("A transaction can only be cancelled by the user that informed it or the user that published the advertisement");
         }
