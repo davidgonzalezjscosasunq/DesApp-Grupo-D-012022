@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public class Transaction {
     public static final String PENDING_STATE = "PENDING";
     public static final String CONFIRMED_STATE = "CONFIRMED";
+    private static final String CANCELLED_STATE = "CANCELLED";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,6 +51,10 @@ public class Transaction {
         return state == CONFIRMED_STATE;
     }
 
+    public Boolean isCancelled() {
+        return state == CANCELLED_STATE;
+    }
+
     public Long id() {
         return id;
     }
@@ -79,6 +84,8 @@ public class Transaction {
 
     public void cancelBy(User user) {
         assertCanBeCancelledBy(user);
+
+        state = CANCELLED_STATE;
     }
 
     private boolean canBeCancelledBy(User user) {
