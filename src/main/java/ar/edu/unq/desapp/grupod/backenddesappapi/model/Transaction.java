@@ -6,13 +6,10 @@ import java.util.Optional;
 
 @Entity
 public class Transaction {
-    public static final TransactionState PENDING_STATE = TransactionState.PENDING_STATE;
-    public static final TransactionState CONFIRMED_STATE = TransactionState.CONFIRMED_STATE;
-    private static final TransactionState CANCELLED_STATE = TransactionState.CANCELLED_STATE;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private TransactionState state;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -37,7 +34,7 @@ public class Transaction {
         this.quantity = quantity;
         this.startLocalDateTime = startLocalDateTime;
 
-        this.state = PENDING_STATE;
+        this.state = TransactionState.PENDING_STATE;
     }
 
     public Boolean wasInformedBy(User user) {
@@ -45,15 +42,15 @@ public class Transaction {
     }
 
     public Boolean isPending() {
-        return state.equals(PENDING_STATE);
+        return state.equals(TransactionState.PENDING_STATE);
     }
 
     public Boolean isConfirmed() {
-        return state.equals(CONFIRMED_STATE);
+        return state.equals(TransactionState.CONFIRMED_STATE);
     }
 
     public Boolean isCancelled() {
-        return state.equals(CANCELLED_STATE);
+        return state.equals(TransactionState.CANCELLED_STATE);
     }
 
     public Long id() {
@@ -80,13 +77,13 @@ public class Transaction {
         assertIsThePublisher(user);
 
         assetAdvertisement.decreaseQuantity(quantity);
-        state = CONFIRMED_STATE;
+        state = TransactionState.CONFIRMED_STATE;
     }
 
     public void cancelBy(User user) {
         assertCanBeCancelledBy(user);
 
-        state = CANCELLED_STATE;
+        state = TransactionState.CANCELLED_STATE;
     }
 
     private boolean canBeCancelledBy(User user) {
