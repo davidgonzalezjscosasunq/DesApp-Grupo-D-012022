@@ -83,6 +83,20 @@ public class TransactionCancellationTest extends ServiceTest {
     }
 
     @Test
+    void aCancelledTransactionsHasNoPaymentAddress() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+
+        var anAdvertisement = publishAdvertisementFor(aPublisher);
+        var transaction = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
+
+        tradingService.cancelTransaction(aPublisher.id(), transaction.id());
+
+        var pendingTransaction = tradingService.findTransactionsInformedBy(anInterestedUser.id()).get(0);
+        assertTrue(pendingTransaction.paymentAddress().isEmpty());
+    }
+
+    @Test
     void aUserCannotCancelATransactionWithAnInvalidTransactionId() {
         var aUser = registerPepe();
         var nonExistentTransactionId = 123L;

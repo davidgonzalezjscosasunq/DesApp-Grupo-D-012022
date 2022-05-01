@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 public class AssetAdvertisement {
@@ -69,4 +70,9 @@ public class AssetAdvertisement {
         if (sellingPrice <= 0) throw new ModelException("Price amount of money must be positive");
     }
 
+    public String paymentAddress() {
+        return type.equals(AssetAdvertisementType.SELL_ADVERTISEMENT)
+                ? publisher().cvu()
+                : publisher.cryptoActiveWalletAddress();
+    }
 }

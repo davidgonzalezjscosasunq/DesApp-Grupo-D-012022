@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 public class Transaction {
@@ -116,4 +117,12 @@ public class Transaction {
         }
     }
 
+    public Optional<String> paymentAddress() {
+        switch (state) {
+            case PENDING_STATE: return Optional.empty();
+            case CONFIRMED_STATE: return Optional.of(assetAdvertisement.paymentAddress());
+            case CANCELLED_STATE: return Optional.empty();
+        }
+        return null;
+    }
 }
