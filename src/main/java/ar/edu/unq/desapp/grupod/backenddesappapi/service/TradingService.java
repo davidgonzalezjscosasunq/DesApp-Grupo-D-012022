@@ -89,7 +89,7 @@ public class TradingService {
     protected AssetAdvertisement postAdvertisement(AssetAdvertisementType assetAdvertisementType, Long publisherId, String assetSymbol, int quantity, double price) {
         var publisher = userService.findUserById(publisherId);
 
-        var newAdvertisement = new AssetAdvertisement(assetAdvertisementType, assetSymbol, quantity, price, publisher);
+        var newAdvertisement = new AssetAdvertisement(assetAdvertisementType, assetSymbol, quantity, price, publisher, clock.now());
 
         return assetAdvertisementsRepository.save(newAdvertisement);
     }

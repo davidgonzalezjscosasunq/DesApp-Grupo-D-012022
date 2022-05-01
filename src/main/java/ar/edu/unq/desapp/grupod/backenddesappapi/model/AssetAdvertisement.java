@@ -1,7 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
 import javax.persistence.*;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Entity
 public class AssetAdvertisement {
@@ -16,6 +16,7 @@ public class AssetAdvertisement {
     private String assetSymbol;
     private Integer quantity;
     private Double price;
+    private LocalDateTime publicationLocalDateTime;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "publisher_id", referencedColumnName = "id")
@@ -23,7 +24,7 @@ public class AssetAdvertisement {
 
     private AssetAdvertisement() {}
 
-    public AssetAdvertisement(AssetAdvertisementType type, String symbol, Integer quantity, Double price, User publisher) {
+    public AssetAdvertisement(AssetAdvertisementType type, String symbol, Integer quantity, Double price, User publisher, LocalDateTime publicationLocalDateTime) {
         assertIsValidQuantity(quantity);
         assertIsValidPrice(price);
 
@@ -31,6 +32,7 @@ public class AssetAdvertisement {
         this.assetSymbol = symbol;
         this.quantity = quantity;
         this.price = price;
+        this.publicationLocalDateTime = publicationLocalDateTime;
         this.publisher = publisher;
     }
 
@@ -52,6 +54,10 @@ public class AssetAdvertisement {
 
     public double price() {
         return price;
+    }
+
+    public LocalDateTime publicationLocalDateTime() {
+        return publicationLocalDateTime;
     }
 
     public User publisher() {
