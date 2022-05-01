@@ -1,11 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
-
-import org.apache.tomcat.jni.Local;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 
 @Entity
 public class Transaction {
