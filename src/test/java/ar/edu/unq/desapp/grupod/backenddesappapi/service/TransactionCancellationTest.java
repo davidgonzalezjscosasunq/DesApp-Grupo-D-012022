@@ -82,4 +82,15 @@ public class TransactionCancellationTest extends ServiceTest {
         assertHasReputationPointsEqualTo(0, aPublisher);
     }
 
+    @Test
+    void aUserCannotCancelATransactionWithAnInvalidTransactionId() {
+        var aUser = registerPepe();
+        var nonExistentTransactionId = 123L;
+
+        assertThrowsDomainException(
+                "Transaction not found",
+                () -> tradingService.cancelTransaction(aUser.id(), nonExistentTransactionId)
+        );
+    }
+
 }

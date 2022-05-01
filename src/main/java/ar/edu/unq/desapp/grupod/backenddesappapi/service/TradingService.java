@@ -61,7 +61,7 @@ public class TradingService {
 
     public void cancelTransaction(Long userId, Long transactionToCancelId) {
         var user = userRepository.findById(userId).get();
-        var transaction = transactionsRepository.findById(transactionToCancelId).get();
+        var transaction = transactionsRepository.findById(transactionToCancelId).orElseThrow(() -> new ModelException("Transaction not found"));
 
         transaction.cancelBy(user);
 
