@@ -30,12 +30,12 @@ public class Transaction {
 
     private Transaction() {}
 
-    public Transaction(User interestedUser, AssetAdvertisement assetAdverticement, Integer quantity, LocalDateTime startLocalDateTime) {
-        assertAdvertisementWasNotPublishedBy(interestedUser, assetAdverticement);
+    public Transaction(User interestedUser, AssetAdvertisement assetAdvertisement, Integer quantity, LocalDateTime startLocalDateTime) {
+        assertAdvertisementWasNotPublishedBy(interestedUser, assetAdvertisement);
         assertIsValidQuantity(quantity);
 
         this.interestedUser = interestedUser;
-        this.assetAdvertisement = assetAdverticement;
+        this.assetAdvertisement = assetAdvertisement;
         this.quantity = quantity;
         this.startLocalDateTime = startLocalDateTime;
 
