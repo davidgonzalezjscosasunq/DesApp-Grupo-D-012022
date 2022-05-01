@@ -1,15 +1,18 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
+import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.GetCoinRateResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.*;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.Clock;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.AssetAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional
@@ -20,6 +23,9 @@ public class TradingService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    RateService rateService;
 
     @Autowired
     UserRepository userRepository;
@@ -84,6 +90,29 @@ public class TradingService {
 
     public List<Transaction> findTransactionsInformedBy(Long userId) {
         return transactionsRepository.findAllByInterestedUserId(userId);
+    }
+
+    public Volume getTradedVolumeBetweenDatesForUser(Long userId, LocalDateTime start, LocalDateTime end){
+       List<Transaction> transactionsBetweenDates = transactionsRepository.findAllBetweenDatesByUserId(userId, start, end);
+       List<Transaction> completedTransactions = (List<Transaction>) transactionsBetweenDates.stream().filter(transaction -> transaction.isConfirmed());
+       User user = userRepository.findById(userId).get();
+       LocalDateTime dateAndTimeRequest = clock.now();
+       List<ActiveCrypto> assets = getActiveCryptos(completedTransactions);
+       Double tradedValueInUsd = (assets.stream().mapToDouble(asset -> asset.nominalAmount * asset.currentPriceInUsd).sum());
+       Double tradedValueInPesos = (assets.stream().mapToDouble(asset -> asset.nominalAmount * asset.currentPriceInPesos).sum());
+
+       return new Volume(user, dateAndTimeRequest, tradedValueInUsd.floatValue(), tradedValueInPesos.floatValue(), assets);
+    }
+
+    protected List<ActiveCrypto> getActiveCryptos(List<Transaction> transactions) {
+        List<ActiveCrypto> result = new ArrayList<>();
+        for(Transaction transaction: transactions){
+            String symbol = transaction.assetSymbol();
+            Float quantity = transaction.quantity().floatValue();
+            GetCoinRateResponse rate = rateService.getCoinRate(symbol);
+            result.add(new ActiveCrypto(symbol, quantity, rate.usdPrice, rate.pesosPrice));
+        }
+        return result;
     }
 
     protected AssetAdvertisement postAdvertisement(String advertisementType, Long publisherId, String assetSymbol, int quantity, double price) {

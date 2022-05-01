@@ -13,6 +13,6 @@ public interface TransactionsRepository extends CrudRepository<Transaction, Long
 
     List<Transaction> findAllByInterestedUserId(Long userId);
 
-    List<Transaction> findAllBetweenDates(LocalDateTime start, LocalDateTime end);
+    List<Transaction> findAllBetweenDatesByUserId(Long userId, LocalDateTime start, LocalDateTime end);
 
 }

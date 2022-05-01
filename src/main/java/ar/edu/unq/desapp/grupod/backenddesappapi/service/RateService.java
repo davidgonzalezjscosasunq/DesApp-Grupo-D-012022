@@ -19,7 +19,7 @@ public class RateService {
     @Autowired
     private SecurityProperties securityProperties;
 
-    public Object getCoinRate (String symbol) {
+    public GetCoinRateResponse getCoinRate (String symbol) {
         String url = "https://api1.binance.com/api/v3/ticker/price?symbol=" + symbol;
         RestTemplate restTemplate = new RestTemplate();
 
