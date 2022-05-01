@@ -17,6 +17,7 @@ public class User {
     private String password;
     private String cvu;
     private String cryptoWalletAddress;
+    private Integer points;
 
     private User() {}
 
@@ -35,6 +36,7 @@ public class User {
         this.password = password;
         this.cvu = cvu;
         this.cryptoWalletAddress = cryptoWalletAddress;
+        this.points = 0;
     }
 
     public Long id() {
@@ -47,6 +49,18 @@ public class User {
 
     public String lastName() {
         return lastName;
+    }
+
+    public Integer points() {
+        return points;
+    }
+
+    public void receiveReputationPoints(int pointsToGain) {
+        points += pointsToGain;
+    }
+
+    public void looseReputationPoints(Integer pointsToLoose) {
+        points -= pointsToLoose;
     }
 
     private void assertIsValidFirstName(String name) {

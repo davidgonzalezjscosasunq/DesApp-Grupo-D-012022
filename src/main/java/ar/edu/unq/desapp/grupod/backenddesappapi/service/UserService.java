@@ -21,4 +21,9 @@ public class UserService {
     public User findUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new ModelException("User not found"));
     }
+
+    public Integer reputationPointsOf(Long userId) {
+        var user = userRepository.findById(userId).get();
+        return user.points();
+    }
 }
