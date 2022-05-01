@@ -50,7 +50,7 @@ public class TradingService {
 
     public void confirmTransaction(Long userId, Long transactionToConfirmId) {
         var user = userService.findUserById(userId);
-        var transaction = transactionsRepository.findById(transactionToConfirmId).get();
+        var transaction = transactionsRepository.findById(transactionToConfirmId).orElseThrow(() -> new ModelException("Transaction not found"));
 
         transaction.confirmBy(user);
         giveReputationPointsForConfirmedTransaction(user, transaction);

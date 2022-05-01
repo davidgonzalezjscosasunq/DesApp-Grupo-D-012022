@@ -111,4 +111,15 @@ public class TransactionConfirmationTest extends ServiceTest {
         assertFalse(transactionNotConfirmed.isConfirmed());
     }
 
+    @Test
+    void aUserCannotConfirmATransactionWithAnInvalidTransactionId() {
+        var aUser = registerPepe();
+        var nonExistentTransactionId = 123L;
+
+        assertThrowsDomainException(
+                "Transaction not found",
+                () -> tradingService.confirmTransaction(aUser.id(), nonExistentTransactionId)
+        );
+    }
+
 }
