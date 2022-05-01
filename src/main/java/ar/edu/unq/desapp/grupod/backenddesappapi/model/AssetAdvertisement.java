@@ -58,6 +58,10 @@ public class AssetAdvertisement {
         return publisher;
     }
 
+    public String paymentAddress() {
+        return type.paymentAddressFor(publisher());
+    }
+
     public void decreaseQuantity(Integer quantityToDecrease) {
         quantity -= quantityToDecrease;
     }
@@ -70,9 +74,4 @@ public class AssetAdvertisement {
         if (sellingPrice <= 0) throw new ModelException("Price amount of money must be positive");
     }
 
-    public String paymentAddress() {
-        return type.equals(AssetAdvertisementType.SELL_ADVERTISEMENT)
-                ? publisher().cvu()
-                : publisher.cryptoActiveWalletAddress();
-    }
 }
