@@ -40,19 +40,19 @@ public class Transaction {
     }
 
     public Boolean wasInformedBy(User user) {
-        return interestedUser.id() == user.id();
+        return interestedUser.id().equals(user.id());
     }
 
     public Boolean isPending() {
-        return state == PENDING_STATE;
+        return state.equals(PENDING_STATE);
     }
 
     public Boolean isConfirmed() {
-        return state == CONFIRMED_STATE;
+        return state.equals(CONFIRMED_STATE);
     }
 
     public Boolean isCancelled() {
-        return state == CANCELLED_STATE;
+        return state.equals(CANCELLED_STATE);
     }
 
     public Long id() {

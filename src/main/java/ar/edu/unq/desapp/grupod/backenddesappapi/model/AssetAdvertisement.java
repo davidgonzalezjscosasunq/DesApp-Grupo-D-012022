@@ -34,7 +34,7 @@ public class AssetAdvertisement {
     }
 
     public boolean wasPublishedBy(User user) {
-        return publisher.id() == user.id();
+        return publisher.id().equals(user.id());
     }
 
     public Long id() {
