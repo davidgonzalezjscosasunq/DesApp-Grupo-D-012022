@@ -5,14 +5,13 @@ import javax.persistence.*;
 @Entity
 public class AssetAdvertisement {
 
-    public static final String BUY_ADVERTISE_TYPE = "BUY_ADVERTISE";
-    public static final String SELL_ADVERTISE_TYPE = "CELL_ADVERTISE";
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private AssetAdvertisementType type;
+
     private String assetSymbol;
     private Integer quantity;
     private Double price;
@@ -23,7 +22,7 @@ public class AssetAdvertisement {
 
     private AssetAdvertisement() {}
 
-    public AssetAdvertisement(String type, String symbol, Integer quantity, Double price, User publisher) {
+    public AssetAdvertisement(AssetAdvertisementType type, String symbol, Integer quantity, Double price, User publisher) {
         assertIsValidQuantity(quantity);
         assertIsValidPrice(price);
 
