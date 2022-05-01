@@ -142,4 +142,8 @@ public class ServiceTest {
         assertEquals(quantity, anOrder.quantity());
         assertTrue(anOrder.isPending());
     }
+
+    protected void assertHasReputationPointsEqualTo(Integer expectedReputationPoints, User auser) {
+        assertEquals(expectedReputationPoints, userService.reputationPointsOf(auser.id()));
+    }
 }
