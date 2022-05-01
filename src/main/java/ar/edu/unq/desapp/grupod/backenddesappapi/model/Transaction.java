@@ -73,6 +73,10 @@ public class Transaction {
         return startLocalDateTime;
     }
 
+    public Optional<String> paymentAddress() {
+        return state.paymentAddressFor(assetAdvertisement);
+    }
+
     public void confirmBy(User user) {
         assertIsThePublisher(user);
 
@@ -114,7 +118,4 @@ public class Transaction {
         }
     }
 
-    public Optional<String> paymentAddress() {
-        return state.paymentAddressFor(assetAdvertisement);
-    }
 }
