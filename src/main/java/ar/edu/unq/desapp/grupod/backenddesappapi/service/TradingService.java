@@ -98,11 +98,9 @@ public class TradingService {
         var now = clock.now();
         var limitTime = transaction.startLocalDateTime().plusMinutes(30);
 
-        if (now.isBefore(limitTime)) {
-            user.receiveReputationPoints(10);
-        } else {
-            user.receiveReputationPoints(5);
-        }
+        var pointsToGive = now.isBefore(limitTime) ? 10 : 5;
+
+        user.receiveReputationPoints(pointsToGive);
     }
 
     private void looseReputationPointsForCancelTransaction(User user) {
