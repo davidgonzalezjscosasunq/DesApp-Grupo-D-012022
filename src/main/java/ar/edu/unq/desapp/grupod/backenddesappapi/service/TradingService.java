@@ -93,7 +93,7 @@ public class TradingService {
     }
 
     public Volume getTradedVolumeBetweenDatesForUser(Long userId, LocalDateTime start, LocalDateTime end){
-       List<Transaction> transactionsBetweenDates = transactionsRepository.findAllBetweenDatesByUserId(userId, start, end);
+       List<Transaction> transactionsBetweenDates = transactionsRepository.findAllByUserIdBetweenDates(userId, start, end);
        List<Transaction> completedTransactions = (List<Transaction>) transactionsBetweenDates.stream().filter(transaction -> transaction.isConfirmed());
        User user = userRepository.findById(userId).get();
        LocalDateTime dateAndTimeRequest = clock.now();

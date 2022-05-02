@@ -1,11 +1,8 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
-
-import org.apache.tomcat.jni.Local;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
+
 
 @Entity
 public class Transaction {
@@ -26,6 +23,8 @@ public class Transaction {
     private AssetAdvertisement assetAdvertisement;
 
     private Integer quantity;
+
+    @Column(name = "start_local_date_time")
     private LocalDateTime startLocalDateTime;
 
     private Transaction() {}
