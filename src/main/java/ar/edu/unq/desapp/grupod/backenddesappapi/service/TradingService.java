@@ -38,11 +38,11 @@ public class TradingService {
 
     // TODO: modelar dinero
     public AssetAdvertisement postSellAdvertisement(Long sellerId, String assetSymbol, Integer quantityToSell, Double sellingPrice) {
-        return postAdvertisement(AssetAdvertisement.SELL_ADVERTISE_TYPE, sellerId, assetSymbol, quantityToSell, sellingPrice);
+        return postAdvertisement(AssetAdvertisementType.SELL_ADVERTISEMENT, sellerId, assetSymbol, quantityToSell, sellingPrice);
     }
 
     public AssetAdvertisement postBuyAdvertisement(Long buyerId, String assetSymbol, int quantityToBuy, double buyPrice) {
-        return postAdvertisement(AssetAdvertisement.BUY_ADVERTISE_TYPE, buyerId, assetSymbol, quantityToBuy, buyPrice);
+        return postAdvertisement(AssetAdvertisementType.BUY_ADVERTISEMENT, buyerId, assetSymbol, quantityToBuy, buyPrice);
     }
 
     public Transaction informTransaction(Long interestedUserId, Long advertisementId, int quantityToTransfer) {
@@ -115,10 +115,10 @@ public class TradingService {
         return result;
     }
 
-    protected AssetAdvertisement postAdvertisement(String advertisementType, Long publisherId, String assetSymbol, int quantity, double price) {
+    protected AssetAdvertisement postAdvertisement(AssetAdvertisementType assetAdvertisementType, Long publisherId, String assetSymbol, int quantity, double price) {
         var publisher = userService.findUserById(publisherId);
 
-        var newAdvertisement = new AssetAdvertisement(advertisementType, assetSymbol, quantity, price, publisher);
+        var newAdvertisement = new AssetAdvertisement(assetAdvertisementType, assetSymbol, quantity, price, publisher);
 
         return assetAdvertisementsRepository.save(newAdvertisement);
     }

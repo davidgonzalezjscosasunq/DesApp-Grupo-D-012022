@@ -3,11 +3,11 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-
 @Entity
 public class Transaction {
     public static final String PENDING_STATE = "PENDING";
     public static final String CONFIRMED_STATE = "CONFIRMED";
+    private static final String CANCELLED_STATE = "CANCELLED";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,12 +29,12 @@ public class Transaction {
 
     private Transaction() {}
 
-    public Transaction(User interestedUser, AssetAdvertisement assetAdverticement, Integer quantity, LocalDateTime startLocalDateTime) {
-        assertAdvertisementWasNotPublishedBy(interestedUser, assetAdverticement);
+    public Transaction(User interestedUser, AssetAdvertisement assetAdvertisement, Integer quantity, LocalDateTime startLocalDateTime) {
+        assertAdvertisementWasNotPublishedBy(interestedUser, assetAdvertisement);
         assertIsValidQuantity(quantity);
 
         this.interestedUser = interestedUser;
-        this.assetAdvertisement = assetAdverticement;
+        this.assetAdvertisement = assetAdvertisement;
         this.quantity = quantity;
         this.startLocalDateTime = startLocalDateTime;
 
@@ -42,15 +42,19 @@ public class Transaction {
     }
 
     public Boolean wasInformedBy(User user) {
-        return interestedUser.id() == user.id();
+        return interestedUser.id().equals(user.id());
     }
 
     public Boolean isPending() {
-        return state == PENDING_STATE;
+        return state.equals(PENDING_STATE);
     }
 
     public Boolean isConfirmed() {
-        return state == CONFIRMED_STATE;
+        return state.equals(CONFIRMED_STATE);
+    }
+
+    public Boolean isCancelled() {
+        return state.equals(CANCELLED_STATE);
     }
 
     public Long id() {
@@ -81,7 +85,9 @@ public class Transaction {
     }
 
     public void cancelBy(User user) {
-        asserCanBeCancelledBy(user);
+        assertCanBeCancelledBy(user);
+
+        state = CANCELLED_STATE;
     }
 
     private boolean canBeCancelledBy(User user) {
@@ -106,7 +112,7 @@ public class Transaction {
         }
     }
 
-    private void asserCanBeCancelledBy(User user) {
+    private void assertCanBeCancelledBy(User user) {
         if (!canBeCancelledBy(user)) {
             throw new ModelException("A transaction can only be cancelled by the user that informed it or the user that published the advertisement");
         }
