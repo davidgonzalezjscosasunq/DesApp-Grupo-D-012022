@@ -1,6 +1,6 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
-import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.GetCoinRateResponse;
+import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,16 +92,16 @@ public class TradingService {
         return transactionsRepository.findAllByInterestedUserId(userId);
     }
 
-    public Volume getTradedVolumeBetweenDatesForUser(Long userId, LocalDateTime start, LocalDateTime end){
+    public TradedVolume getTradedVolumeBetweenDatesForUser(Long userId, LocalDateTime start, LocalDateTime end){
        List<Transaction> transactionsBetweenDates = transactionsRepository.findAllByUserIdBetweenDates(userId, start, end);
        List<Transaction> completedTransactions = (List<Transaction>) transactionsBetweenDates.stream().filter(transaction -> transaction.isConfirmed());
        User user = userRepository.findById(userId).get();
        LocalDateTime dateAndTimeRequest = clock.now();
        List<ActiveCrypto> assets = getActiveCryptos(completedTransactions);
-       Double tradedValueInUsd = (assets.stream().mapToDouble(asset -> asset.nominalAmount * asset.currentPriceInUsd).sum());
-       Double tradedValueInPesos = (assets.stream().mapToDouble(asset -> asset.nominalAmount * asset.currentPriceInPesos).sum());
+       Double tradedValueInUsd = (assets.stream().mapToDouble(asset -> asset.nominalAmount() * asset.currentPriceInUsd()).sum());
+       Double tradedValueInPesos = (assets.stream().mapToDouble(asset -> asset.nominalAmount() * asset.currentPriceInPesos()).sum());
 
-       return new Volume(user, dateAndTimeRequest, tradedValueInUsd.floatValue(), tradedValueInPesos.floatValue(), assets);
+       return new TradedVolume(user, dateAndTimeRequest, tradedValueInUsd.floatValue(), tradedValueInPesos.floatValue(), assets);
     }
 
     protected List<ActiveCrypto> getActiveCryptos(List<Transaction> transactions) {
@@ -109,8 +109,8 @@ public class TradingService {
         for(Transaction transaction: transactions){
             String symbol = transaction.assetSymbol();
             Float quantity = transaction.quantity().floatValue();
-            GetCoinRateResponse rate = rateService.getCoinRate(symbol);
-            result.add(new ActiveCrypto(symbol, quantity, rate.usdPrice, rate.pesosPrice));
+            CoinRate rate = rateService.getCoinRate(symbol);
+            result.add(new ActiveCrypto(symbol, quantity, rate.usdPrice(), rate.pesosPrice()));
         }
         return result;
     }

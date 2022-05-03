@@ -1,15 +1,31 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
 public class ActiveCrypto {
-    public String symbol;
-    public Float nominalAmount;
-    public Float currentPriceInUsd;
-    public Float currentPriceInPesos;
+    private String symbol;
+    private Float nominalAmount;
+    private Float currentPriceInUsd;
+    private Float currentPriceInPesos;
 
     public ActiveCrypto(String symbol, Float nominalAmount, Float currentPriceInUsd, Float currentPriceInPesos){
         this.symbol = symbol;
         this.nominalAmount = nominalAmount;
         this.currentPriceInUsd = currentPriceInUsd;
         this.currentPriceInPesos = currentPriceInPesos;
+    }
+
+    public String symbol(){
+        return this.symbol;
+    }
+
+    public Float nominalAmount(){
+        return this.nominalAmount;
+    }
+
+    public Float currentPriceInUsd(){
+        return this.currentPriceInUsd;
+    }
+
+    public Float currentPriceInPesos(){
+        return this.currentPriceInPesos;
     }
 }
