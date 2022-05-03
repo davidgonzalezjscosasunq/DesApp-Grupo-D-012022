@@ -31,9 +31,7 @@ public class RateService {
 
         Float priceInPesos = rate.price * lastDollarValueInPesos;
 
-        CoinRate response = new CoinRate(rate.price, priceInPesos);
-
-        return response;
+        return new CoinRate(rate.price, priceInPesos);
     }
 
 
