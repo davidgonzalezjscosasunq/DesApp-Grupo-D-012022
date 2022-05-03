@@ -94,6 +94,34 @@ public class TransactionConfirmationTest extends ServiceTest {
     }
 
     @Test
+    void thePaymentAddressOfAConfirmedTransactionsForASellAdvertisementIsTheCVUOfThePublisher() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+
+        var aSellAdvertisement = publishSellAdvertisementFor(aPublisher);
+        var aTransaction = tradingService.informTransaction(anInterestedUser.id(), aSellAdvertisement.id(), aSellAdvertisement.quantity());
+
+        tradingService.confirmTransaction(aPublisher.id(), aTransaction.id());
+
+        var confirmedTransaction = tradingService.findTransactionsInformedBy(anInterestedUser.id()).get(0);
+        assertEquals(aPublisher.cvu(), confirmedTransaction.paymentAddress().get());
+    }
+
+    @Test
+    void thePaymentAddressOfAConfirmedTransactionsForABuyAdvertisementIsTheCryptoActiveWalletAddressOfThePublisher() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+
+        var aBuyAdvertisement = publishBuyAdvertisementFor(aPublisher);
+        var aTransaction = tradingService.informTransaction(anInterestedUser.id(), aBuyAdvertisement.id(), aBuyAdvertisement.quantity());
+
+        tradingService.confirmTransaction(aPublisher.id(), aTransaction.id());
+
+        var confirmedTransaction = tradingService.findTransactionsInformedBy(anInterestedUser.id()).get(0);
+        assertEquals(aPublisher.cryptoActiveWalletAddress(), confirmedTransaction.paymentAddress().get());
+    }
+
+    @Test
     void aUserCannotConfirmATransactionForAnAdvertisementNotPublishedByHimself() {
         var anInterestedUser = registerPepe();
         var aPublisher = registerJuan();
@@ -109,6 +137,17 @@ public class TransactionConfirmationTest extends ServiceTest {
         var transactionNotConfirmed = tradingService.findTransactionsInformedBy(anInterestedUser.id()).get(0);
         assertTrue(transactionNotConfirmed.isPending());
         assertFalse(transactionNotConfirmed.isConfirmed());
+    }
+
+    @Test
+    void aUserCannotConfirmATransactionWithAnInvalidTransactionId() {
+        var aUser = registerPepe();
+        var nonExistentTransactionId = 123L;
+
+        assertThrowsDomainException(
+                "Transaction not found",
+                () -> tradingService.confirmTransaction(aUser.id(), nonExistentTransactionId)
+        );
     }
 
 }

@@ -14,7 +14,7 @@ public class AdvertisementPostingTest extends ServiceTest {
 
         var buyAdvertisement = tradingService.postBuyAdvertisement(buyer.id(), CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE);
 
-        assertAdvertisementHas(CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE, buyer, buyAdvertisement);
+        assertAdvertisementHas(CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE, clock.now(), buyer, buyAdvertisement);
     }
 
     @Test
@@ -23,7 +23,7 @@ public class AdvertisementPostingTest extends ServiceTest {
 
         var sellAdvertisement = tradingService.postSellAdvertisement(seller.id(), CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE);
 
-        assertAdvertisementHas(CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE, seller, sellAdvertisement);
+        assertAdvertisementHas(CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE, clock.now(), seller, sellAdvertisement);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class AdvertisementPostingTest extends ServiceTest {
         var foundSellAdvertisements = tradingService.findSellAdvertisementsWithSymbol(CRYPTO_ACTIVE_SYMBOL);
 
         assertEquals(1, foundSellAdvertisements.size());
-        assertAdvertisementHas(CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE, seller, foundSellAdvertisements.get(0));
+        assertAdvertisementHas(CRYPTO_ACTIVE_SYMBOL, VALID_ADVERTISEMENT_QUANTITY, VALID_ADVERTISEMENT_PRICE, clock.now(), seller, foundSellAdvertisements.get(0));
     }
 
     @Test

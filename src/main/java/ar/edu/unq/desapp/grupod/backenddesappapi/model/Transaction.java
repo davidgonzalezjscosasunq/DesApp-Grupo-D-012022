@@ -2,17 +2,15 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity
 public class Transaction {
-    public static final String PENDING_STATE = "PENDING";
-    public static final String CONFIRMED_STATE = "CONFIRMED";
-    private static final String CANCELLED_STATE = "CANCELLED";
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String state;
+
+    private TransactionState state;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "interested_user_id", referencedColumnName = "id")
@@ -36,7 +34,7 @@ public class Transaction {
         this.quantity = quantity;
         this.startLocalDateTime = startLocalDateTime;
 
-        this.state = PENDING_STATE;
+        this.state = TransactionState.PENDING_STATE;
     }
 
     public Boolean wasInformedBy(User user) {
@@ -44,15 +42,15 @@ public class Transaction {
     }
 
     public Boolean isPending() {
-        return state.equals(PENDING_STATE);
+        return state.equals(TransactionState.PENDING_STATE);
     }
 
     public Boolean isConfirmed() {
-        return state.equals(CONFIRMED_STATE);
+        return state.equals(TransactionState.CONFIRMED_STATE);
     }
 
     public Boolean isCancelled() {
-        return state.equals(CANCELLED_STATE);
+        return state.equals(TransactionState.CANCELLED_STATE);
     }
 
     public Long id() {
@@ -75,17 +73,21 @@ public class Transaction {
         return startLocalDateTime;
     }
 
+    public Optional<String> paymentAddress() {
+        return state.paymentAddressFor(assetAdvertisement);
+    }
+
     public void confirmBy(User user) {
         assertIsThePublisher(user);
 
         assetAdvertisement.decreaseQuantity(quantity);
-        state = CONFIRMED_STATE;
+        state = TransactionState.CONFIRMED_STATE;
     }
 
     public void cancelBy(User user) {
         assertCanBeCancelledBy(user);
 
-        state = CANCELLED_STATE;
+        state = TransactionState.CANCELLED_STATE;
     }
 
     private boolean canBeCancelledBy(User user) {

@@ -50,7 +50,7 @@ public class TradingService {
 
     public void confirmTransaction(Long userId, Long transactionToConfirmId) {
         var user = userService.findUserById(userId);
-        var transaction = transactionsRepository.findById(transactionToConfirmId).get();
+        var transaction = transactionsRepository.findById(transactionToConfirmId).orElseThrow(() -> new ModelException("Transaction not found"));
 
         transaction.confirmBy(user);
         giveReputationPointsForConfirmedTransaction(user, transaction);
@@ -61,7 +61,7 @@ public class TradingService {
 
     public void cancelTransaction(Long userId, Long transactionToCancelId) {
         var user = userRepository.findById(userId).get();
-        var transaction = transactionsRepository.findById(transactionToCancelId).get();
+        var transaction = transactionsRepository.findById(transactionToCancelId).orElseThrow(() -> new ModelException("Transaction not found"));
 
         transaction.cancelBy(user);
 
@@ -89,7 +89,7 @@ public class TradingService {
     protected AssetAdvertisement postAdvertisement(AssetAdvertisementType assetAdvertisementType, Long publisherId, String assetSymbol, int quantity, double price) {
         var publisher = userService.findUserById(publisherId);
 
-        var newAdvertisement = new AssetAdvertisement(assetAdvertisementType, assetSymbol, quantity, price, publisher);
+        var newAdvertisement = new AssetAdvertisement(assetAdvertisementType, assetSymbol, quantity, price, publisher, clock.now());
 
         return assetAdvertisementsRepository.save(newAdvertisement);
     }
@@ -98,11 +98,9 @@ public class TradingService {
         var now = clock.now();
         var limitTime = transaction.startLocalDateTime().plusMinutes(30);
 
-        if (now.isBefore(limitTime)) {
-            user.receiveReputationPoints(10);
-        } else {
-            user.receiveReputationPoints(5);
-        }
+        var pointsToGive = now.isBefore(limitTime) ? 10 : 5;
+
+        user.receiveReputationPoints(pointsToGive);
     }
 
     private void looseReputationPointsForCancelTransaction(User user) {
