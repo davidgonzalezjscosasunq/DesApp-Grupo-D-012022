@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.RateService;
+import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 
 @RestController
 public class RatesController {
@@ -14,7 +15,7 @@ public class RatesController {
     private RateService rateService;
 
     @GetMapping(value = "/rates/{symbol}")
-    public Object getCoinRates(@PathVariable("symbol") String symbol) {
+    public CoinRate getCoinRate(@PathVariable("symbol") String symbol) {
         return rateService.getCoinRate(symbol);
     }
 
