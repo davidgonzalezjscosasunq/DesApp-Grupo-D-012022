@@ -15,7 +15,7 @@ public interface TransactionsRepository extends CrudRepository<Transaction, Long
     List<Transaction> findAllByInterestedUserId(Long userId);
 
     @Query(value = "(SELECT * FROM TRANSACTIONS WHERE interested_user_id = ?1) " +
-            "INNER JOIN " +
+            "INTERSECT " +
             "(SELECT * FROM TRANSACTIONS WHERE (start_local_date_time >= ?2 AND start_local_date_time <= ?3))", nativeQuery = true)
     List<Transaction> findAllByUserIdBetweenDates(Long userId, LocalDateTime startDate, LocalDateTime endDate);
 

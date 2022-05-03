@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.*;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.Clock;
@@ -94,7 +95,7 @@ public class TradingService {
 
     public TradedVolume getTradedVolumeBetweenDatesForUser(Long userId, LocalDateTime start, LocalDateTime end){
        List<Transaction> transactionsBetweenDates = transactionsRepository.findAllByUserIdBetweenDates(userId, start, end);
-       List<Transaction> completedTransactions = (List<Transaction>) transactionsBetweenDates.stream().filter(transaction -> transaction.isConfirmed());
+       List<Transaction> completedTransactions = transactionsBetweenDates.stream().filter(transaction -> transaction.isConfirmed()).collect(Collectors.toList());
        User user = userRepository.findById(userId).get();
        LocalDateTime dateAndTimeRequest = clock.now();
        List<ActiveCrypto> assets = getActiveCryptos(completedTransactions);
