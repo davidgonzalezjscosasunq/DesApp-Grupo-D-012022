@@ -21,8 +21,6 @@ public class TradedVolumeTest extends ServiceTest{
 
         var transactions = tradingService.findTransactionsInformedBy(anInterestedUser.id());
 
-        assertTrue(transactions.get(0).isConfirmed());
-
         var volume = tradingService.getTradedVolumeBetweenDatesForUser(anInterestedUser.id(), LocalDateTime.parse("2021-12-30T19:34:50.63"), LocalDateTime.now());
 
         var currentRate = rateService.getCoinRate(CRYPTO_ACTIVE_SYMBOL);

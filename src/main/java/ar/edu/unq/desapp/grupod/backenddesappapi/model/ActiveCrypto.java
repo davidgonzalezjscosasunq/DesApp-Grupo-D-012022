@@ -28,4 +28,12 @@ public class ActiveCrypto {
     public Float currentPriceInPesos(){
         return this.currentPriceInPesos;
     }
+
+    public Float getFinalPriceInUSD(){
+        return this.nominalAmount * this.currentPriceInUsd;
+    }
+
+    public Float getFinalPriceInPesos(){
+        return this.nominalAmount * this.currentPriceInPesos;
+    }
 }

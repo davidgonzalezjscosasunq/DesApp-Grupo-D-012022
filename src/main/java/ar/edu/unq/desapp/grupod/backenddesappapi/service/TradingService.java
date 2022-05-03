@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,21 +98,19 @@ public class TradingService {
        User user = userRepository.findById(userId).get();
        LocalDateTime dateAndTimeRequest = clock.now();
        List<ActiveCrypto> assets = getActiveCryptos(completedTransactions);
-       Double tradedValueInUsd = (assets.stream().mapToDouble(asset -> asset.nominalAmount() * asset.currentPriceInUsd()).sum());
-       Double tradedValueInPesos = (assets.stream().mapToDouble(asset -> asset.nominalAmount() * asset.currentPriceInPesos()).sum());
+       Double tradedValueInUsd = assets.stream().mapToDouble(asset -> asset.getFinalPriceInUSD()).sum();
+       Double tradedValueInPesos = assets.stream().mapToDouble(asset -> asset.getFinalPriceInPesos()).sum();
 
        return new TradedVolume(user, dateAndTimeRequest, tradedValueInUsd.floatValue(), tradedValueInPesos.floatValue(), assets);
     }
 
     protected List<ActiveCrypto> getActiveCryptos(List<Transaction> transactions) {
-        List<ActiveCrypto> result = new ArrayList<>();
-        for(Transaction transaction: transactions){
+        return transactions.stream().map(transaction -> {
             String symbol = transaction.assetSymbol();
             Float quantity = transaction.quantity().floatValue();
             CoinRate rate = rateService.getCoinRate(symbol);
-            result.add(new ActiveCrypto(symbol, quantity, rate.usdPrice(), rate.pesosPrice()));
-        }
-        return result;
+            return new ActiveCrypto(symbol, quantity, rate.usdPrice(), rate.pesosPrice());
+        }).collect(Collectors.toList());
     }
 
     protected AssetAdvertisement postAdvertisement(AssetAdvertisementType assetAdvertisementType, Long publisherId, String assetSymbol, int quantity, double price) {
