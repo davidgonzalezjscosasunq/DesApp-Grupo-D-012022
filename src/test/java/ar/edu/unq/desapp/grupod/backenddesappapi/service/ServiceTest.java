@@ -33,6 +33,9 @@ public class ServiceTest {
     UserService userService;
 
     @Autowired
+    RateService rateService;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired

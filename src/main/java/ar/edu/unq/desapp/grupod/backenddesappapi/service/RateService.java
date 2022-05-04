@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.BinanceRatesResponse;
-import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.GetCoinRateResponse;
+import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.UsdResponse;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityProperties;
 
@@ -19,7 +19,7 @@ public class RateService {
     @Autowired
     private SecurityProperties securityProperties;
 
-    public Object getCoinRate (String symbol) {
+    public CoinRate getCoinRate (String symbol) {
         String url = "https://api1.binance.com/api/v3/ticker/price?symbol=" + symbol;
         RestTemplate restTemplate = new RestTemplate();
 
@@ -31,9 +31,7 @@ public class RateService {
 
         Float priceInPesos = rate.price * lastDollarValueInPesos;
 
-        GetCoinRateResponse response = new GetCoinRateResponse(rate.price, priceInPesos);
-
-        return response;
+        return new CoinRate(rate.price, priceInPesos);
     }
 
 

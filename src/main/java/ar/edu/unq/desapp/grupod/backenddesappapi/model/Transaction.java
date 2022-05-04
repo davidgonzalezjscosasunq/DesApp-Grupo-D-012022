@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Entity
+@Table(name = "TRANSACTIONS")
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,6 +22,8 @@ public class Transaction {
     private AssetAdvertisement assetAdvertisement;
 
     private Integer quantity;
+
+    @Column(name = "start_local_date_time")
     private LocalDateTime startLocalDateTime;
 
     private Transaction() {}
