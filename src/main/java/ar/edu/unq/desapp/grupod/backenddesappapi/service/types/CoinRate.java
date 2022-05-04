@@ -17,4 +17,3 @@ public class CoinRate {
         return this.pesosPrice;
     }
 }
-
