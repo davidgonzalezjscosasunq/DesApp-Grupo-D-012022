@@ -1,8 +1,8 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service.types;
 
 public class CoinRate {
-    public Float usdPrice;
-    public Float pesosPrice;
+    private Float usdPrice;
+    private Float pesosPrice;
 
     public CoinRate(Float usdPrice, Float pesosPrice){
         this.usdPrice = usdPrice;
