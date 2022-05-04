@@ -8,4 +8,13 @@ public class CoinRate {
         this.usdPrice = usdPrice;
         this.pesosPrice = pesosPrice;
     }
+
+    public Float usdPrice() {
+        return this.usdPrice;
+    }
+
+    public Float pesosPrice() {
+        return this.pesosPrice;
+    }
 }
+

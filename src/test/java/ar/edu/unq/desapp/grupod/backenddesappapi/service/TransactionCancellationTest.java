@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -45,7 +46,8 @@ public class TransactionCancellationTest extends ServiceTest {
         var transactionToConfirm = informTransactionForAllQuantity(anInterestedUser, anAdvertisement);
 
         tradingService.cancelTransaction(aPublisher.id(), transactionToConfirm.id());
-        assertEquals(-20, userService.reputationPointsOf(aPublisher.id()));
+
+        assertHasReputationPointsEqualTo(-20, aPublisher);
     }
 
     @Test
@@ -57,7 +59,8 @@ public class TransactionCancellationTest extends ServiceTest {
         var transactionToConfirm = informTransactionForAllQuantity(anInterestedUser, anAdvertisement);
 
         tradingService.cancelTransaction(anInterestedUser.id(), transactionToConfirm.id());
-        assertEquals(-20, userService.reputationPointsOf(aPublisher.id()));
+
+        assertHasReputationPointsEqualTo(-20, aPublisher);
     }
 
     @Test
@@ -76,7 +79,32 @@ public class TransactionCancellationTest extends ServiceTest {
 
         var cancelledTransaction = tradingService.findTransactionsInformedBy(anInterestedUser.id()).get(0);
         assertFalse(cancelledTransaction.isCancelled());
-        assertEquals(0, userService.reputationPointsOf(aPublisher.id()));
+        assertHasReputationPointsEqualTo(0, aPublisher);
+    }
+
+    @Test
+    void aCancelledTransactionsHasNoPaymentAddress() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+
+        var anAdvertisement = publishAdvertisementFor(aPublisher);
+        var transaction = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
+
+        tradingService.cancelTransaction(aPublisher.id(), transaction.id());
+
+        var pendingTransaction = tradingService.findTransactionsInformedBy(anInterestedUser.id()).get(0);
+        assertTrue(pendingTransaction.paymentAddress().isEmpty());
+    }
+
+    @Test
+    void aUserCannotCancelATransactionWithAnInvalidTransactionId() {
+        var aUser = registerPepe();
+        var nonExistentTransactionId = 123L;
+
+        assertThrowsDomainException(
+                "Transaction not found",
+                () -> tradingService.cancelTransaction(aUser.id(), nonExistentTransactionId)
+        );
     }
 
 }

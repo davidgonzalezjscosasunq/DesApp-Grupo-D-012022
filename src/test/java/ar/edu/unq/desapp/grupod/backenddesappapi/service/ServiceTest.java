@@ -10,6 +10,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTest {
@@ -31,6 +33,9 @@ public class ServiceTest {
     UserService userService;
 
     @Autowired
+    RateService rateService;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
@@ -46,11 +51,12 @@ public class ServiceTest {
         userRepository.deleteAll();
     }
 
-    protected void assertAdvertisementHas(String assetSymbol, int quantity, double price, User publisher, AssetAdvertisement assetAdvertisement) {
+    protected void assertAdvertisementHas(String assetSymbol, int quantity, double price, LocalDateTime publicationLocalDateTime, User publisher, AssetAdvertisement assetAdvertisement) {
         assertTrue(assetAdvertisement.wasPublishedBy(publisher));
         assertEquals(assetSymbol, assetAdvertisement.assetSymbol());
         assertEquals(quantity, assetAdvertisement.quantity());
         assertEquals(price, assetAdvertisement.price());
+        assertEquals(publicationLocalDateTime, assetAdvertisement.publicationLocalDateTime());
     }
 
     protected void assertThrowsDomainException(String expectedErrorMessage, Executable executableToTest) {
@@ -141,5 +147,9 @@ public class ServiceTest {
         assertEquals(symbolToBuy, anOrder.assetSymbol());
         assertEquals(quantity, anOrder.quantity());
         assertTrue(anOrder.isPending());
+    }
+
+    protected void assertHasReputationPointsEqualTo(Integer expectedReputationPoints, User auser) {
+        assertEquals(expectedReputationPoints, userService.reputationPointsOf(auser.id()));
     }
 }

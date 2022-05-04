@@ -45,6 +45,18 @@ public class TransactionInformingTest extends ServiceTest {
     }
 
     @Test
+    void aPendingTransactionsHasNoPaymentAddress() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+
+        var anAdvertisement = publishAdvertisementFor(aPublisher);
+        tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
+
+        var pendingTransaction = tradingService.findTransactionsInformedBy(anInterestedUser.id()).get(0);
+        assertTrue(pendingTransaction.paymentAddress().isEmpty());
+    }
+
+    @Test
     void aUserCannotInformATransactionForAnAdvertisementPublishedByHimself() {
         var aUser = registerPepe();
 

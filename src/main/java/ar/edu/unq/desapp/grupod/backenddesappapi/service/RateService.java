@@ -10,9 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.BinanceRatesResponse;
+import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.UsdResponse;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityProperties;
-import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
+
 
 
 @Service
