@@ -9,11 +9,11 @@ public class CoinRate {
         this.pesosPrice = pesosPrice;
     }
 
-    public Float usdPrice() {
+    public Float usdPrice(){
         return this.usdPrice;
     }
 
-    public Float pesosPrice() {
+    public Float pesosPrice(){
         return this.pesosPrice;
     }
 }
