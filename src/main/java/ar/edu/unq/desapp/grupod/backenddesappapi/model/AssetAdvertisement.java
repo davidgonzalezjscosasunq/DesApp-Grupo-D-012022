@@ -44,6 +44,10 @@ public class AssetAdvertisement {
         return id;
     }
 
+    public AssetAdvertisementType type() {
+        return type;
+    }
+
     public String assetSymbol() {
         return assetSymbol;
     }

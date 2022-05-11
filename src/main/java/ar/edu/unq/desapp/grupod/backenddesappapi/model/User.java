@@ -55,6 +55,14 @@ public class User {
         return cvu;
     }
 
+    public String address() {
+        return address;
+    }
+
+    public String email() {
+        return email;
+    }
+
     public String cryptoActiveWalletAddress() {
         return cryptoWalletAddress;
     }
