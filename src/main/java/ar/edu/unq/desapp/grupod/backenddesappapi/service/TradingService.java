@@ -113,7 +113,7 @@ public class TradingService {
         }).collect(Collectors.toList());
     }
 
-    protected AssetAdvertisement postAdvertisement(AssetAdvertisementType assetAdvertisementType, Long publisherId, String assetSymbol, int quantity, double price) {
+    public AssetAdvertisement postAdvertisement(AssetAdvertisementType assetAdvertisementType, Long publisherId, String assetSymbol, int quantity, double price) {
         var publisher = userService.findUserById(publisherId);
 
         var newAdvertisement = new AssetAdvertisement(assetAdvertisementType, assetSymbol, quantity, price, publisher, clock.now());
