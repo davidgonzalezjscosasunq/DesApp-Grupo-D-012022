@@ -1,0 +1,14 @@
+TAG Entrega 1 1.0
+---------------------------------------------------------------------
+NEW FEATURES:
+* User (Registration, reputation points).
+* Transaction (inform transaction, confirm transaction, cancel transaction, find transactions informed by user, give reputation points for confirmed transaction).
+* Rates (get coin rates info in pesos and usd from external api).
+* Traded volume (get traded volume between dates for a given user).
+* Asset Advertisement (publish intention to sell and buy).
+* Active Crypto (get active cryptos).
+
+NOTES:
+* All functionality in TradingService is not called in any controller yet.
+* To do: model money.
+* Add exceptions to some functions.
