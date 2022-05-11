@@ -12,4 +12,4 @@ NOTES:
 * All functionality in TradingService is not called in any controller yet.
 * To do: model money.
 * Add validations to some methods.
-* Mock data from external api to test RateService.
+* To do: Mock data from external api to test RateService.
