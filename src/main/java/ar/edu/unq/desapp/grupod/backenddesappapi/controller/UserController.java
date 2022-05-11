@@ -18,14 +18,14 @@ public class UserController {
     public ResponseEntity<UserDTO> findUserById(@PathVariable("userId") Long userId) {
         var user = userService.findUserById(userId);
 
-        return new ResponseEntity(UserDTO.form(user), HttpStatus.OK);
+        return new ResponseEntity<UserDTO>(UserDTO.form(user), HttpStatus.OK);
     }
 
     @PostMapping(value = "/users")
     public ResponseEntity<UserDTO> registerUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
         var user = userService.registerUser(userRegistrationDTO.firstName(), userRegistrationDTO.lastName(), userRegistrationDTO.email(), userRegistrationDTO.address(), userRegistrationDTO.password(), userRegistrationDTO.cvu(), userRegistrationDTO.cryptoWalletAddress());
 
-        return new ResponseEntity(UserDTO.form(user), HttpStatus.CREATED);
+        return new ResponseEntity<UserDTO>(UserDTO.form(user), HttpStatus.CREATED);
     }
 
 }
