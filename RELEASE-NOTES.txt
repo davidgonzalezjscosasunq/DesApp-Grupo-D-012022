@@ -6,7 +6,7 @@ NEW FEATURES:
 * Transaction (inform transaction, confirm transaction, cancel transaction, find transactions informed by user, give reputation points for confirmed transaction).
 * Rates (get coin rates info in pesos and usd from external api).
 * Traded volume (get traded volume between dates for a given user).
-* Active Crypto (get active cryptos).
+* Active Crypto (active crypto prices).
 
 NOTES:
 * All functionality in TradingService is not called in any controller yet.
