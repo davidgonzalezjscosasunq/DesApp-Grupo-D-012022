@@ -23,6 +23,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
+	implementation 'io.rest-assured:spring-mock-mvc:4.5.0'
 }
 
 tasks.named('test') {

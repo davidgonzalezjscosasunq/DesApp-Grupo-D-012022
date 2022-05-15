@@ -1,11 +1,10 @@
-package ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos;
+package ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.asset_advertisement;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisementType;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 public class AssetAdvertisementDTO {
@@ -45,4 +44,31 @@ public class AssetAdvertisementDTO {
         this.publisherId = publisher.id();
     }
 
+    public Long id() {
+        return id;
+    }
+
+    public AssetAdvertisementType type() {
+        return type;
+    }
+
+    public String assetSymbol() {
+        return assetSymbol;
+    }
+
+    public Integer quantity() {
+        return quantity;
+    }
+
+    public Double price() {
+        return price;
+    }
+
+    public LocalDateTime publicationLocalDateTime() {
+        return publicationLocalDateTime;
+    }
+
+    public Long publisherId() {
+        return publisherId;
+    }
 }

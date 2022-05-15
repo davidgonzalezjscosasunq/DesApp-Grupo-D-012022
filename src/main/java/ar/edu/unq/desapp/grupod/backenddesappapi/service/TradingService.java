@@ -36,16 +36,24 @@ public class TradingService {
     @Autowired
     TransactionsRepository transactionsRepository;
 
+    public AssetAdvertisement postAdvertisement(AssetAdvertisementType assetAdvertisementType, Long publisherId, String assetSymbol, int quantity, double price) {
+        var publisher = userService.findUserById(publisherId);
+
+        var newAdvertisement = new AssetAdvertisement(assetAdvertisementType, assetSymbol, quantity, price, publisher, clock.now());
+
+        return assetAdvertisementsRepository.save(newAdvertisement);
+    }
+
     // TODO: modelar dinero
     public AssetAdvertisement postSellAdvertisement(Long sellerId, String assetSymbol, Integer quantityToSell, Double sellingPrice) {
         return postAdvertisement(AssetAdvertisementType.SELL_ADVERTISEMENT, sellerId, assetSymbol, quantityToSell, sellingPrice);
     }
 
-    public AssetAdvertisement postBuyAdvertisement(Long buyerId, String assetSymbol, int quantityToBuy, double buyPrice) {
+    public AssetAdvertisement postBuyAdvertisement(Long buyerId, String assetSymbol, Integer quantityToBuy, Double buyPrice) {
         return postAdvertisement(AssetAdvertisementType.BUY_ADVERTISEMENT, buyerId, assetSymbol, quantityToBuy, buyPrice);
     }
 
-    public Transaction informTransaction(Long interestedUserId, Long advertisementId, int quantityToTransfer) {
+    public Transaction informTransaction(Long interestedUserId, Long advertisementId, Integer quantityToTransfer) {
         var interestedUser = userService.findUserById(interestedUserId);
         var assetAdvertisement = assetAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new ModelException("Advertisement not found"));
 
@@ -111,14 +119,6 @@ public class TradingService {
             CoinRate rate = rateService.getCoinRate(symbol);
             return new ActiveCrypto(symbol, quantity, rate.usdPrice(), rate.pesosPrice());
         }).collect(Collectors.toList());
-    }
-
-    public AssetAdvertisement postAdvertisement(AssetAdvertisementType assetAdvertisementType, Long publisherId, String assetSymbol, int quantity, double price) {
-        var publisher = userService.findUserById(publisherId);
-
-        var newAdvertisement = new AssetAdvertisement(assetAdvertisementType, assetSymbol, quantity, price, publisher, clock.now());
-
-        return assetAdvertisementsRepository.save(newAdvertisement);
     }
 
     protected void giveReputationPointsForConfirmedTransaction(User user, Transaction transaction) {

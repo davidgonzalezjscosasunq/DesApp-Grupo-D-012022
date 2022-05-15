@@ -1,5 +1,8 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+@JsonFormat(shape = JsonFormat.Shape.STRING)
 public enum AssetAdvertisementType {
     BUY_ADVERTISEMENT {
         public String paymentAddressFor(User user) {

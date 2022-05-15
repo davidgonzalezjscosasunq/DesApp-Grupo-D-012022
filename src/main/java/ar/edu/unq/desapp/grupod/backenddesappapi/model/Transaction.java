@@ -80,6 +80,14 @@ public class Transaction {
         return state.paymentAddressFor(assetAdvertisement);
     }
 
+    public TransactionState state() {
+        return state;
+    }
+
+    public User interestedUser() {
+        return interestedUser;
+    }
+
     public void confirmBy(User user) {
         assertIsThePublisher(user);
 
@@ -120,5 +128,4 @@ public class Transaction {
             throw new ModelException("A transaction can only be cancelled by the user that informed it or the user that published the advertisement");
         }
     }
-
 }

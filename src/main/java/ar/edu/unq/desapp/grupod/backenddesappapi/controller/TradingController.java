@@ -1,6 +1,9 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.controller;
 
-import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.AssetAdvertisementDTO;
+import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.asset_advertisement.AssetAdvertisementCreationDTO;
+import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.asset_advertisement.AssetAdvertisementDTO;
+import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.transaction.TransactionCreationDTO;
+import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.transaction.TransactionDTO;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.TradingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +17,17 @@ public class TradingController {
     TradingService tradingService;
 
     @PostMapping(value = "/advertisements")
-    public ResponseEntity<AssetAdvertisementDTO> postAdvertisement(@RequestBody PostAdvertisementCreationDTO postAdvertisementCreationDTO) {
-        var assetAdvertisement = tradingService.postAdvertisement(postAdvertisementCreationDTO.advertisementType(), postAdvertisementCreationDTO.sellerId(), postAdvertisementCreationDTO.assetSymbol(), postAdvertisementCreationDTO.quantityToSell(), postAdvertisementCreationDTO.sellingPrice());
+    public ResponseEntity<AssetAdvertisementDTO> postAdvertisement(@RequestBody AssetAdvertisementCreationDTO assetAdvertisementCreationDTO) {
+        var assetAdvertisement = tradingService.postAdvertisement(assetAdvertisementCreationDTO.advertisementType(), assetAdvertisementCreationDTO.publisherId(), assetAdvertisementCreationDTO.assetSymbol(), assetAdvertisementCreationDTO.quantity(), assetAdvertisementCreationDTO.price());
 
         return new ResponseEntity<AssetAdvertisementDTO>(AssetAdvertisementDTO.form(assetAdvertisement), HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "/transactions")
+    public TransactionDTO informTransaction(@RequestBody TransactionCreationDTO transactionCreationDTO) {
+        var transaction = tradingService.informTransaction(transactionCreationDTO.interestedUserId(), transactionCreationDTO.advertisementId(), transactionCreationDTO.quantityToTransfer());
+
+        return TransactionDTO.form(transaction);
     }
 
 }
