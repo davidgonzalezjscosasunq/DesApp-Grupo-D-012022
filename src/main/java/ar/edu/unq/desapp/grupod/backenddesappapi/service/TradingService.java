@@ -54,7 +54,7 @@ public class TradingService {
         return transactionsRepository.save(newTransaction);
     }
 
-    public void confirmTransaction(Long userId, Long transactionToConfirmId) {
+    public Transaction confirmTransaction(Long userId, Long transactionToConfirmId) {
         var user = userService.findUserById(userId);
         var transaction = transactionsRepository.findById(transactionToConfirmId).orElseThrow(() -> new ModelException("Transaction not found"));
 
@@ -63,17 +63,24 @@ public class TradingService {
 
         transactionsRepository.save(transaction);
         userRepository.save(user);
+
+        return transaction;
     }
 
-    public void cancelTransaction(Long userId, Long transactionToCancelId) {
+    public Transaction cancelTransaction(Long userId, Long transactionToCancelId) {
         var user = userRepository.findById(userId).get();
         var transaction = transactionsRepository.findById(transactionToCancelId).orElseThrow(() -> new ModelException("Transaction not found"));
 
         transaction.cancelBy(user);
-
         looseReputationPointsForCancelTransaction(transaction.publisher());
 
         userRepository.save(user);
+
+        return transaction;
+    }
+
+    public List<Transaction> findTransactionsInformedBy(Long userId) {
+        return transactionsRepository.findAllByInterestedUserId(userId);
     }
 
     public List<AssetAdvertisement> findSellAdvertisementsWithSymbol(String assetSymbol) {
@@ -86,10 +93,6 @@ public class TradingService {
 
     public List<AssetAdvertisement> findAdvertisementsWithSymbol(String assetSymbol) {
         return assetAdvertisementsRepository.findAllByAssetSymbol(assetSymbol);
-    }
-
-    public List<Transaction> findTransactionsInformedBy(Long userId) {
-        return transactionsRepository.findAllByInterestedUserId(userId);
     }
 
     public TradedVolume getTradedVolumeBetweenDatesForUser(Long userId, LocalDateTime start, LocalDateTime end){

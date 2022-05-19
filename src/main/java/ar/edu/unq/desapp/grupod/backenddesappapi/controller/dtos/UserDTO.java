@@ -34,4 +34,31 @@ public class UserDTO {
         this.cryptoWalletAddress = cryptoWalletAddress;
     }
 
+    public Long id() {
+        return id;
+    }
+
+    public String firstName() {
+        return firstName;
+    }
+
+    public String lastName() {
+        return lastName;
+    }
+
+    public String email() {
+        return email;
+    }
+
+    public String address() {
+        return address;
+    }
+
+    public String cvu() {
+        return cvu;
+    }
+
+    public String cryptoWalletAddress() {
+        return cryptoWalletAddress;
+    }
 }

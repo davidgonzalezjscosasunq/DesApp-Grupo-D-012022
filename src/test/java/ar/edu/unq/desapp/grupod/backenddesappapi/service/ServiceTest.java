@@ -74,7 +74,7 @@ public class ServiceTest {
     }
 
     protected AssetAdvertisement publishSellAdvertisementFor(User aSeller, Integer quantityToSell) {
-        return tradingService.postSellAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
+        return tradingService.postAdvertisement(AssetAdvertisementType.SELL_ADVERTISEMENT, aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
     }
 
     protected AssetAdvertisement publishSellAdvertisementFor(User aSeller) {
@@ -86,7 +86,7 @@ public class ServiceTest {
     }
 
     protected AssetAdvertisement publishBuyAdvertisementFor(User aSeller, Integer quantityToSell) {
-        return tradingService.postBuyAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
+        return tradingService.postAdvertisement(AssetAdvertisementType.BUY_ADVERTISEMENT, aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
     }
 
     protected AssetAdvertisement publishAdvertisementFor(User publisher) {
