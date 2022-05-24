@@ -1,4 +1,4 @@
-package ar.edu.unq.desapp.grupod.backenddesappapi.controller;
+package ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos;
 
 public class InformTransactionDTO {
 

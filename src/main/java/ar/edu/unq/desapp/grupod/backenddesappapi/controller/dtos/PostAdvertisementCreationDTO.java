@@ -1,4 +1,4 @@
-package ar.edu.unq.desapp.grupod.backenddesappapi.controller;
+package ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisementType;
 import com.fasterxml.jackson.annotation.JsonProperty;

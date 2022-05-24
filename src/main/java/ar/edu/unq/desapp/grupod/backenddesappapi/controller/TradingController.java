@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.controller;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.AssetAdvertisementDTO;
+import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.PostAdvertisementCreationDTO;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.TradingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
