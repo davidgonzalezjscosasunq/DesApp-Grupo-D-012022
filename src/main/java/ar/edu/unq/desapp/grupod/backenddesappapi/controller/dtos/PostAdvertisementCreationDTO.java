@@ -6,37 +6,45 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PostAdvertisementCreationDTO {
 
     @JsonProperty
-    AssetAdvertisementType advertisementType;
+    private AssetAdvertisementType advertisementType;
 
     @JsonProperty
-    Long sellerId;
+    private Long publisherId;
 
     @JsonProperty
-    String assetSymbol;
+    private String assetSymbol;
 
     @JsonProperty
-    Integer quantityToSell;
+    private Integer quantity;
 
     @JsonProperty
-    Double sellingPrice;
+    private Double price;
 
-    public AssetAdvertisementType advertisementType() {
-        return advertisementType;
+    public PostAdvertisementCreationDTO(AssetAdvertisementType advertisementType, Long publisherId, String assetSymbol, Integer quantity, Double price) {
+        this.advertisementType = advertisementType;
+        this.publisherId = publisherId;
+        this.assetSymbol = assetSymbol;
+        this.quantity = quantity;
+        this.price = price;
     }
 
-    public Long sellerId() {
-        return sellerId;
+    public Long publisherId() {
+        return publisherId;
     }
 
     public String assetSymbol() {
         return assetSymbol;
     }
 
-    public Integer quantityToSell() {
-        return quantityToSell;
+    public Integer quantity() {
+        return quantity;
     }
 
-    public Double sellingPrice() {
-        return sellingPrice;
+    public Double price() {
+        return price;
+    }
+
+    public AssetAdvertisementType assetAdvertisementType() {
+        return advertisementType;
     }
 }
