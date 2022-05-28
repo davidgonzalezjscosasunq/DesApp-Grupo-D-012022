@@ -72,8 +72,8 @@ abstract public class ControllerTest {
         return new UserRegistrationDTO(UserTestFactory.JUAN_FIRST_NAME, UserTestFactory.JUAN_LAST_NAME, UserTestFactory.JUAN_EMAIL, UserTestFactory.JUAN_ADDRESS, UserTestFactory.JUAN_PASSWORD, UserTestFactory.JUAN_CVU, UserTestFactory.JUAN_CRIPTO_WALLET_ADDRESS);
     }
 
-    protected UserDTO registerUser(UserRegistrationDTO pepeGomezRegistrationDTO) {
-        return restTemplate.postForObject(userURL(), new HttpEntity(pepeGomezRegistrationDTO), UserDTO.class);
+    protected UserDTO registerUser(UserRegistrationDTO userRegistrationDTO) {
+        return restTemplate.postForObject(userURL(), new HttpEntity(userRegistrationDTO), UserDTO.class);
     }
 
     protected UserDTO registerPepeGomez() {

@@ -1,7 +1,12 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.controller;
 
-import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.AssetAdvertisementDTO;
+import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.*;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisementType;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.Transaction;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.TransactionState;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -22,6 +27,17 @@ public class TradingControllerTest extends ControllerTest {
         assertThat(responseEntity.getBody().quantity()).isEqualTo(assetAdvertisementCreationDTO.quantity());
         assertThat(responseEntity.getBody().price()).isEqualTo(assetAdvertisementCreationDTO.price());
         assertThat(responseEntity.getBody().publisherId()).isEqualTo(assetAdvertisementCreationDTO.publisherId());
+    }
+
+    @Test
+    public void createAssetAdvertisementFailsWithNotFoundWhenUserIsNotFound() {
+        var notRegisteredUserId = -999999L;
+        var postAdvertisementCreationDTO = new PostAdvertisementCreationDTO(AssetAdvertisementType.BUY_ADVERTISEMENT, notRegisteredUserId, "BNB", 10, 100.0);
+
+        var responseEntity = restTemplate.postForEntity(assetAdvertisementURL(), new HttpEntity(postAdvertisementCreationDTO), String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(responseEntity.getBody()).isEqualTo("User not found");
     }
 
     @Test
@@ -77,6 +93,33 @@ public class TradingControllerTest extends ControllerTest {
     }
 
     @Test
+    public void informTransactionFailsWithNotFoundWhenUserIsNotFound() {
+        var pepeGomezDTO = registerPepeGomez();
+        var assetAdvertisementDTO = postAssetAdvertisementFor(pepeGomezDTO);
+
+        var notRegisteredUserId = -999L;
+        var transactionCreationDTO = new InformTransactionDTO(notRegisteredUserId, assetAdvertisementDTO.id(), 100);
+
+        var responseEntity = restTemplate.postForEntity(transactionURL(), transactionCreationDTO, String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(responseEntity.getBody()).isEqualTo("User not found");
+    }
+
+    @Test
+    public void informTransactionFailsWithNotFoundWhenAssetAdvertisementIsNotFound() {
+        var pepeGomezDTO = registerPepeGomez();
+
+        var notPostedAssetAdvertisementId = -999L;
+        var transactionCreationDTO = new InformTransactionDTO(pepeGomezDTO.id(), notPostedAssetAdvertisementId, 100);
+
+        var responseEntity = restTemplate.postForEntity(transactionURL(), transactionCreationDTO, String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(responseEntity.getBody()).isEqualTo("Advertisement not found");
+    }
+
+    @Test
     public void confirmTransactionSuccessfully() {
         var pepeGomezDTO = registerPepeGomez();
         var juanPerezDTO = registerJuanPerez();
@@ -92,6 +135,36 @@ public class TradingControllerTest extends ControllerTest {
     }
 
     @Test
+    public void confirmTransactionFailsWithNotFoundWhenUserNotFound() {
+        var pepeGomezDTO = registerPepeGomez();
+        var juanPerezDTO = registerJuanPerez();
+        var assetAdvertisementDTO = postAssetAdvertisementFor(pepeGomezDTO);
+        var transactionDTO = informTransaction(juanPerezDTO, assetAdvertisementDTO).getBody();
+
+        var notRegisteredUserId = -999999L;
+        var updateTransactionDTO = new UpdateTransactionDTO(notRegisteredUserId, transactionDTO.transactionId(), UpdateTransactionType.CONFIRM);
+
+        var responseEntity = restTemplate.exchange(transactionURL(), HttpMethod.PUT, new HttpEntity<UpdateTransactionDTO>(updateTransactionDTO), String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(responseEntity.getBody()).isEqualTo("User not found");
+    }
+
+    @Test
+    public void confirmTransactionFailsWithNotFoundWhenTransactionIsNotFound() {
+        var pepeGomezDTO = registerPepeGomez();
+
+        var notRegisteredTransactionId = -999L;
+        var transactionDTO = new TransactionDTO(notRegisteredTransactionId, "DAI", TransactionState.PENDING);
+        var updateTransactionDTO = UpdateTransactionDTO.confirmationFor(pepeGomezDTO, transactionDTO);
+
+        var responseEntity = restTemplate.exchange(transactionURL(), HttpMethod.PUT, new HttpEntity<UpdateTransactionDTO>(updateTransactionDTO), String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(responseEntity.getBody()).isEqualTo("Transaction not found");
+    }
+
+    @Test
     public void cancelTransactionSuccessfully() {
         var pepeGomezDTO = registerPepeGomez();
         var juanPerezDTO = registerJuanPerez();
@@ -104,6 +177,35 @@ public class TradingControllerTest extends ControllerTest {
         assertThat(responseEntity.getBody().transactionId()).isNotNull();
         assertThat(responseEntity.getBody().state()).isEqualTo("CANCELLED");
         assertThat(responseEntity.getBody().assetSymbol()).isEqualTo(assetAdvertisementDTO.assetSymbol());
+    }
+
+    @Test
+    public void cancelTransactionFailsWithNotFoundWhenTheUserIsNotFound() {
+        var pepeGomezDTO = registerPepeGomez();
+        var juanPerezDTO = registerJuanPerez();
+        var assetAdvertisementDTO = postAssetAdvertisementFor(pepeGomezDTO);
+        var transactionDTO = informTransaction(juanPerezDTO, assetAdvertisementDTO).getBody();
+
+        var notRegisteredUserId = -999999L;
+        var updateTransactionDTO = new UpdateTransactionDTO(notRegisteredUserId, transactionDTO.transactionId(), UpdateTransactionType.CANCEL);
+
+        var responseEntity = restTemplate.exchange(transactionURL(), HttpMethod.PUT, new HttpEntity<UpdateTransactionDTO>(updateTransactionDTO), String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(responseEntity.getBody()).isEqualTo("User not found");
+    }
+
+    @Test
+    public void cancelTransactionFailsWithNotFoundWhenTheTransactionIsNotFound() {
+        var pepeGomezDTO = registerPepeGomez();
+        var notRegisteredTransactionId = -999999L;
+
+        var updateTransactionDTO = new UpdateTransactionDTO(pepeGomezDTO.id(), notRegisteredTransactionId, UpdateTransactionType.CANCEL);
+
+        var responseEntity = restTemplate.exchange(transactionURL(), HttpMethod.PUT, new HttpEntity<UpdateTransactionDTO>(updateTransactionDTO), String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(responseEntity.getBody()).isEqualTo("Transaction not found");
     }
 
     @Test
