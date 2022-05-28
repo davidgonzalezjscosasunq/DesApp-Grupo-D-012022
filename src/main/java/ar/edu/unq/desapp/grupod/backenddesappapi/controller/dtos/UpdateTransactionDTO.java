@@ -1,8 +1,11 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos;
 
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.Transaction;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.TradingService;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.UpdateTransactionType.CONFIRM;
 
 public class UpdateTransactionDTO {
 
@@ -16,7 +19,7 @@ public class UpdateTransactionDTO {
     private UpdateTransactionType type;
 
     public static UpdateTransactionDTO confirmationFor(UserDTO userDTO, TransactionDTO transactionDTO) {
-        return new UpdateTransactionDTO(userDTO.id(), transactionDTO.transactionId(), UpdateTransactionType.CONFIRM);
+        return new UpdateTransactionDTO(userDTO.id(), transactionDTO.transactionId(), CONFIRM);
     }
 
     public static UpdateTransactionDTO cancellationFor(UserDTO userDTO, TransactionDTO transactionDTO) {
@@ -44,13 +47,7 @@ public class UpdateTransactionDTO {
     }
 
     public Transaction applyTo(TradingService tradingService) {
-        switch (type) {
-            case CONFIRM:
-                return tradingService.confirmTransaction(userId, transactionId);
-            case CANCEL:
-                return tradingService.cancelTransaction(userId, transactionId);
-        }
-        throw new RuntimeException("Unknown transaction states");
+        return type.applyTo(tradingService, userId, transactionId);
     }
 
 }
