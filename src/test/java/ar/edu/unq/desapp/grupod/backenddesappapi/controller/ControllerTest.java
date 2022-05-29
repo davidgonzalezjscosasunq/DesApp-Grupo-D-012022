@@ -57,11 +57,11 @@ abstract public class ControllerTest {
     }
 
     protected String transactionURL() {
-        return baseURL() + "/transactions";
+        return assetAdvertisementURL() + "/transactions";
     }
 
     protected String transactionInformedByUserURL(Long userId) {
-        return userURLWithId(userId) + "/transactions";
+        return transactionURL() + "/users/" + userId;
     }
 
     protected UserRegistrationDTO createPepeGomezRegistrationDTO() {

@@ -11,33 +11,34 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping(value = "advertisements")
 public class TradingController {
 
     @Autowired
     TradingService tradingService;
 
-    @PostMapping(value = "/advertisements")
+    @PostMapping
     public ResponseEntity<AssetAdvertisementDTO> postAdvertisement(@RequestBody PostAdvertisementCreationDTO postAdvertisementCreationDTO) {
         var assetAdvertisement = tradingService.postAdvertisement(postAdvertisementCreationDTO.assetAdvertisementType(), postAdvertisementCreationDTO.publisherId(), postAdvertisementCreationDTO.assetSymbol(), postAdvertisementCreationDTO.quantity(), postAdvertisementCreationDTO.price());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(AssetAdvertisementDTO.form(assetAdvertisement));
     }
 
-    @GetMapping(value = "/advertisements/{assetSymbol}")
+    @GetMapping(value = "/{assetSymbol}")
     public ResponseEntity<List<AssetAdvertisementDTO>> findAssetAdvertisementsWithSymbol(@PathVariable String assetSymbol) {
         var assetAdvertisements = tradingService.findAdvertisementsWithSymbol(assetSymbol);
 
         return ResponseEntity.ok().body(assetAdvertisements.stream().map(AssetAdvertisementDTO::form).collect(Collectors.toList()));
     }
 
-    @GetMapping(value = "/advertisements/sell/{assetSymbol}")
+    @GetMapping(value = "/sell/{assetSymbol}")
     public ResponseEntity<List<AssetAdvertisementDTO>> findSellAdvertisementsWithSymbol(@PathVariable String assetSymbol) {
         var assetAdvertisements = tradingService.findSellAdvertisementsWithSymbol(assetSymbol);
 
         return ResponseEntity.ok().body(assetAdvertisements.stream().map(AssetAdvertisementDTO::form).collect(Collectors.toList()));
     }
 
-    @GetMapping(value = "/advertisements/buy/{assetSymbol}")
+    @GetMapping(value = "/buy/{assetSymbol}")
     public ResponseEntity<List<AssetAdvertisementDTO>> findBuyAdvertisementsWithSymbol(@PathVariable String assetSymbol) {
         var assetAdvertisements = tradingService.findBuyAdvertisementsWithSymbol(assetSymbol);
 
@@ -58,7 +59,7 @@ public class TradingController {
         return ResponseEntity.status(HttpStatus.OK).body(TransactionDTO.from(updatedTransaction));
     }
 
-    @GetMapping(value = "/users/{userId}/transactions")
+    @GetMapping(value = "/transactions/users/{userId}")
     public ResponseEntity<List<TransactionDTO>> findTransactionsInformedBy(@PathVariable Long userId) {
         var transactions = tradingService.findTransactionsInformedBy(userId);
 
