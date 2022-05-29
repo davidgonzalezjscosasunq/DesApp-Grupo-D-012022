@@ -47,33 +47,40 @@ public class TradingService {
 
     public Transaction informTransaction(Long interestedUserId, Long advertisementId, int quantityToTransfer) {
         var interestedUser = userService.findUserById(interestedUserId);
-        var assetAdvertisement = assetAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new ModelException("Advertisement not found"));
+        var assetAdvertisement = assetAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
 
         var newTransaction = new Transaction(interestedUser, assetAdvertisement, quantityToTransfer, clock.now());
 
         return transactionsRepository.save(newTransaction);
     }
 
-    public void confirmTransaction(Long userId, Long transactionToConfirmId) {
+    public Transaction confirmTransaction(Long userId, Long transactionToConfirmId) {
         var user = userService.findUserById(userId);
-        var transaction = transactionsRepository.findById(transactionToConfirmId).orElseThrow(() -> new ModelException("Transaction not found"));
+        var transaction = transactionsRepository.findById(transactionToConfirmId).orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
 
         transaction.confirmBy(user);
         giveReputationPointsForConfirmedTransaction(user, transaction);
 
         transactionsRepository.save(transaction);
         userRepository.save(user);
+
+        return transaction;
     }
 
-    public void cancelTransaction(Long userId, Long transactionToCancelId) {
-        var user = userRepository.findById(userId).get();
-        var transaction = transactionsRepository.findById(transactionToCancelId).orElseThrow(() -> new ModelException("Transaction not found"));
+    public Transaction cancelTransaction(Long userId, Long transactionToCancelId) {
+        var user = userService.findUserById(userId);
+        var transaction = transactionsRepository.findById(transactionToCancelId).orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
 
         transaction.cancelBy(user);
-
         looseReputationPointsForCancelTransaction(transaction.publisher());
 
         userRepository.save(user);
+
+        return transaction;
+    }
+
+    public List<Transaction> findTransactionsInformedBy(Long userId) {
+        return transactionsRepository.findAllByInterestedUserId(userId);
     }
 
     public List<AssetAdvertisement> findSellAdvertisementsWithSymbol(String assetSymbol) {
@@ -86,10 +93,6 @@ public class TradingService {
 
     public List<AssetAdvertisement> findAdvertisementsWithSymbol(String assetSymbol) {
         return assetAdvertisementsRepository.findAllByAssetSymbol(assetSymbol);
-    }
-
-    public List<Transaction> findTransactionsInformedBy(Long userId) {
-        return transactionsRepository.findAllByInterestedUserId(userId);
     }
 
     public TradedVolume getTradedVolumeBetweenDatesForUser(Long userId, LocalDateTime start, LocalDateTime end){

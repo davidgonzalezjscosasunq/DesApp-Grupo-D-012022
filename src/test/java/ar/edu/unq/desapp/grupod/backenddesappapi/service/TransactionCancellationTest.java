@@ -107,4 +107,24 @@ public class TransactionCancellationTest extends ServiceTest {
         );
     }
 
+    @Test
+    void aTransactionForAnAdvertisementsCannotBeCancelledByANotRegisteredUser() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+
+        var anAdvertisement = publishAdvertisementFor(aPublisher);
+        var transactionToConfirm = informTransactionForAllQuantity(anInterestedUser, anAdvertisement);
+
+        var notRegisteredUserId = -999999L;
+
+        assertThrowsDomainException(
+                "User not found",
+                () -> tradingService.cancelTransaction(notRegisteredUserId, transactionToConfirm.id())
+        );
+
+        var cancelledTransaction = tradingService.findTransactionsInformedBy(anInterestedUser.id()).get(0);
+        assertFalse(cancelledTransaction.isCancelled());
+        assertHasReputationPointsEqualTo(0, aPublisher);
+    }
+
 }

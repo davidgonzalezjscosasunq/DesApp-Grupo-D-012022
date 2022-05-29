@@ -37,7 +37,11 @@ public class Transaction {
         this.quantity = quantity;
         this.startLocalDateTime = startLocalDateTime;
 
-        this.state = TransactionState.PENDING_STATE;
+        this.state = TransactionState.PENDING;
+    }
+
+    public TransactionState state() {
+        return state;
     }
 
     public Boolean wasInformedBy(User user) {
@@ -45,15 +49,15 @@ public class Transaction {
     }
 
     public Boolean isPending() {
-        return state.equals(TransactionState.PENDING_STATE);
+        return state.equals(TransactionState.PENDING);
     }
 
     public Boolean isConfirmed() {
-        return state.equals(TransactionState.CONFIRMED_STATE);
+        return state.equals(TransactionState.CONFIRMED);
     }
 
     public Boolean isCancelled() {
-        return state.equals(TransactionState.CANCELLED_STATE);
+        return state.equals(TransactionState.CANCELLED);
     }
 
     public Long id() {
@@ -84,13 +88,13 @@ public class Transaction {
         assertIsThePublisher(user);
 
         assetAdvertisement.decreaseQuantity(quantity);
-        state = TransactionState.CONFIRMED_STATE;
+        state = TransactionState.CONFIRMED;
     }
 
     public void cancelBy(User user) {
         assertCanBeCancelledBy(user);
 
-        state = TransactionState.CANCELLED_STATE;
+        state = TransactionState.CANCELLED;
     }
 
     private boolean canBeCancelledBy(User user) {

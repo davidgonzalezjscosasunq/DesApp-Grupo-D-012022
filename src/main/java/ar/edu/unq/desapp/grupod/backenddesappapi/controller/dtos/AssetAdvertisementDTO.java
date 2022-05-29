@@ -35,6 +35,8 @@ public class AssetAdvertisementDTO {
         return new AssetAdvertisementDTO(assetAdvertisement.id(), assetAdvertisement.type(), assetAdvertisement.assetSymbol(), assetAdvertisement.quantity(), assetAdvertisement.price(), assetAdvertisement.publicationLocalDateTime(), assetAdvertisement.publisher());
     }
 
+    public AssetAdvertisementDTO() {}
+
     public AssetAdvertisementDTO(Long assetAdvertisementId, AssetAdvertisementType type, String assetSymbol, int quantity, double price, LocalDateTime publicationLocalDateTime, User publisher) {
         this.id = assetAdvertisementId;
         this.type = type;
@@ -45,4 +47,31 @@ public class AssetAdvertisementDTO {
         this.publisherId = publisher.id();
     }
 
+    public Long id() {
+        return id;
+    }
+
+    public AssetAdvertisementType type() {
+        return type;
+    }
+
+    public String assetSymbol() {
+        return assetSymbol;
+    }
+
+    public Integer quantity() {
+        return quantity;
+    }
+
+    public Double price() {
+        return price;
+    }
+
+    public LocalDateTime publicationLocalDateTime() {
+        return publicationLocalDateTime;
+    }
+
+    public Long publisherId() {
+        return publisherId;
+    }
 }
