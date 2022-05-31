@@ -20,7 +20,7 @@ public class UserService {
     }
 
     public User findUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("user.not_found"));
     }
 
     public Integer reputationPointsOf(Long userId) {

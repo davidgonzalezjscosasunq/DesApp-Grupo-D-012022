@@ -7,7 +7,7 @@ public class CryptoWalletAddressStringValidator extends StringValidator {
     }
 
     protected String invalidTextErrorMessage() {
-        return "Invalid crypto wallet address";
+        return "crypto_wallet_address.invalid_format";
     }
 
 }

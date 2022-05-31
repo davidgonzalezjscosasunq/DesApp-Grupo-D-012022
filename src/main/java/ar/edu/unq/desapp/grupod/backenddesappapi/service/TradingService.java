@@ -47,7 +47,7 @@ public class TradingService {
 
     public Transaction informTransaction(Long interestedUserId, Long advertisementId, int quantityToTransfer) {
         var interestedUser = userService.findUserById(interestedUserId);
-        var assetAdvertisement = assetAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
+        var assetAdvertisement = assetAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new EntityNotFoundException("advertisement.not_found"));
 
         var newTransaction = new Transaction(interestedUser, assetAdvertisement, quantityToTransfer, clock.now());
 
@@ -56,7 +56,7 @@ public class TradingService {
 
     public Transaction confirmTransaction(Long userId, Long transactionToConfirmId) {
         var user = userService.findUserById(userId);
-        var transaction = transactionsRepository.findById(transactionToConfirmId).orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
+        var transaction = transactionsRepository.findById(transactionToConfirmId).orElseThrow(() -> new EntityNotFoundException("transaction.not_found"));
 
         transaction.confirmBy(user);
         giveReputationPointsForConfirmedTransaction(user, transaction);
@@ -69,7 +69,7 @@ public class TradingService {
 
     public Transaction cancelTransaction(Long userId, Long transactionToCancelId) {
         var user = userService.findUserById(userId);
-        var transaction = transactionsRepository.findById(transactionToCancelId).orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
+        var transaction = transactionsRepository.findById(transactionToCancelId).orElseThrow(() -> new EntityNotFoundException("transaction.not_found"));
 
         transaction.cancelBy(user);
         looseReputationPointsForCancelTransaction(transaction.publisher());

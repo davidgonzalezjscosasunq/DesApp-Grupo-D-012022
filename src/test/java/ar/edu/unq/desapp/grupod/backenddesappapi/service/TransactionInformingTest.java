@@ -63,7 +63,7 @@ public class TransactionInformingTest extends ServiceTest {
         var anAdvertisement = publishAdvertisementFor(aUser);
 
         assertThrowsDomainException(
-                "A user cannot inform a transaction for an advertisement published by himself",
+                "transaction.user_cannot_inform_a_transaction_for_an_advertisement_published_by_himself",
                 () -> tradingService.informTransaction(aUser.id(), anAdvertisement.id(), anAdvertisement.quantity())
         );
 
@@ -80,7 +80,7 @@ public class TransactionInformingTest extends ServiceTest {
         var invalidQuantityLesserThanOne = 0;
 
         assertThrowsDomainException(
-                "A transaction quantity must be greater than zero",
+                "transaction.quantity_must_be_greater_than_zero",
                 () -> tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), invalidQuantityLesserThanOne)
         );
 
@@ -95,7 +95,7 @@ public class TransactionInformingTest extends ServiceTest {
         var notRegisteredUserId = 123L;
 
         assertThrowsDomainException(
-                "User not found",
+                "user.not_found",
                 () -> tradingService.informTransaction(notRegisteredUserId, anAdvertisement.id(), anAdvertisement.quantity())
         );
     }
@@ -108,7 +108,7 @@ public class TransactionInformingTest extends ServiceTest {
         var notRegisteredAdvertisementId = 123L;
 
         assertThrowsDomainException(
-                "Advertisement not found",
+                "advertisement.not_found",
                 () -> tradingService.informTransaction(anInterestedUser.id(), notRegisteredAdvertisementId, quantity)
         );
 

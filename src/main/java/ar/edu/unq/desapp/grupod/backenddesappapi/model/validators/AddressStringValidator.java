@@ -7,6 +7,6 @@ public class AddressStringValidator extends StringValidator {
     }
 
     protected String invalidTextErrorMessage() {
-        return "Address must have between 10 and 30 characters";
+        return "address.invalid_length";
     }
 }

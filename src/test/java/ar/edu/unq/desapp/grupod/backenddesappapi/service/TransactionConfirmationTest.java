@@ -130,7 +130,7 @@ public class TransactionConfirmationTest extends ServiceTest {
         var aTransaction = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
 
         assertThrowsDomainException(
-                "A user cannot confirm a transaction for an advertisement not published by himself",
+                "transaction.user_cannot_confirm_a_transaction_for_an_advertisement_published_by_himself",
                 () -> tradingService.confirmTransaction(anInterestedUser.id(), aTransaction.id())
         );
 
@@ -145,7 +145,7 @@ public class TransactionConfirmationTest extends ServiceTest {
         var nonExistentTransactionId = 123L;
 
         assertThrowsDomainException(
-                "Transaction not found",
+                "transaction.not_found",
                 () -> tradingService.confirmTransaction(aUser.id(), nonExistentTransactionId)
         );
     }

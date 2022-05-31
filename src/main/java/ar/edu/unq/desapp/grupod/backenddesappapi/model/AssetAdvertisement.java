@@ -77,11 +77,11 @@ public class AssetAdvertisement {
     }
 
     private void assertIsValidQuantity(Integer quantityToSell) {
-        if (quantityToSell < 1) throw new ModelException("Quantity cannot be lesser than 1");
+        if (quantityToSell < 1) throw new ModelException("advertisement.quantity_cannot_be_lesser_than_1");
     }
 
     private void assertIsValidPrice(Double sellingPrice) {
-        if (sellingPrice <= 0) throw new ModelException("Price amount of money must be positive");
+        if (sellingPrice <= 0) throw new ModelException("advertisement.price_amount_of_money_must_be_positive");
     }
 
 }
