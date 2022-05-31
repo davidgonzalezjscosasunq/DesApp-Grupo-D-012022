@@ -29,13 +29,13 @@ public class TradedVolumeTest extends ServiceTest{
     private RateService rateService;
 
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Mock
-    TransactionsRepository transactionsRepository;
+    private TransactionsRepository transactionsRepository;
 
     @Mock
-    Clock clock;
+    private Clock clock;
 
     private CoinRate coinRate;
 
