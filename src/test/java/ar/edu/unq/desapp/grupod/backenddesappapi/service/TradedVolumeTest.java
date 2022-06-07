@@ -13,7 +13,6 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisement;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.Transaction;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.Clock;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.SimulatedClock;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
@@ -34,7 +33,7 @@ public class TradedVolumeTest extends ServiceTest{
     @Mock
     private TransactionsRepository transactionsRepository;
 
-    @Mock
+    @Spy
     private Clock clock;
 
     private CoinRate coinRate;
@@ -52,7 +51,6 @@ public class TradedVolumeTest extends ServiceTest{
         anInterestedUser = registerPepe();
         aPublisher = registerJuan();
         anAdvertisement = publishAdvertisementFor(aPublisher, 20);
-        clock = new SimulatedClock();
 
         var transaction = new Transaction(anInterestedUser, anAdvertisement, anAdvertisement.quantity(), LocalDateTime.now());
         transaction.confirmBy(aPublisher);
