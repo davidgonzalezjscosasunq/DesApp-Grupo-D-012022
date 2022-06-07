@@ -41,6 +41,9 @@ public class ServiceTest {
     @Autowired
     TransactionsRepository transactionsRepository;
 
+    @Autowired
+    RateService rateService;
+
     @AfterEach
     void tearDown() {
         transactionsRepository.deleteAll();

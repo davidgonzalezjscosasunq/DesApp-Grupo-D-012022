@@ -1,9 +1,20 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,58 +33,45 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 @SpringBootTest
 public class TradedVolumeTest extends ServiceTest{
 
-    @InjectMocks
-    private TradingService tradingService;
+    private static WireMockServer wireMockServer;
 
-    @Mock
-    private RateService rateService;
+    @BeforeAll
+    static void beforeAll() {
+        wireMockServer = new WireMockServer(8080);
+        wireMockServer.start();
+        WireMock.configureFor("localhost", 8080);
+        stubFor(get(urlEqualTo("http://localhost:8080/rates/" + CRYPTO_ACTIVE_SYMBOL))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "appication/json")
+                        .withBody("{\"usdPrice\":20.66,\"pesosPrice\":4235.3}")));
+    }
 
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private TransactionsRepository transactionsRepository;
-
-    @Mock
-    private Clock clock;
-
-    private CoinRate coinRate;
-
-    private User anInterestedUser;
-    private User aPublisher;
-    private AssetAdvertisement anAdvertisement;
-    private List<Transaction> transactions = new ArrayList<>();
-
-    @BeforeEach
-    void init() {
-        MockitoAnnotations.openMocks(this);
-
-        coinRate = new CoinRate((float) 20, (float) 60);
-        anInterestedUser = registerPepe();
-        aPublisher = registerJuan();
-        anAdvertisement = publishAdvertisementFor(aPublisher, 20);
-        clock = new SimulatedClock();
-
-        var transaction = new Transaction(anInterestedUser, anAdvertisement, anAdvertisement.quantity(), LocalDateTime.now());
-        transaction.confirmBy(aPublisher);
-        transactions.add(transaction);
-
-        Mockito.when(rateService.getCoinRate(CRYPTO_ACTIVE_SYMBOL)).thenReturn(coinRate);
-        Mockito.when(userRepository.findById(anInterestedUser.id())).thenReturn(java.util.Optional.ofNullable(anInterestedUser));
-        Mockito.when(transactionsRepository.findAllByUserIdBetweenDates(anInterestedUser.id(), LocalDateTime.parse("2021-12-30T19:34:50.63"), LocalDateTime.parse("2022-03-30T19:34:50.63"))).thenReturn(transactions);
+    @AfterAll
+    static void afterAll() {
+        wireMockServer.stop();
     }
 
     @Test
     void shouldCalculateVolumeAccordingToCurrentCoinRate() {
-       var volume = tradingService.getTradedVolumeBetweenDatesForUser(anInterestedUser.id(), LocalDateTime.parse("2021-12-30T19:34:50.63"), LocalDateTime.parse("2022-03-30T19:34:50.63"));
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
 
-       var currentRate = rateService.getCoinRate(CRYPTO_ACTIVE_SYMBOL);
+        var anAdvertisement = publishAdvertisementFor(aPublisher, 20);
+        var transactionToConfirm = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
 
-       assertEquals(CRYPTO_ACTIVE_SYMBOL, volume.assets().get(0).symbol());
-       assertEquals(20, volume.assets().get(0).nominalAmount());
-       assertEquals( currentRate.pesosPrice(), volume.assets().get(0).currentPriceInPesos());
-       assertEquals(currentRate.usdPrice(), volume.assets().get(0).currentPriceInUsd());
-       assertEquals(currentRate.pesosPrice() * 20, volume.tradedValueInPesos());
-       assertEquals(currentRate.usdPrice() * 20, volume.tradedValueInUsd());
+        tradingService.confirmTransaction(aPublisher.id(), transactionToConfirm.id());
+
+        var transactions = tradingService.findTransactionsInformedBy(anInterestedUser.id());
+
+        var volume = tradingService.getTradedVolumeBetweenDatesForUser(anInterestedUser.id(), LocalDateTime.parse("2021-12-30T19:34:50.63"), LocalDateTime.now());
+
+        var currentRate = rateService.getCoinRate(CRYPTO_ACTIVE_SYMBOL);
+
+        assertEquals(CRYPTO_ACTIVE_SYMBOL, volume.assets().get(0).symbol());
+        assertEquals(20, volume.assets().get(0).nominalAmount());
+        assertEquals( currentRate.pesosPrice(), volume.assets().get(0).currentPriceInPesos());
+        assertEquals(currentRate.usdPrice(), volume.assets().get(0).currentPriceInUsd());
+        assertEquals(currentRate.pesosPrice() * 20, volume.tradedValueInPesos());
+        assertEquals(currentRate.usdPrice() * 20, volume.tradedValueInUsd());
     }
 }
