@@ -42,15 +42,18 @@ public class TradedVolumeTest extends ServiceTest{
     private User aPublisher;
     private AssetAdvertisement anAdvertisement;
     private List<Transaction> transactions = new ArrayList<>();
+    private Integer quantity = 20;
+    private Float usdPrice = 20f;
+    private Float pesosPrice = 20f;
 
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
 
-        coinRate = new CoinRate((float) 20, (float) 60);
+        coinRate = new CoinRate( usdPrice, pesosPrice);
         anInterestedUser = registerPepe();
         aPublisher = registerJuan();
-        anAdvertisement = publishAdvertisementFor(aPublisher, 20);
+        anAdvertisement = publishAdvertisementFor(aPublisher, quantity);
 
         var transaction = new Transaction(anInterestedUser, anAdvertisement, anAdvertisement.quantity(), LocalDateTime.now());
         transaction.confirmBy(aPublisher);
@@ -65,13 +68,11 @@ public class TradedVolumeTest extends ServiceTest{
     void shouldCalculateVolumeAccordingToCurrentCoinRate() {
        var volume = tradingService.getTradedVolumeBetweenDatesForUser(anInterestedUser.id(), LocalDateTime.parse("2021-12-30T19:34:50.63"), LocalDateTime.parse("2022-03-30T19:34:50.63"));
 
-       var currentRate = rateService.getCoinRate(CRYPTO_ACTIVE_SYMBOL);
-
        assertEquals(CRYPTO_ACTIVE_SYMBOL, volume.assets().get(0).symbol());
-       assertEquals(20, volume.assets().get(0).nominalAmount());
-       assertEquals( currentRate.pesosPrice(), volume.assets().get(0).currentPriceInPesos());
-       assertEquals(currentRate.usdPrice(), volume.assets().get(0).currentPriceInUsd());
-       assertEquals(currentRate.pesosPrice() * 20, volume.tradedValueInPesos());
-       assertEquals(currentRate.usdPrice() * 20, volume.tradedValueInUsd());
+       assertEquals((float) quantity, volume.assets().get(0).nominalAmount());
+       assertEquals( pesosPrice, volume.assets().get(0).currentPriceInPesos());
+       assertEquals(usdPrice, volume.assets().get(0).currentPriceInUsd());
+       assertEquals(pesosPrice * quantity, volume.tradedValueInPesos());
+       assertEquals(usdPrice * quantity, volume.tradedValueInUsd());
     }
 }
