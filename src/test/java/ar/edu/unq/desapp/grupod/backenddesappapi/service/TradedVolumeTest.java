@@ -1,7 +1,6 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,7 +45,6 @@ public class TradedVolumeTest extends ServiceTest{
     private Float usdPrice = 20f;
     private Float pesosPrice = 20f;
 
-    @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
 
@@ -66,6 +64,7 @@ public class TradedVolumeTest extends ServiceTest{
 
     @Test
     void shouldCalculateVolumeAccordingToCurrentCoinRate() {
+       init();
        var volume = tradingService.getTradedVolumeBetweenDatesForUser(anInterestedUser.id(), LocalDateTime.parse("2021-12-30T19:34:50.63"), LocalDateTime.parse("2022-03-30T19:34:50.63"));
 
        assertEquals(CRYPTO_ACTIVE_SYMBOL, volume.assets().get(0).symbol());
