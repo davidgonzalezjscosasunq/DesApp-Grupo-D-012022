@@ -15,7 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 public class RateServiceTest extends ServiceTest {
-    private static WireMockServer wireMockServer;
+    private static WireMockServer estadisticasBCRAMockServer;
 
     @Value("${api_estadisticasbcra_base_url}")
     public String apiEstadisticasbcraBaseURL;
@@ -25,7 +25,7 @@ public class RateServiceTest extends ServiceTest {
 
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
-        dynamicPropertyRegistry.add("api_estadisticasbcra_base_url", wireMockServer::baseUrl);
+        dynamicPropertyRegistry.add("api_estadisticasbcra_base_url", estadisticasBCRAMockServer::baseUrl);
     }
 
     @Autowired
@@ -33,23 +33,23 @@ public class RateServiceTest extends ServiceTest {
 
     @BeforeAll
     static void beforeAll() {
-        wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
-        wireMockServer.start();
+        estadisticasBCRAMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
+        estadisticasBCRAMockServer.start();
     }
 
     @AfterAll
     static void afterAll() {
-        wireMockServer.stop();
+        estadisticasBCRAMockServer.stop();
     }
 
     @Test
-    public void dollarToPesoConversionRate() {
-        wireMockServer.stubFor(get("/usd")
-            .withHeader("Authorization", equalTo("Bearer " + bcraToken))
-            .willReturn(
-                    aResponse()
-                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                        .withBody("[{\"d\": \"2003-01-03\", \"v\": 999}]")));
+    public void dollarToPesoConversionRateSuccessfully() {
+        estadisticasBCRAMockServer.stubFor(get("/usd")
+                .withHeader("Authorization", equalTo("Bearer " + bcraToken))
+                .willReturn(
+                        aResponse()
+                                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                                .withBody("[{\"d\": \"2003-01-03\", \"v\": 999}]")));
 
         assertThat(rateService.dollarToPesoConversionRate()).isEqualTo(999);
     }
