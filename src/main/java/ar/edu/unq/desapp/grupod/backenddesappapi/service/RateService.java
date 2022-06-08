@@ -1,8 +1,9 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import java.util.List;
+
+import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.StaticProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -17,17 +18,14 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityPropertie
 @Service
 public class RateService {
 
-    @Value("${api_binance_base_url}")
-    public String apiBinanceBaseURL;
-
-    @Value("${api_estadisticasbcra_base_url}")
-    public String apiEstadisticasbcraBaseURL;
+    @Autowired
+    private StaticProperties staticProperties;
 
     @Autowired
     private SecurityProperties securityProperties;
 
     public CoinRate getCoinRate(String symbol) {
-        String url = apiBinanceBaseURL + "/api/v3/ticker/price?symbol=" + symbol;
+        String url = staticProperties.apiBinanceURL  + symbol;
         var assetRate = new RestTemplate().getForObject(url, BinanceRatesResponse.class);
         var priceInPesos = assetRate.priceInDollars() * dollarToPesoConversionRate();
 
@@ -40,7 +38,7 @@ public class RateService {
 
         try {
             final ResponseEntity<List<UsdResponse>> response = new RestTemplate().exchange(
-                    apiEstadisticasbcraBaseURL + "/usd",
+                    staticProperties.apiEstadisticasbcraBaseURL + "/usd",
                     HttpMethod.GET,
                     new HttpEntity(headers),
                     new ParameterizedTypeReference<List<UsdResponse>>(){});
