@@ -40,7 +40,7 @@ public class TradedVolumeTest extends ServiceTest{
         wireMockServer = new WireMockServer(8080);
         wireMockServer.start();
         WireMock.configureFor("localhost", 8080);
-        stubFor(get(urlEqualTo("http://localhost:8080/rates/" + CRYPTO_ACTIVE_SYMBOL))
+        stubFor(get(urlEqualTo("http://localhost:8080/rate233332s/" + CRYPTO_ACTIVE_SYMBOL))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "appication/json")
                         .withBody("{\"usdPrice\":20.66,\"pesosPrice\":4235.3}")));

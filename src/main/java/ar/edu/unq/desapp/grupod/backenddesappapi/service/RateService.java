@@ -2,6 +2,7 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityPropertie
 @Service
 public class RateService {
 
+    @Value("${api_estadisticasbcra_base_url}")
+    public String apiEstadisticasbcraBaseURL;
+
     @Autowired
     private SecurityProperties securityProperties;
 
@@ -25,9 +29,7 @@ public class RateService {
 
         BinanceRatesResponse rate = restTemplate.getForObject(url, BinanceRatesResponse.class);
 
-        List<UsdResponse> usdList = this.getUsdConvertionToPesos();
-
-        Float lastDollarValueInPesos = usdList.get(usdList.size() - 1).v;
+        Float lastDollarValueInPesos = this.dollarToPesoConversionRate();
 
         Float priceInPesos = rate.price * lastDollarValueInPesos;
 
@@ -35,8 +37,8 @@ public class RateService {
     }
 
 
-    private List<UsdResponse> getUsdConvertionToPesos (){
-        String url = "https://api.estadisticasbcra.com/usd";
+    public Float dollarToPesoConversionRate(){
+        String url = apiEstadisticasbcraBaseURL + "/usd";
 
         String base64Creds = securityProperties.bcraToken;
 
@@ -57,7 +59,7 @@ public class RateService {
 
             List<UsdResponse> conversions = response.getBody();
 
-            return conversions;
+            return conversions.get(conversions.size() - 1).v;
 
         } catch (Exception exception) {
             throw new Error(exception);
