@@ -2,7 +2,6 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import java.util.List;
 
-import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.StaticProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -13,6 +12,7 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.BinanceRatesRespo
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.UsdResponse;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityProperties;
+import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.StaticProperties;
 
 
 @Service
