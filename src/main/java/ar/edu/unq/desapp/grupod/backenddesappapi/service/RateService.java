@@ -3,6 +3,7 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class RateService {
     private SecurityProperties securityProperties;
 
     public CoinRate getCoinRate(String symbol) {
-        String url = staticProperties.apiBinanceURL  + symbol;
+        String url = staticProperties.apiBinanceBaseURL + staticProperties.apiBinancePriceURL +  symbol;
         var assetRate = new RestTemplate().getForObject(url, BinanceRatesResponse.class);
         var priceInPesos = assetRate.priceInDollars() * dollarToPesoConversionRate();
 

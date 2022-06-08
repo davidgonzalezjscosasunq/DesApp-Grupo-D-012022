@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class StaticProperties {
-    @Value("${api_binance_url}")
-    public String apiBinanceURL;
+    @Value("${api_binance_base_url}")
+    public String apiBinanceBaseURL;
+
+    public String apiBinancePriceURL =  "/api/v3/ticker/price?symbol=";
 
     @Value("${api_estadisticasbcra_base_url}")
     public String apiEstadisticasbcraBaseURL;
