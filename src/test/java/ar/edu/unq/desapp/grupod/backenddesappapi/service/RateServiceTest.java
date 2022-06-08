@@ -1,6 +1,5 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
-import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.junit.jupiter.api.*;
@@ -48,36 +47,41 @@ public class RateServiceTest extends ServiceTest {
 
     @Test
     public void dollarToPesoConversionRateSuccessfully() {
-        estadisticasBCRAMockServer.stubFor(get("/usd")
-                .withHeader("Authorization", equalTo("Bearer " + bcraToken))
-                .willReturn(
-                        aResponse()
-                                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                                .withBody("[{\"d\": \"2003-01-03\", \"v\": 999}]")));
+        var dollarToPesoRatio = 999.f;
+        mockServerToRespondWithDollarToPesoRatioOf(dollarToPesoRatio);
 
-        assertThat(rateService.dollarToPesoConversionRate()).isEqualTo(999);
+        assertThat(rateService.dollarToPesoConversionRate()).isEqualTo(dollarToPesoRatio);
     }
 
     @Test
     public void getCoinRateSuccessfully() {
         var symbol = "BTC";
+        var assetPrice = 10.f;
+        var dollarToPesoRatio = 999.f;
 
-        binanceMockServer.stubFor(get("/api/v3/ticker/price?symbol=" + symbol)
-                .willReturn(
-                        aResponse()
-                                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                                .withBody("{\"symbol\": \"BTC\", \"price\": 10}")));
+        mockServerToRespondWithSymbolPrice(symbol, assetPrice);
+        mockServerToRespondWithDollarToPesoRatioOf(dollarToPesoRatio);
 
+        var coinRate = rateService.getCoinRate(symbol);
+
+        assertThat(coinRate.usdPrice()).isEqualTo(assetPrice);
+        assertThat(coinRate.pesosPrice()).isEqualTo(assetPrice * dollarToPesoRatio);
+    }
+
+    private void mockServerToRespondWithDollarToPesoRatioOf(Float dollarToPesoRatioToReturn) {
         estadisticasBCRAMockServer.stubFor(get("/usd")
                 .withHeader("Authorization", equalTo("Bearer " + bcraToken))
                 .willReturn(
                         aResponse()
                                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-                                .withBody("[{\"d\": \"2003-01-03\", \"v\": 999}]")));
+                                .withBody("[{\"d\": \"2003-01-03\", \"v\": " + dollarToPesoRatioToReturn + "}]")));
+    }
 
-        var coinRate = rateService.getCoinRate(symbol);
-
-        assertThat(coinRate.usdPrice()).isEqualTo(10.f);
-        assertThat(coinRate.pesosPrice()).isEqualTo(10.f * 999.f);
+    private void mockServerToRespondWithSymbolPrice(String symbol, Float assetPrice) {
+        binanceMockServer.stubFor(get("/api/v3/ticker/price?symbol=" + symbol)
+                .willReturn(
+                        aResponse()
+                                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                                .withBody("{\"symbol\": \"BTC\", \"price\": " +  assetPrice + "}")));
     }
 }
