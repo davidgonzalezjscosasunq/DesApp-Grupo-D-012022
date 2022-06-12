@@ -5,7 +5,6 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.validators.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name="users")
 public class User {
 
     @Id
