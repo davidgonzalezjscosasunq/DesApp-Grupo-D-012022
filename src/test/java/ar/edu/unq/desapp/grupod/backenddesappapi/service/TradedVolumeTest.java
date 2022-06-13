@@ -20,21 +20,23 @@ public class TradedVolumeTest extends ServiceWithMockedServersTest {
 
         var anInterestedUser = registerPepe();
         var aPublisher = registerJuan();
-
         var anAdvertisement = publishAdvertisementFor(aPublisher, 20);
-        var transactionToConfirm = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), anAdvertisement.quantity());
+
+        var quantityOfNotConfirmedTransaction = 1;
+        var quantityOfConfirmedTransaction = anAdvertisement.quantity() - quantityOfNotConfirmedTransaction;
+
+        tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), quantityOfNotConfirmedTransaction);
+        var transactionToConfirm = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), quantityOfConfirmedTransaction);
 
         tradingService.confirmTransaction(aPublisher.id(), transactionToConfirm.id());
 
-        var transactions = tradingService.findTransactionsInformedBy(anInterestedUser.id());
+        var tradedVolume = tradingService.getTradedVolumeBetweenDatesForUser(anInterestedUser.id(), LocalDateTime.parse("2021-12-30T19:34:50.63"), LocalDateTime.now());
 
-        var volume = tradingService.getTradedVolumeBetweenDatesForUser(anInterestedUser.id(), LocalDateTime.parse("2021-12-30T19:34:50.63"), LocalDateTime.now());
-
-        assertEquals(CRYPTO_ACTIVE_SYMBOL, volume.assets().get(0).symbol());
-        assertEquals(20, volume.assets().get(0).nominalAmount());
-        assertEquals( assetPesoPrice, volume.assets().get(0).currentPriceInPesos());
-        assertEquals(assetPrice, volume.assets().get(0).currentPriceInUsd());
-        assertEquals(assetPesoPrice * 20, volume.tradedValueInPesos());
-        assertEquals(assetPrice * 20, volume.tradedValueInUsd());
+        assertEquals(CRYPTO_ACTIVE_SYMBOL, tradedVolume.assets().get(0).symbol());
+        assertEquals(quantityOfConfirmedTransaction, tradedVolume.assets().get(0).nominalAmount());
+        assertEquals( assetPesoPrice, tradedVolume.assets().get(0).currentPriceInPesos());
+        assertEquals(assetPrice, tradedVolume.assets().get(0).currentPriceInUsd());
+        assertEquals(assetPesoPrice * quantityOfConfirmedTransaction, tradedVolume.tradedValueInPesos());
+        assertEquals(assetPrice * quantityOfConfirmedTransaction, tradedVolume.tradedValueInUsd());
     }
 }

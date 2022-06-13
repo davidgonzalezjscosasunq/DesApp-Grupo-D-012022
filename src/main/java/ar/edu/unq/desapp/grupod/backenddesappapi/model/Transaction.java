@@ -11,6 +11,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private TransactionState state;
 
     @OneToOne(cascade = CascadeType.ALL)
