@@ -1,6 +1,6 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,6 +13,9 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.UsdResponse;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityProperties;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.Endpoints;
+import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRateDetail;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.Clock;
+import ar.edu.unq.desapp.grupod.backenddesappapi.service.utils.ActiveCryptos;
 
 
 @Service
@@ -23,6 +26,20 @@ public class RateService {
 
     @Autowired
     private SecurityProperties securityProperties;
+
+    @Autowired
+    Clock clock;
+
+    private List<String> activeCryptos = new ActiveCryptos().getActiveCryptosList();
+
+    public List<CoinRateDetail> getActiveCoinRates() {
+        List<CoinRateDetail> coinRatesCost = new ArrayList<>();
+        for(String symbol: activeCryptos){
+            CoinRate coinRate = getCoinRate(symbol);
+            coinRatesCost.add(new CoinRateDetail(coinRate.usdPrice(), coinRate.pesosPrice(), symbol, clock.now()));
+        }
+        return coinRatesCost;
+    }
 
     public CoinRate getCoinRate(String symbol) {
         String url = endpoints.apiBinanceBaseURL + endpoints.apiBinancePriceURL +  symbol;
