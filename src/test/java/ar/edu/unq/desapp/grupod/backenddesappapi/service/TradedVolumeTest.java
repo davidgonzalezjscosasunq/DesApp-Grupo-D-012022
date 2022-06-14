@@ -11,12 +11,12 @@ public class TradedVolumeTest extends ServiceWithMockedServersTest {
     @Test
     void shouldCalculateVolumeAccordingToCurrentCoinRate() {
         var symbol = CRYPTO_ACTIVE_SYMBOL;
-        var assetPrice = 10.f;
-        var dollarToPeso = 202.f;
-        var assetPesoPrice = assetPrice * dollarToPeso;
+        var assetPriceInDollars = 10.f;
+        var dollarToPesoConversionRatio = 202.f;
+        var assetPesoPrice = assetPriceInDollars * dollarToPesoConversionRatio;
 
-        mockServerToRespondWithSymbolPrice(symbol, assetPrice);
-        mockServerToRespondWithDollarToPesoRatioOf(dollarToPeso);
+        mockServerToRespondWithSymbolPrice(symbol, assetPriceInDollars);
+        mockServerToRespondWithDollarToPesoRatioOf(dollarToPesoConversionRatio);
 
         var anInterestedUser = registerPepe();
         var aPublisher = registerJuan();
@@ -33,8 +33,8 @@ public class TradedVolumeTest extends ServiceWithMockedServersTest {
         assertEquals(CRYPTO_ACTIVE_SYMBOL, volume.assets().get(0).symbol());
         assertEquals(20, volume.assets().get(0).nominalAmount());
         assertEquals( assetPesoPrice, volume.assets().get(0).currentPriceInPesos());
-        assertEquals(assetPrice, volume.assets().get(0).currentPriceInUsd());
+        assertEquals(assetPriceInDollars, volume.assets().get(0).currentPriceInUsd());
         assertEquals(assetPesoPrice * 20, volume.tradedValueInPesos());
-        assertEquals(assetPrice * 20, volume.tradedValueInUsd());
+        assertEquals(assetPriceInDollars * 20, volume.tradedValueInUsd());
     }
 }
