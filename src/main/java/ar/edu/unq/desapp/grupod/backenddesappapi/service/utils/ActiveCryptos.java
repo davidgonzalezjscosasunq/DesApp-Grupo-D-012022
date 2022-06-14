@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ActiveCryptos {
     public List<String> getActiveCryptosList() {
-        List<String> activeCryptosSymbolList = Arrays.asList(
+        return Arrays.asList(
                 "ALICEUSDT",
                 "MATICUSDT",
                 "AXSUSDT",
@@ -20,6 +20,5 @@ public class ActiveCryptos {
                 "ADAUSDT",
                 "TRXUSDT",
                 "AUDIOUSDT");
-        return activeCryptosSymbolList;
-        };
+        }
 }
