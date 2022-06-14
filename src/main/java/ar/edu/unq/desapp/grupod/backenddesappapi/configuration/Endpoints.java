@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class StaticProperties {
+public class Endpoints {
     @Value("${api_binance_base_url}")
     public String apiBinanceBaseURL;
 

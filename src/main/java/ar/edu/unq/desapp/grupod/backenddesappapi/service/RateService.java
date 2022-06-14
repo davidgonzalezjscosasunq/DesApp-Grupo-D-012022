@@ -12,20 +12,20 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.BinanceRatesRespo
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.UsdResponse;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityProperties;
-import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.StaticProperties;
+import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.Endpoints;
 
 
 @Service
 public class RateService {
 
     @Autowired
-    private StaticProperties staticProperties;
+    private Endpoints endpoints;
 
     @Autowired
     private SecurityProperties securityProperties;
 
     public CoinRate getCoinRate(String symbol) {
-        String url = staticProperties.apiBinanceBaseURL + staticProperties.apiBinancePriceURL +  symbol;
+        String url = endpoints.apiBinanceBaseURL + endpoints.apiBinancePriceURL +  symbol;
         var assetRate = new RestTemplate().getForObject(url, BinanceRatesResponse.class);
         var priceInPesos = assetRate.priceInDollars() * dollarToPesoConversionRate();
 
@@ -38,7 +38,7 @@ public class RateService {
 
         try {
             final ResponseEntity<List<UsdResponse>> response = new RestTemplate().exchange(
-                    staticProperties.apiEstadisticasbcraBaseURL + "/usd",
+                    endpoints.apiEstadisticasbcraBaseURL + "/usd",
                     HttpMethod.GET,
                     new HttpEntity(headers),
                     new ParameterizedTypeReference<List<UsdResponse>>(){});
