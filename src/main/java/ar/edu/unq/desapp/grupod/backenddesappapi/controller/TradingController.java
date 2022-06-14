@@ -66,4 +66,11 @@ public class TradingController {
         return ResponseEntity.status(HttpStatus.OK).body(transactions.stream().map(TransactionDTO::from).collect(Collectors.toList()));
     }
 
+    @GetMapping(value = "/tradedVolume/users/{userId}")
+    public ResponseEntity<TradedVolumeDTO> getTradedVolumeBy(@PathVariable Long userId, @RequestBody TradedVolumeBodyDTO tradedVolumeBodyDTO) {
+        var tradedVolume = tradingService.getTradedVolumeBetweenDatesForUser(userId, tradedVolumeBodyDTO.getStart(), tradedVolumeBodyDTO.getEnd());
+
+        return ResponseEntity.status(HttpStatus.OK).body(TradedVolumeDTO.from(tradedVolume));
+    }
+
 }
