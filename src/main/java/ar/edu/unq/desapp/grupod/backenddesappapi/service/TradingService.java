@@ -96,23 +96,27 @@ public class TradingService {
     }
 
     public TradedVolume getTradedVolumeBetweenDatesForUser(Long userId, LocalDateTime start, LocalDateTime end){
-       List<Transaction> transactionsBetweenDates = transactionsRepository.findAllByUserIdBetweenDates(userId, start, end);
-       List<Transaction> completedTransactions = transactionsBetweenDates.stream().filter(transaction -> transaction.isConfirmed()).collect(Collectors.toList());
-       User user = userRepository.findById(userId).get();
-       LocalDateTime dateAndTimeRequest = clock.now();
-       List<ActiveCrypto> assets = getActiveCryptos(completedTransactions);
-       Double tradedValueInUsd = assets.stream().mapToDouble(asset -> asset.getFinalPriceInUSD()).sum();
-       Double tradedValueInPesos = assets.stream().mapToDouble(asset -> asset.getFinalPriceInPesos()).sum();
+        User user = userService.findUserById(userId);
 
-       return new TradedVolume(user, dateAndTimeRequest, tradedValueInUsd.floatValue(), tradedValueInPesos.floatValue(), assets);
+        List<Transaction> completedTransactions = transactionsRepository.findConfirmedTransactionsBetweenDatesFor(userId, start, end);
+        List<ActiveCrypto> activeCryptos = getActiveCryptos(completedTransactions);
+
+        Double tradedValueInUsd = activeCryptos.stream().mapToDouble(activeCrypto -> activeCrypto.getFinalPriceInUSD()).sum();
+        Double tradedValueInPesos = activeCryptos.stream().mapToDouble(activeCrypto -> activeCrypto.getFinalPriceInPesos()).sum();
+
+        return new TradedVolume(user, clock.now(), tradedValueInUsd.floatValue(), tradedValueInPesos.floatValue(), activeCryptos);
     }
 
     protected List<ActiveCrypto> getActiveCryptos(List<Transaction> transactions) {
         return transactions.stream().map(transaction -> {
-            String symbol = transaction.assetSymbol();
-            Float quantity = transaction.quantity().floatValue();
-            CoinRate rate = rateService.getCoinRate(symbol);
-            return new ActiveCrypto(symbol, quantity, rate.usdPrice(), rate.pesosPrice());
+            CoinRate coinRate = rateService.getCoinRate(transaction.assetSymbol());
+
+            return new ActiveCrypto(
+                    transaction.assetSymbol(),
+                    transaction.quantity().floatValue(),
+                    coinRate.usdPrice(),
+                    coinRate.pesosPrice()
+            );
         }).collect(Collectors.toList());
     }
 
