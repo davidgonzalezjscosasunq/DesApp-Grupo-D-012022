@@ -30,10 +30,10 @@ public class TradedVolumeTest extends ServiceWithMockedServersTest {
 
         var volume = tradingService.getTradedVolumeBetweenDatesForUser(anInterestedUser.id(), LocalDateTime.parse("2021-12-30T19:34:50.63"), LocalDateTime.now());
 
-        assertEquals(CRYPTO_ACTIVE_SYMBOL, volume.assets().get(0).symbol());
-        assertEquals(20, volume.assets().get(0).nominalAmount());
-        assertEquals( assetPesoPrice, volume.assets().get(0).currentPriceInPesos());
-        assertEquals(assetPriceInDollars, volume.assets().get(0).currentPriceInUsd());
+        assertEquals(CRYPTO_ACTIVE_SYMBOL, volume.assets().get(0).getSymbol());
+        assertEquals(20, volume.assets().get(0).getNominalAmount());
+        assertEquals( assetPesoPrice, volume.assets().get(0).getCurrentPriceInPesos());
+        assertEquals(assetPriceInDollars, volume.assets().get(0).getCurrentPriceInUsd());
         assertEquals(assetPesoPrice * 20, volume.tradedValueInPesos());
         assertEquals(assetPriceInDollars * 20, volume.tradedValueInUsd());
     }

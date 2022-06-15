@@ -13,19 +13,19 @@ public class ActiveCrypto {
         this.currentPriceInPesos = currentPriceInPesos;
     }
 
-    public String symbol(){
+    public String getSymbol(){
         return this.symbol;
     }
 
-    public Float nominalAmount(){
+    public Float getNominalAmount(){
         return this.nominalAmount;
     }
 
-    public Float currentPriceInUsd(){
+    public Float getCurrentPriceInUsd(){
         return this.currentPriceInUsd;
     }
 
-    public Float currentPriceInPesos(){
+    public Float getCurrentPriceInPesos(){
         return this.currentPriceInPesos;
     }
 

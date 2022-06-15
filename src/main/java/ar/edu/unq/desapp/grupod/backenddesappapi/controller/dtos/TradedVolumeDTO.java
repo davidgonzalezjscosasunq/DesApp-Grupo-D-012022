@@ -9,7 +9,7 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.ActiveCrypto;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.TradedVolume;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 
-public class TradedVolumeDTO {
+public class    TradedVolumeDTO {
 
     @JsonProperty
     private Long userId;
