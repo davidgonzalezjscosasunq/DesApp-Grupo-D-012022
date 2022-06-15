@@ -4,22 +4,22 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TradedVolume {
-    private User user;
+    private Long userId;
     private LocalDateTime dateAndTimeRequest;
     private Float tradedValueInUsd;
     private Float tradedValueInPesos;
     private List<ActiveCrypto> assets;
 
-    public TradedVolume(User user, LocalDateTime dateAndTimeRequest, Float tradedValueInUsd, Float tradedValueInPesos, List<ActiveCrypto> assets) {
-        this.user = user;
+    public TradedVolume(Long userId, LocalDateTime dateAndTimeRequest, Float tradedValueInUsd, Float tradedValueInPesos, List<ActiveCrypto> assets) {
+        this.userId = userId;
         this.dateAndTimeRequest = dateAndTimeRequest;
         this.tradedValueInUsd = tradedValueInUsd;
         this.tradedValueInPesos = tradedValueInPesos;
         this.assets = assets;
     }
 
-    public User user(){
-        return this.user;
+    public Long getUserId(){
+        return this.userId;
     }
 
     public LocalDateTime dateAndTimeRequest(){
