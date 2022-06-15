@@ -6,13 +6,13 @@ public class PersonNameStringValidator {
 
     public void assertIsValidLastName(String name) {
         if (!isValidName(name)) {
-            throw new ModelException(String.format("User last name must have between %d and %d letters", minimunNumberOfCharacters(), maximumNumberOfCharacters()));
+            throw new ModelException("user.last_name.invalid_length", new Integer[] {minimunNumberOfCharacters(), maximumNumberOfCharacters()});
         }
     }
 
     public void assertIsValidFirstName(String name) {
         if (!isValidName(name)) {
-            throw new ModelException(String.format("User first name must have between %d and %d letters", minimunNumberOfCharacters(), maximumNumberOfCharacters()));
+            throw new ModelException("user.first_name.invalid_length", new Integer[]{minimunNumberOfCharacters(), maximumNumberOfCharacters()});
         }
     }
 

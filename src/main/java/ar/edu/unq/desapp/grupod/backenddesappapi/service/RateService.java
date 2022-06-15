@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
-import java.util.List;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -11,54 +12,68 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.BinanceRatesRespo
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.UsdResponse;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityProperties;
+import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.Endpoints;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.Clock;
 
 
 @Service
 public class RateService {
 
     @Autowired
+    private Endpoints endpoints;
+
+    @Autowired
     private SecurityProperties securityProperties;
 
-    public CoinRate getCoinRate (String symbol) {
-        String url = "https://api1.binance.com/api/v3/ticker/price?symbol=" + symbol;
-        RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    Clock clock;
 
-        BinanceRatesResponse rate = restTemplate.getForObject(url, BinanceRatesResponse.class);
+    private List<String> activeCryptos = Arrays.asList(
+            "ALICEUSDT",
+            "MATICUSDT",
+            "AXSUSDT",
+            "AAVEUSDT",
+            "ATOMUSDT",
+            "NEOUSDT",
+            "DOTUSDT",
+            "ETHUSDT",
+            "CAKEUSDT",
+            "BTCUSDT",
+            "BNBUSDT",
+            "ADAUSDT",
+            "TRXUSDT",
+            "AUDIOUSDT");
 
-        List<UsdResponse> usdList = this.getUsdConvertionToPesos();
-
-        Float lastDollarValueInPesos = usdList.get(usdList.size() - 1).v;
-
-        Float priceInPesos = rate.price * lastDollarValueInPesos;
-
-        return new CoinRate(rate.price, priceInPesos);
+    public List<CoinRate> getActiveCoinRates() {
+        List<CoinRate> coinRates = new ArrayList<>();
+        for(String symbol: activeCryptos){
+            CoinRate coinRate = getCoinRate(symbol);
+            coinRates.add(coinRate);
+        }
+        return coinRates;
     }
 
+    public CoinRate getCoinRate(String symbol) {
+        String url = endpoints.apiBinanceBaseURL + endpoints.apiBinancePriceURL +  symbol;
+        var assetRate = new RestTemplate().getForObject(url, BinanceRatesResponse.class);
+        var priceInPesos = assetRate.priceInDollars() * dollarToPesoConversionRate();
 
-    private List<UsdResponse> getUsdConvertionToPesos (){
-        String url = "https://api.estadisticasbcra.com/usd";
+        return new CoinRate(symbol, clock.now(), assetRate.priceInDollars(), priceInPesos);
+    }
 
-        String base64Creds = securityProperties.bcraToken;
-
+    public Float dollarToPesoConversionRate(){
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + base64Creds);
-
-        HttpEntity request = new HttpEntity(headers);
-
-        final RestTemplate restTemplate = new RestTemplate();
+        headers.add("Authorization", "Bearer " + securityProperties.bcraToken);
 
         try {
-
-            final ResponseEntity<List<UsdResponse>> response = restTemplate.exchange(
-                    url,
+            final ResponseEntity<List<UsdResponse>> response = new RestTemplate().exchange(
+                    endpoints.apiEstadisticasbcraBaseURL + "/usd",
                     HttpMethod.GET,
-                    request,
+                    new HttpEntity(headers),
                     new ParameterizedTypeReference<List<UsdResponse>>(){});
 
-            List<UsdResponse> conversions = response.getBody();
-
-            return conversions;
-
+            // TODO: la peticion a la API trae mas de 5000 precios. Ver como hacer para pedirle el ultimo o buscar otra API
+            return response.getBody().get(response.getBody().size() - 1).dollarToPesoConversionRate();
         } catch (Exception exception) {
             throw new Error(exception);
         }

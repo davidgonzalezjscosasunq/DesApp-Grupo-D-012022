@@ -1,15 +1,14 @@
-TAG Entrega 1 1.1
+TAG Entrega 2 1.0
 ---------------------------------------------------------------------
 NEW FEATURES:
-* User (Registration, reputation points).
-* Asset Advertisement (publish intention to sell and buy).
-* Transaction (inform transaction, confirm transaction, cancel transaction, find transactions informed by user, give reputation points for confirmed transaction).
-* Rates (get coin rates info in pesos and usd from external api).
-* Traded volume (get traded volume between dates for a given user).
-* Active Crypto (active crypto prices).
+* Controllers for TradingService functionality, and their tests added.
+* Error handlers added.
+* Tests that involved requests to binance and BCRA api tested with wiremock to mock response.
+* Code refactors (private fields on classes and public getters, endpoints moved to another file, get token from application properties, some variable names updated, query to find traded volume updated).
+* Active crypto list (get a list of coin rates with symbol, rate date, price in dollars and price in pesos).
+* The project was configured to run with h2 in dev and with postgres in prod.
+* Internationalization added.
 
 NOTES:
-* All functionality in TradingService is not called in any controller yet.
-* To do: model money.
-* Add validations to some methods.
-* To do: Mock data from external api to test traded volume.
+* To do: Add tests for RatesController.
+* To do: Search a way to get just the last dollar rate from BCRA api.

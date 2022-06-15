@@ -6,12 +6,19 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.SimulatedClock;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.AssetAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.LocalDateTime;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTest {
@@ -33,9 +40,6 @@ public class ServiceTest {
     UserService userService;
 
     @Autowired
-    RateService rateService;
-
-    @Autowired
     UserRepository userRepository;
 
     @Autowired
@@ -43,6 +47,9 @@ public class ServiceTest {
 
     @Autowired
     TransactionsRepository transactionsRepository;
+
+    @Autowired
+    RateService rateService;
 
     @AfterEach
     void tearDown() {
@@ -74,7 +81,7 @@ public class ServiceTest {
     }
 
     protected AssetAdvertisement publishSellAdvertisementFor(User aSeller, Integer quantityToSell) {
-        return tradingService.postSellAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
+        return tradingService.postAdvertisement(AssetAdvertisementType.SELL_ADVERTISEMENT, aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
     }
 
     protected AssetAdvertisement publishSellAdvertisementFor(User aSeller) {
@@ -86,7 +93,7 @@ public class ServiceTest {
     }
 
     protected AssetAdvertisement publishBuyAdvertisementFor(User aSeller, Integer quantityToSell) {
-        return tradingService.postBuyAdvertisement(aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
+        return tradingService.postAdvertisement(AssetAdvertisementType.BUY_ADVERTISEMENT, aSeller.id(), CRYPTO_ACTIVE_SYMBOL, quantityToSell, VALID_ADVERTISEMENT_PRICE);
     }
 
     protected AssetAdvertisement publishAdvertisementFor(User publisher) {

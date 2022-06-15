@@ -7,7 +7,7 @@ public class EmailStringValidator extends StringValidator {
     }
 
     protected String invalidTextErrorMessage() {
-        return "Invalid email format";
+        return "email.invalid_format";
     }
 
 }

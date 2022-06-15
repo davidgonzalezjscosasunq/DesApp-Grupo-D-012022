@@ -7,7 +7,7 @@ public class CVUStringValidator extends StringValidator {
     }
 
     protected String invalidTextErrorMessage() {
-        return "Invalid CVU";
+        return "cvu.invalid_format";
     }
 
 }

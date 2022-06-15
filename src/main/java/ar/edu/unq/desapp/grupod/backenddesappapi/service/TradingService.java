@@ -47,33 +47,40 @@ public class TradingService {
 
     public Transaction informTransaction(Long interestedUserId, Long advertisementId, int quantityToTransfer) {
         var interestedUser = userService.findUserById(interestedUserId);
-        var assetAdvertisement = assetAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new ModelException("Advertisement not found"));
+        var assetAdvertisement = assetAdvertisementsRepository.findById(advertisementId).orElseThrow(() -> new EntityNotFoundException("advertisement.not_found"));
 
         var newTransaction = new Transaction(interestedUser, assetAdvertisement, quantityToTransfer, clock.now());
 
         return transactionsRepository.save(newTransaction);
     }
 
-    public void confirmTransaction(Long userId, Long transactionToConfirmId) {
+    public Transaction confirmTransaction(Long userId, Long transactionToConfirmId) {
         var user = userService.findUserById(userId);
-        var transaction = transactionsRepository.findById(transactionToConfirmId).orElseThrow(() -> new ModelException("Transaction not found"));
+        var transaction = transactionsRepository.findById(transactionToConfirmId).orElseThrow(() -> new EntityNotFoundException("transaction.not_found"));
 
         transaction.confirmBy(user);
         giveReputationPointsForConfirmedTransaction(user, transaction);
 
         transactionsRepository.save(transaction);
         userRepository.save(user);
+
+        return transaction;
     }
 
-    public void cancelTransaction(Long userId, Long transactionToCancelId) {
-        var user = userRepository.findById(userId).get();
-        var transaction = transactionsRepository.findById(transactionToCancelId).orElseThrow(() -> new ModelException("Transaction not found"));
+    public Transaction cancelTransaction(Long userId, Long transactionToCancelId) {
+        var user = userService.findUserById(userId);
+        var transaction = transactionsRepository.findById(transactionToCancelId).orElseThrow(() -> new EntityNotFoundException("transaction.not_found"));
 
         transaction.cancelBy(user);
-
         looseReputationPointsForCancelTransaction(transaction.publisher());
 
         userRepository.save(user);
+
+        return transaction;
+    }
+
+    public List<Transaction> findTransactionsInformedBy(Long userId) {
+        return transactionsRepository.findAllByInterestedUserId(userId);
     }
 
     public List<AssetAdvertisement> findSellAdvertisementsWithSymbol(String assetSymbol) {
@@ -88,28 +95,28 @@ public class TradingService {
         return assetAdvertisementsRepository.findAllByAssetSymbol(assetSymbol);
     }
 
-    public List<Transaction> findTransactionsInformedBy(Long userId) {
-        return transactionsRepository.findAllByInterestedUserId(userId);
-    }
-
     public TradedVolume getTradedVolumeBetweenDatesForUser(Long userId, LocalDateTime start, LocalDateTime end){
-       List<Transaction> transactionsBetweenDates = transactionsRepository.findAllByUserIdBetweenDates(userId, start, end);
-       List<Transaction> completedTransactions = transactionsBetweenDates.stream().filter(transaction -> transaction.isConfirmed()).collect(Collectors.toList());
-       User user = userRepository.findById(userId).get();
-       LocalDateTime dateAndTimeRequest = clock.now();
-       List<ActiveCrypto> assets = getActiveCryptos(completedTransactions);
-       Double tradedValueInUsd = assets.stream().mapToDouble(asset -> asset.getFinalPriceInUSD()).sum();
-       Double tradedValueInPesos = assets.stream().mapToDouble(asset -> asset.getFinalPriceInPesos()).sum();
+        User user = userService.findUserById(userId);
 
-       return new TradedVolume(user, dateAndTimeRequest, tradedValueInUsd.floatValue(), tradedValueInPesos.floatValue(), assets);
+        List<Transaction> completedTransactions = transactionsRepository.findConfirmedTransactionsBetweenDatesFor(userId, start, end);
+        List<ActiveCrypto> activeCryptos = getActiveCryptos(completedTransactions);
+
+        Double tradedValueInUsd = activeCryptos.stream().mapToDouble(activeCrypto -> activeCrypto.getFinalPriceInUSD()).sum();
+        Double tradedValueInPesos = activeCryptos.stream().mapToDouble(activeCrypto -> activeCrypto.getFinalPriceInPesos()).sum();
+
+        return new TradedVolume(user.id(), clock.now(), tradedValueInUsd.floatValue(), tradedValueInPesos.floatValue(), activeCryptos);
     }
 
     protected List<ActiveCrypto> getActiveCryptos(List<Transaction> transactions) {
         return transactions.stream().map(transaction -> {
-            String symbol = transaction.assetSymbol();
-            Float quantity = transaction.quantity().floatValue();
-            CoinRate rate = rateService.getCoinRate(symbol);
-            return new ActiveCrypto(symbol, quantity, rate.usdPrice(), rate.pesosPrice());
+            CoinRate coinRate = rateService.getCoinRate(transaction.assetSymbol());
+
+            return new ActiveCrypto(
+                    transaction.assetSymbol(),
+                    transaction.quantity().floatValue(),
+                    coinRate.usdPrice(),
+                    coinRate.pesosPrice()
+            );
         }).collect(Collectors.toList());
     }
 

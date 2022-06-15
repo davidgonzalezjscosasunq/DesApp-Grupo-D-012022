@@ -73,7 +73,7 @@ public class TransactionCancellationTest extends ServiceTest {
         var transactionToConfirm = informTransactionForAllQuantity(anInterestedUser, anAdvertisement);
 
         assertThrowsDomainException(
-                "A transaction can only be cancelled by the user that informed it or the user that published the advertisement",
+                "transaction.can_only_be_cancelled_by_the_user_that_informed_it_or_the_user_that_published_the_advertisement",
                 () -> tradingService.cancelTransaction(anotherUser.id(), transactionToConfirm.id())
         );
 
@@ -102,9 +102,29 @@ public class TransactionCancellationTest extends ServiceTest {
         var nonExistentTransactionId = 123L;
 
         assertThrowsDomainException(
-                "Transaction not found",
+                "transaction.not_found",
                 () -> tradingService.cancelTransaction(aUser.id(), nonExistentTransactionId)
         );
+    }
+
+    @Test
+    void aTransactionForAnAdvertisementsCannotBeCancelledByANotRegisteredUser() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+
+        var anAdvertisement = publishAdvertisementFor(aPublisher);
+        var transactionToConfirm = informTransactionForAllQuantity(anInterestedUser, anAdvertisement);
+
+        var notRegisteredUserId = -999999L;
+
+        assertThrowsDomainException(
+                "user.not_found",
+                () -> tradingService.cancelTransaction(notRegisteredUserId, transactionToConfirm.id())
+        );
+
+        var cancelledTransaction = tradingService.findTransactionsInformedBy(anInterestedUser.id()).get(0);
+        assertFalse(cancelledTransaction.isCancelled());
+        assertHasReputationPointsEqualTo(0, aPublisher);
     }
 
 }

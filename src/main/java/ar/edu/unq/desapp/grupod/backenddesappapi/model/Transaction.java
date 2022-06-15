@@ -11,6 +11,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private TransactionState state;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -37,7 +38,11 @@ public class Transaction {
         this.quantity = quantity;
         this.startLocalDateTime = startLocalDateTime;
 
-        this.state = TransactionState.PENDING_STATE;
+        this.state = TransactionState.PENDING;
+    }
+
+    public TransactionState state() {
+        return state;
     }
 
     public Boolean wasInformedBy(User user) {
@@ -45,15 +50,15 @@ public class Transaction {
     }
 
     public Boolean isPending() {
-        return state.equals(TransactionState.PENDING_STATE);
+        return state.equals(TransactionState.PENDING);
     }
 
     public Boolean isConfirmed() {
-        return state.equals(TransactionState.CONFIRMED_STATE);
+        return state.equals(TransactionState.CONFIRMED);
     }
 
     public Boolean isCancelled() {
-        return state.equals(TransactionState.CANCELLED_STATE);
+        return state.equals(TransactionState.CANCELLED);
     }
 
     public Long id() {
@@ -84,13 +89,13 @@ public class Transaction {
         assertIsThePublisher(user);
 
         assetAdvertisement.decreaseQuantity(quantity);
-        state = TransactionState.CONFIRMED_STATE;
+        state = TransactionState.CONFIRMED;
     }
 
     public void cancelBy(User user) {
         assertCanBeCancelledBy(user);
 
-        state = TransactionState.CANCELLED_STATE;
+        state = TransactionState.CANCELLED;
     }
 
     private boolean canBeCancelledBy(User user) {
@@ -99,25 +104,25 @@ public class Transaction {
 
     private void assertAdvertisementWasNotPublishedBy(User user, AssetAdvertisement cryptoAssetAdvertisement) {
         if (cryptoAssetAdvertisement.wasPublishedBy(user)) {
-            throw new ModelException("A user cannot inform a transaction for an advertisement published by himself");
+            throw new ModelException("transaction.user_cannot_inform_a_transaction_for_an_advertisement_published_by_himself");
         }
     }
 
     private void assertIsValidQuantity(Integer quantity) {
         if (quantity <= 0) {
-            throw new ModelException("A transaction quantity must be greater than zero");
+            throw new ModelException("transaction.quantity_must_be_greater_than_zero");
         }
     }
 
     private void assertIsThePublisher(User user) {
         if (!assetAdvertisement.wasPublishedBy(user)) {
-            throw new ModelException("A user cannot confirm a transaction for an advertisement not published by himself");
+            throw new ModelException("transaction.user_cannot_confirm_a_transaction_for_an_advertisement_published_by_himself");
         }
     }
 
     private void assertCanBeCancelledBy(User user) {
         if (!canBeCancelledBy(user)) {
-            throw new ModelException("A transaction can only be cancelled by the user that informed it or the user that published the advertisement");
+            throw new ModelException("transaction.can_only_be_cancelled_by_the_user_that_informed_it_or_the_user_that_published_the_advertisement");
         }
     }
 

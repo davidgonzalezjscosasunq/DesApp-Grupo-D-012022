@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.EntityNotFoundException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
@@ -19,7 +20,7 @@ public class UserService {
     }
 
     public User findUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new ModelException("User not found"));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("user.not_found"));
     }
 
     public Integer reputationPointsOf(Long userId) {
