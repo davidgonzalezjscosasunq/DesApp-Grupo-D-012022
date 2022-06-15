@@ -13,9 +13,7 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.UsdResponse;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityProperties;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.Endpoints;
-import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRateDetail;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.Clock;
-import ar.edu.unq.desapp.grupod.backenddesappapi.service.utils.ActiveCryptos;
 
 
 @Service
@@ -30,15 +28,29 @@ public class RateService {
     @Autowired
     Clock clock;
 
-    private List<String> activeCryptos = new ActiveCryptos().getActiveCryptosList();
+    private List<String> activeCryptos = Arrays.asList(
+            "ALICEUSDT",
+            "MATICUSDT",
+            "AXSUSDT",
+            "AAVEUSDT",
+            "ATOMUSDT",
+            "NEOUSDT",
+            "DOTUSDT",
+            "ETHUSDT",
+            "CAKEUSDT",
+            "BTCUSDT",
+            "BNBUSDT",
+            "ADAUSDT",
+            "TRXUSDT",
+            "AUDIOUSDT");
 
-    public List<CoinRateDetail> getActiveCoinRates() {
-        List<CoinRateDetail> coinRatesCost = new ArrayList<>();
+    public List<CoinRate> getActiveCoinRates() {
+        List<CoinRate> coinRates = new ArrayList<>();
         for(String symbol: activeCryptos){
             CoinRate coinRate = getCoinRate(symbol);
-            coinRatesCost.add(new CoinRateDetail(coinRate.usdPrice(), coinRate.pesosPrice(), symbol, clock.now()));
+            coinRates.add(coinRate);
         }
-        return coinRatesCost;
+        return coinRates;
     }
 
     public CoinRate getCoinRate(String symbol) {
@@ -46,7 +58,7 @@ public class RateService {
         var assetRate = new RestTemplate().getForObject(url, BinanceRatesResponse.class);
         var priceInPesos = assetRate.priceInDollars() * dollarToPesoConversionRate();
 
-        return new CoinRate(assetRate.priceInDollars(), priceInPesos);
+        return new CoinRate(symbol, clock.now(), assetRate.priceInDollars(), priceInPesos);
     }
 
     public Float dollarToPesoConversionRate(){

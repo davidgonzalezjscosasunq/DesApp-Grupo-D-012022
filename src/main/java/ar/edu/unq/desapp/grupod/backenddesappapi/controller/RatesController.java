@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.RateService;
 import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.CoinRateDTO;
-import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.CoinRateDetailDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,14 +22,14 @@ public class RatesController {
     @GetMapping(value = "/rates/{symbol}")
     public ResponseEntity<CoinRateDTO> getCoinRate(@PathVariable("symbol") String symbol) {
         var coinRate = rateService.getCoinRate(symbol);
-        return new ResponseEntity<CoinRateDTO>(CoinRateDTO.form(coinRate), HttpStatus.OK);
+        return new ResponseEntity<CoinRateDTO>(CoinRateDTO.from(coinRate), HttpStatus.OK);
     }
 
     @GetMapping(value = "/rates/activeCryptos")
-    public ResponseEntity<List<CoinRateDetailDTO>> getCoinRate() {
+    public ResponseEntity<List<CoinRateDTO>> getCoinRate() {
         var activeCoinRates = rateService.getActiveCoinRates();
 
-        return ResponseEntity.status(HttpStatus.OK).body(activeCoinRates.stream().map(CoinRateDetailDTO::from).collect(Collectors.toList()));
+        return ResponseEntity.status(HttpStatus.OK).body(activeCoinRates.stream().map(CoinRateDTO::from).collect(Collectors.toList()));
     }
 
 }
