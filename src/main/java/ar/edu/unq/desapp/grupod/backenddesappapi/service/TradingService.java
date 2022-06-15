@@ -104,7 +104,7 @@ public class TradingService {
         Double tradedValueInUsd = activeCryptos.stream().mapToDouble(activeCrypto -> activeCrypto.getFinalPriceInUSD()).sum();
         Double tradedValueInPesos = activeCryptos.stream().mapToDouble(activeCrypto -> activeCrypto.getFinalPriceInPesos()).sum();
 
-        return new TradedVolume(user, clock.now(), tradedValueInUsd.floatValue(), tradedValueInPesos.floatValue(), activeCryptos);
+        return new TradedVolume(user.id(), clock.now(), tradedValueInUsd.floatValue(), tradedValueInPesos.floatValue(), activeCryptos);
     }
 
     protected List<ActiveCrypto> getActiveCryptos(List<Transaction> transactions) {

@@ -12,7 +12,7 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 public class TradedVolumeDTO {
 
     @JsonProperty
-    private User user;
+    private Long userId;
     @JsonProperty
     private LocalDateTime dateAndTimeRequest;
     @JsonProperty
@@ -23,11 +23,11 @@ public class TradedVolumeDTO {
     private List<ActiveCrypto> assets;
 
     public static TradedVolumeDTO from(TradedVolume tradedVolume){
-        return new TradedVolumeDTO(tradedVolume.user(), tradedVolume.dateAndTimeRequest(), tradedVolume.tradedValueInUsd(), tradedVolume.tradedValueInPesos(), tradedVolume.assets());
+        return new TradedVolumeDTO(tradedVolume.getUserId(), tradedVolume.dateAndTimeRequest(), tradedVolume.tradedValueInUsd(), tradedVolume.tradedValueInPesos(), tradedVolume.assets());
     }
 
-    public TradedVolumeDTO(User user, LocalDateTime dateAndTimeRequest, Float tradedValueInUsd, Float tradedValueInPesos, List<ActiveCrypto> assets) {
-        this.user = user;
+    public TradedVolumeDTO(Long userId, LocalDateTime dateAndTimeRequest, Float tradedValueInUsd, Float tradedValueInPesos, List<ActiveCrypto> assets) {
+        this.userId = userId;
         this.dateAndTimeRequest = dateAndTimeRequest;
         this.tradedValueInUsd = tradedValueInUsd;
         this.tradedValueInPesos = tradedValueInPesos;
