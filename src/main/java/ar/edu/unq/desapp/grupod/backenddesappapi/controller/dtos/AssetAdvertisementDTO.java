@@ -31,6 +31,9 @@ public class AssetAdvertisementDTO {
     @JsonProperty
     private Long publisherId;
 
+    @JsonProperty
+    private Integer publisherReputationPoints;
+
     public static AssetAdvertisementDTO form(AssetAdvertisement assetAdvertisement) {
         return new AssetAdvertisementDTO(assetAdvertisement.id(), assetAdvertisement.type(), assetAdvertisement.assetSymbol(), assetAdvertisement.quantity(), assetAdvertisement.price(), assetAdvertisement.publicationLocalDateTime(), assetAdvertisement.publisher());
     }
@@ -45,6 +48,7 @@ public class AssetAdvertisementDTO {
         this.price = price;
         this.publicationLocalDateTime = publicationLocalDateTime;
         this.publisherId = publisher.id();
+        this.publisherReputationPoints = publisher.points();
     }
 
     public Long id() {
