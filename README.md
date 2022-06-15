@@ -22,4 +22,4 @@
   * main ![example branch parameter](https://github.com/davidgonzalezjscosasunq/DesApp-Grupo-D-012022/actions/workflows/main.yml/badge.svg?branch=main)
   * development ![example branch parameter](https://github.com/davidgonzalezjscosasunq/DesApp-Grupo-D-012022/actions/workflows/main.yml/badge.svg?branch=development)
 
-* API url: https://desapp-grupo-d-012022.herokuapp.com/
+* API url: https://unq-desapp-grupo-d-012022.herokuapp.com/
