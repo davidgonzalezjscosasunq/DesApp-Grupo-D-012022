@@ -1,6 +1,6 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,6 +13,7 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.UsdResponse;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityProperties;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.Endpoints;
+import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.Clock;
 
 
 @Service
@@ -24,12 +25,40 @@ public class RateService {
     @Autowired
     private SecurityProperties securityProperties;
 
+    @Autowired
+    Clock clock;
+
+    private List<String> activeCryptos = Arrays.asList(
+            "ALICEUSDT",
+            "MATICUSDT",
+            "AXSUSDT",
+            "AAVEUSDT",
+            "ATOMUSDT",
+            "NEOUSDT",
+            "DOTUSDT",
+            "ETHUSDT",
+            "CAKEUSDT",
+            "BTCUSDT",
+            "BNBUSDT",
+            "ADAUSDT",
+            "TRXUSDT",
+            "AUDIOUSDT");
+
+    public List<CoinRate> getActiveCoinRates() {
+        List<CoinRate> coinRates = new ArrayList<>();
+        for(String symbol: activeCryptos){
+            CoinRate coinRate = getCoinRate(symbol);
+            coinRates.add(coinRate);
+        }
+        return coinRates;
+    }
+
     public CoinRate getCoinRate(String symbol) {
         String url = endpoints.apiBinanceBaseURL + endpoints.apiBinancePriceURL +  symbol;
         var assetRate = new RestTemplate().getForObject(url, BinanceRatesResponse.class);
         var priceInPesos = assetRate.priceInDollars() * dollarToPesoConversionRate();
 
-        return new CoinRate(assetRate.priceInDollars(), priceInPesos);
+        return new CoinRate(symbol, clock.now(), assetRate.priceInDollars(), priceInPesos);
     }
 
     public Float dollarToPesoConversionRate(){
