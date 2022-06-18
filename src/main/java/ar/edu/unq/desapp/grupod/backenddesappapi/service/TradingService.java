@@ -134,11 +134,11 @@ public class TradingService {
 
         var pointsToGive = now.isBefore(limitTime) ? 10 : 5;
 
-        user.receiveReputationPoints(pointsToGive);
+        user.receiveReputationPointsForOperation(pointsToGive);
     }
 
     private void looseReputationPointsForCancelTransaction(User user) {
-        user.looseReputationPoints(20);
+        user.looseReputationPointsForOperation(20);
     }
 
 }

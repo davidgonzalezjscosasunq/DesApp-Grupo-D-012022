@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 public class UserController {
 
@@ -19,6 +22,14 @@ public class UserController {
         var user = userService.findUserById(userId);
 
         return new ResponseEntity<UserDTO>(UserDTO.form(user), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/users")
+    public ResponseEntity<List<UserDTO>> findUsers() {
+        var users = userService.findUsers();
+        var userDTOs = users.stream().map(UserDTO::form).collect(Collectors.toList());
+
+        return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
     @PostMapping(value = "/users")

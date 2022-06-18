@@ -19,6 +19,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import java.time.LocalDateTime;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTest {
@@ -142,6 +143,15 @@ public class ServiceTest {
 
     protected User registerUserWithCryptoWalletAddress(String cryptoWalletAddress) {
         return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, cryptoWalletAddress);
+    }
+
+    protected void assertIsTheSameUser(User userToCheck, User expectedUser) {
+        assertThat(userToCheck.id()).isEqualTo(expectedUser.id());
+        assertThat(userToCheck.lastName()).isEqualTo(expectedUser.lastName());
+        assertThat(userToCheck.lastName()).isEqualTo(expectedUser.lastName());
+        assertThat(userToCheck.email()).isEqualTo(expectedUser.email());
+        assertThat(userToCheck.cvu()).isEqualTo(expectedUser.cvu());
+        assertThat(userToCheck.cryptoActiveWalletAddress()).isEqualTo(expectedUser.cryptoActiveWalletAddress());
     }
 
     protected void assertHasNoInformedTransactions(User aBuyer) {
