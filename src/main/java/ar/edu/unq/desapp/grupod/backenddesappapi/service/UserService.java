@@ -1,7 +1,6 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.EntityNotFoundException;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,4 +26,5 @@ public class UserService {
         var user = userRepository.findById(userId).get();
         return user.points();
     }
+
 }

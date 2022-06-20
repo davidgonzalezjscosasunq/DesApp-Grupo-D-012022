@@ -64,6 +64,10 @@ public class User {
         return email;
     }
 
+    public String password() {
+        return password;
+    }
+
     public String cryptoActiveWalletAddress() {
         return cryptoWalletAddress;
     }

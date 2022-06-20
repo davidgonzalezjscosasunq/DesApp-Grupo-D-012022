@@ -14,9 +14,18 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract public class ControllerTest {
+
+    @DynamicPropertySource
+    static void overrideProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
+        // Esto se agrego para desactivar la autenticacion para los tests de controllers y que funcionen en la demo con Postman
+        // Lo ideal seria modificar todos los tests de controllers y todos los controllers para que esten autenticados
+        dynamicPropertyRegistry.add("security.bypassAuthentication", () -> true);
+    }
 
     @LocalServerPort
     protected int port;
