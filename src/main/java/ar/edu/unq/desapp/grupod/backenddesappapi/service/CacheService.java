@@ -2,7 +2,6 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.aspects.ThrowableSupplier;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.Clock;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,23 +23,6 @@ public class CacheService {
         if (shouldUpdateValue(key, now)) {
             var expirationLocalDate = now.plusSeconds(validityDurationInSeconds);
             var value = valueSupplier.get();
-
-            save(key, value, expirationLocalDate);
-
-            return value;
-        }
-        else {
-            return find(key);
-        }
-    }
-
-    public Object handle1231231(ProceedingJoinPoint joinPoint, Long validityDurationInSeconds) throws Throwable {
-        var key = joinPoint.getSignature().toString();
-        var now = clock.now();
-
-        if (shouldUpdateValue(key, now)) {
-            var expirationLocalDate = now.plusSeconds(validityDurationInSeconds);
-            var value = joinPoint.proceed();
 
             save(key, value, expirationLocalDate);
 
