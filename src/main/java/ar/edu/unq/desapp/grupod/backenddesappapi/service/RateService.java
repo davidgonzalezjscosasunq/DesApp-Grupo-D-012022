@@ -70,17 +70,13 @@ public class RateService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + securityProperties.bcraToken);
 
-        try {
-            final ResponseEntity<List<UsdResponse>> response = new RestTemplate().exchange(
-                    endpoints.apiEstadisticasbcraBaseURL + "/usd",
-                    HttpMethod.GET,
-                    new HttpEntity(headers),
-                    new ParameterizedTypeReference<List<UsdResponse>>(){});
+        var response = new RestTemplate().exchange(
+                endpoints.apiEstadisticasbcraBaseURL + "/usd",
+                HttpMethod.GET,
+                new HttpEntity(headers),
+                new ParameterizedTypeReference<List<UsdResponse>>(){});
 
-            // TODO: la peticion a la API trae mas de 5000 precios. Ver como hacer para pedirle el ultimo o buscar otra API
-            return response.getBody().get(response.getBody().size() - 1).dollarToPesoConversionRate();
-        } catch (Exception exception) {
-            throw new Error(exception);
-        }
+        // TODO: la peticion a la API trae mas de 5000 precios. Ver como hacer para pedirle el ultimo o buscar otra API
+        return response.getBody().get(response.getBody().size() - 1).dollarToPesoConversionRate();
     }
 }
