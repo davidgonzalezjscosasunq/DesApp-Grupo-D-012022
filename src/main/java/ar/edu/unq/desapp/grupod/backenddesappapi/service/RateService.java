@@ -1,6 +1,5 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,18 +45,26 @@ public class RateService {
             "AUDIOUSDT");
 
     public List<CoinRate> getActiveCoinRates() {
+        Float dollarToPesoConversionRatio = dollarToPesoConversionRate();
+
         List<CoinRate> coinRates = new ArrayList<>();
         for(String symbol: activeCryptos){
-            CoinRate coinRate = getCoinRate(symbol);
+            CoinRate coinRate = getCoinRateWithDollarToPesoConversionRatio(symbol, dollarToPesoConversionRatio);
             coinRates.add(coinRate);
         }
+
         return coinRates;
     }
 
     public CoinRate getCoinRate(String symbol) {
+        return getCoinRateWithDollarToPesoConversionRatio(symbol, dollarToPesoConversionRate());
+    }
+
+    private CoinRate getCoinRateWithDollarToPesoConversionRatio(String symbol, Float dollarToPesoConversionRatio) {
         String url = endpoints.apiBinanceBaseURL + endpoints.apiBinancePriceURL +  symbol;
         var assetRate = new RestTemplate().getForObject(url, BinanceRatesResponse.class);
-        var priceInPesos = assetRate.priceInDollars() * dollarToPesoConversionRate();
+
+        var priceInPesos = assetRate.priceInDollars() * dollarToPesoConversionRatio;
 
         return new CoinRate(symbol, clock.now(), assetRate.priceInDollars(), priceInPesos);
     }
