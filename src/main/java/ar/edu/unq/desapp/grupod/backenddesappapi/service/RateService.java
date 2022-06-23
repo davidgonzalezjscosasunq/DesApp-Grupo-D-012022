@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -47,13 +48,9 @@ public class RateService {
     public List<CoinRate> getActiveCoinRates() {
         Float dollarToPesoConversionRatio = dollarToPesoConversionRate();
 
-        List<CoinRate> coinRates = new ArrayList<>();
-        for(String symbol: activeCryptos){
-            CoinRate coinRate = getCoinRateWithDollarToPesoConversionRatio(symbol, dollarToPesoConversionRatio);
-            coinRates.add(coinRate);
-        }
-
-        return coinRates;
+        return activeCryptos.stream()
+                .map(symbol -> getCoinRateWithDollarToPesoConversionRatio(symbol, dollarToPesoConversionRatio))
+                .collect(Collectors.toList());
     }
 
     public CoinRate getCoinRate(String symbol) {
