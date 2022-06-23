@@ -1,6 +1,7 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -45,18 +46,22 @@ public class RateService {
             "AUDIOUSDT");
 
     public List<CoinRate> getActiveCoinRates() {
-        List<CoinRate> coinRates = new ArrayList<>();
-        for(String symbol: activeCryptos){
-            CoinRate coinRate = getCoinRate(symbol);
-            coinRates.add(coinRate);
-        }
-        return coinRates;
+        Float dollarToPesoConversionRatio = dollarToPesoConversionRate();
+
+        return activeCryptos.stream()
+                .map(symbol -> getCoinRateWithDollarToPesoConversionRatio(symbol, dollarToPesoConversionRatio))
+                .collect(Collectors.toList());
     }
 
     public CoinRate getCoinRate(String symbol) {
+        return getCoinRateWithDollarToPesoConversionRatio(symbol, dollarToPesoConversionRate());
+    }
+
+    private CoinRate getCoinRateWithDollarToPesoConversionRatio(String symbol, Float dollarToPesoConversionRatio) {
         String url = endpoints.apiBinanceBaseURL + endpoints.apiBinancePriceURL +  symbol;
         var assetRate = new RestTemplate().getForObject(url, BinanceRatesResponse.class);
-        var priceInPesos = assetRate.priceInDollars() * dollarToPesoConversionRate();
+
+        var priceInPesos = assetRate.priceInDollars() * dollarToPesoConversionRatio;
 
         return new CoinRate(symbol, clock.now(), assetRate.priceInDollars(), priceInPesos);
     }
@@ -65,17 +70,13 @@ public class RateService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + securityProperties.bcraToken);
 
-        try {
-            final ResponseEntity<List<UsdResponse>> response = new RestTemplate().exchange(
-                    endpoints.apiEstadisticasbcraBaseURL + "/usd",
-                    HttpMethod.GET,
-                    new HttpEntity(headers),
-                    new ParameterizedTypeReference<List<UsdResponse>>(){});
+        var response = new RestTemplate().exchange(
+                endpoints.apiEstadisticasbcraBaseURL + "/usd",
+                HttpMethod.GET,
+                new HttpEntity(headers),
+                new ParameterizedTypeReference<List<UsdResponse>>(){});
 
-            // TODO: la peticion a la API trae mas de 5000 precios. Ver como hacer para pedirle el ultimo o buscar otra API
-            return response.getBody().get(response.getBody().size() - 1).dollarToPesoConversionRate();
-        } catch (Exception exception) {
-            throw new Error(exception);
-        }
+        // TODO: la peticion a la API trae mas de 5000 precios. Ver como hacer para pedirle el ultimo o buscar otra API
+        return response.getBody().get(response.getBody().size() - 1).dollarToPesoConversionRate();
     }
 }
