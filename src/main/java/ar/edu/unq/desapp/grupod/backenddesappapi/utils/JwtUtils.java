@@ -1,9 +1,10 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.utils;
 
+import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -16,12 +17,14 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
-    @Value("${jwt.secret}")
+    @Autowired
+    private SecurityProperties securityProperties;
+
     private String secret;
 
     @PostConstruct
     protected void init() {
-        secret = Base64.getEncoder().encodeToString(secret.getBytes());
+        secret = Base64.getEncoder().encodeToString(securityProperties.jwtSecret.getBytes());
     }
 
     public String createToken(String subject) {
