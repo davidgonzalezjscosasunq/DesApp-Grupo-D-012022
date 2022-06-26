@@ -19,6 +19,7 @@ public class User {
     private String cvu;
     private String cryptoWalletAddress;
     private Integer points;
+    private Integer numberOfOperations;
 
     private User() {}
 
@@ -38,6 +39,7 @@ public class User {
         this.cvu = cvu;
         this.cryptoWalletAddress = cryptoWalletAddress;
         this.points = 0;
+        this.numberOfOperations = 0;
     }
 
     public Long id() {
@@ -72,16 +74,26 @@ public class User {
         return cryptoWalletAddress;
     }
 
-    public Integer points() {
+    public Integer reputationPoints() {
         return points;
     }
 
-    public void receiveReputationPoints(int pointsToGain) {
-        points += pointsToGain;
+    public Integer numberOfOperations() {
+        return numberOfOperations;
     }
 
-    public void looseReputationPoints(Integer pointsToLoose) {
+    public void receiveReputationPointsForOperation(int pointsToGain) {
+        points += pointsToGain;
+        incrementNumberOfOperationsCounter();
+    }
+
+    public void looseReputationPointsForOperation(Integer pointsToLoose) {
         points -= pointsToLoose;
+        incrementNumberOfOperationsCounter();
+    }
+
+    private void incrementNumberOfOperationsCounter() {
+        numberOfOperations += 1;
     }
 
     private void assertIsValidFirstName(String name) {

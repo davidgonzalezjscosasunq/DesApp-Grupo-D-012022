@@ -1,5 +1,6 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.controller;
 
+import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.UserDTO;
 import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.UserRegistrationDTO;
 import ar.edu.unq.desapp.grupod.backenddesappapi.factories.UserTestFactory;
 import org.junit.jupiter.api.Test;
@@ -14,14 +15,9 @@ public class UserControllerTest extends ControllerTest {
     public void registerUserSuccessfully() {
         var pepeGomezRegistrationDTO = createPepeGomezRegistrationDTO();
 
-        var response = registerUser(pepeGomezRegistrationDTO);
+        var userDTO = registerUser(pepeGomezRegistrationDTO);
 
-        assertThat(response.firstName()).isEqualTo(pepeGomezRegistrationDTO.firstName());
-        assertThat(response.lastName()).isEqualTo(pepeGomezRegistrationDTO.lastName());
-        assertThat(response.email()).isEqualTo(pepeGomezRegistrationDTO.email());
-        assertThat(response.address()).isEqualTo(pepeGomezRegistrationDTO.address());
-        assertThat(response.cvu()).isEqualTo(pepeGomezRegistrationDTO.cvu());
-        assertThat(response.cryptoWalletAddress()).isEqualTo(pepeGomezRegistrationDTO.cryptoWalletAddress());
+        assertUserDTOCorrespondToUserRegistrationDTO(userDTO, pepeGomezRegistrationDTO);
     }
 
     @Test
@@ -39,14 +35,9 @@ public class UserControllerTest extends ControllerTest {
         var pepeGomezRegistrationDTO = createPepeGomezRegistrationDTO();
         var userRegistrationResponse = registerUser(pepeGomezRegistrationDTO);
 
-        var response = findUserById(userRegistrationResponse.id());
+        var foundUserDTO = findUserById(userRegistrationResponse.id());
 
-        assertThat(response.firstName()).isEqualTo(pepeGomezRegistrationDTO.firstName());
-        assertThat(response.lastName()).isEqualTo(pepeGomezRegistrationDTO.lastName());
-        assertThat(response.email()).isEqualTo(pepeGomezRegistrationDTO.email());
-        assertThat(response.address()).isEqualTo(pepeGomezRegistrationDTO.address());
-        assertThat(response.cvu()).isEqualTo(pepeGomezRegistrationDTO.cvu());
-        assertThat(response.cryptoWalletAddress()).isEqualTo(pepeGomezRegistrationDTO.cryptoWalletAddress());
+        assertUserDTOCorrespondToUserRegistrationDTO(foundUserDTO, pepeGomezRegistrationDTO);
     }
 
     @Test
@@ -57,8 +48,33 @@ public class UserControllerTest extends ControllerTest {
         assertThat(responseEntity.getBody()).isEqualTo("User not found");
     }
 
+    @Test
+    public void findAllUsers() {
+        var userRegistrationDTO = createPepeGomezRegistrationDTO();
+        registerUser(userRegistrationDTO);
+
+        var responseEntity = restTemplate.getForEntity(userURL(), UserDTO[].class);;
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        var foundUserDTO = responseEntity.getBody()[0];
+        assertUserDTOCorrespondToUserRegistrationDTO(foundUserDTO, userRegistrationDTO);
+        assertThat(foundUserDTO.numberOfOperations()).isEqualTo(0);
+        assertThat(foundUserDTO.reputationPoints()).isEqualTo(0);
+    }
+
 
     private UserRegistrationDTO createInvalidUserRegistrationDTO() {
         return new UserRegistrationDTO("", UserTestFactory.JUAN_LAST_NAME, UserTestFactory.JUAN_EMAIL, UserTestFactory.JUAN_ADDRESS, UserTestFactory.JUAN_PASSWORD, UserTestFactory.JUAN_CVU, UserTestFactory.JUAN_CRIPTO_WALLET_ADDRESS);
     }
+
+    private void assertUserDTOCorrespondToUserRegistrationDTO(UserDTO userDTO, UserRegistrationDTO userRegistrationDTO) {
+        assertThat(userDTO.firstName()).isEqualTo(userRegistrationDTO.firstName());
+        assertThat(userDTO.lastName()).isEqualTo(userRegistrationDTO.lastName());
+        assertThat(userDTO.email()).isEqualTo(userRegistrationDTO.email());
+        assertThat(userDTO.address()).isEqualTo(userRegistrationDTO.address());
+        assertThat(userDTO.cvu()).isEqualTo(userRegistrationDTO.cvu());
+        assertThat(userDTO.cryptoWalletAddress()).isEqualTo(userRegistrationDTO.cryptoWalletAddress());
+    }
+
 }

@@ -5,7 +5,6 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisementType;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 public class AssetAdvertisementDTO {
@@ -48,7 +47,7 @@ public class AssetAdvertisementDTO {
         this.price = price;
         this.publicationLocalDateTime = publicationLocalDateTime;
         this.publisherId = publisher.id();
-        this.publisherReputationPoints = publisher.points();
+        this.publisherReputationPoints = publisher.reputationPoints();
     }
 
     public Long id() {

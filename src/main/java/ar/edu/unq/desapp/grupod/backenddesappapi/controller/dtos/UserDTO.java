@@ -19,12 +19,16 @@ public class UserDTO {
     private String cvu;
     @JsonProperty
     private String cryptoWalletAddress;
+    @JsonProperty
+    private Integer numberOfOperations;
+    @JsonProperty
+    private Integer reputationPoints;
 
     public static UserDTO form(User user) {
-        return new UserDTO(user.id(), user.firstName(), user.lastName(), user.email(), user.address(), user.cvu(), user.cryptoActiveWalletAddress());
+        return new UserDTO(user.id(), user.firstName(), user.lastName(), user.email(), user.address(), user.cvu(), user.cryptoActiveWalletAddress(), user.numberOfOperations(), user.reputationPoints());
     }
 
-    public UserDTO(Long id, String firstName, String lastName, String email, String address, String cvu, String cryptoWalletAddress) {
+    public UserDTO(Long id, String firstName, String lastName, String email, String address, String cvu, String cryptoWalletAddress, Integer numberOfOperations, Integer reputationPoints) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -32,6 +36,8 @@ public class UserDTO {
         this.address = address;
         this.cvu = cvu;
         this.cryptoWalletAddress = cryptoWalletAddress;
+        this.numberOfOperations = numberOfOperations;
+        this.reputationPoints = reputationPoints;
     }
 
     public Long id() {
@@ -60,5 +66,13 @@ public class UserDTO {
 
     public String cryptoWalletAddress() {
         return cryptoWalletAddress;
+    }
+
+    public Integer numberOfOperations() {
+        return numberOfOperations;
+    }
+
+    public Integer reputationPoints() {
+        return reputationPoints;
     }
 }

@@ -94,6 +94,21 @@ public class TransactionConfirmationTest extends ServiceTest {
     }
 
     @Test
+    void aPublisherIncrementsHisNumberOfOperationsForEveryConfirmedTransaction() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+        var anAdvertisement = publishSellAdvertisementFor(aPublisher);
+
+        tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), 1);
+        var aTransactionToConfirm = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), 2);
+
+        tradingService.confirmTransaction(aPublisher.id(), aTransactionToConfirm.id());
+
+        var publisherAfterTwoConfirmedTransactions = userService.findUserById(aPublisher.id());
+        assertEquals(1, publisherAfterTwoConfirmedTransactions.numberOfOperations());
+    }
+
+    @Test
     void thePaymentAddressOfAConfirmedTransactionsForASellAdvertisementIsTheCVUOfThePublisher() {
         var anInterestedUser = registerPepe();
         var aPublisher = registerJuan();
