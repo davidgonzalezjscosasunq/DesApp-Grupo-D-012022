@@ -3,8 +3,10 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.architecture;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,28 +63,38 @@ public class ArchitectureTest {
             .should().beInterfaces();
 
     @ArchTest
-    public static final ArchRule onlyClassesInServiceShouldHaveTransactionalAnnotation = classes()
+    public static final ArchRule classesWithTransactionalAnnotationShouldBeInServicePackage = classes()
             .that().areAnnotatedWith(Transactional.class)
             .should().resideInAPackage("..service..");
 
     @ArchTest
-    public static final ArchRule onlyClassesInControllerShouldHaveRestControllerAnnotation = classes()
+    public static final ArchRule classesWithRestControllerAnnotationShouldBeInControllerPackage = classes()
             .that().areAnnotatedWith(RestController.class)
             .should().resideInAPackage("..controller..");
 
     @ArchTest
-    public static final ArchRule onlyClassesInPersistenceShouldHaveRepositoryAnnotation = classes()
+    public static final ArchRule classesWithRepositoryAnnotationShouldBeInPersistencePackage = classes()
             .that().areAnnotatedWith(Repository.class)
             .should().resideInAPackage("..persistence..");
 
     @ArchTest
-    public static final ArchRule onlyClassesInModelShouldHaveEntityAnnotation = classes()
+    public static final ArchRule classesWithEntityAnnotationShouldBeInModelPackage = classes()
             .that().areAnnotatedWith(Entity.class)
             .should().resideInAPackage("..model..");
 
     @ArchTest
-    public static final ArchRule onlyClassesInConfigurationShouldHaveConfigurationAnnotation = classes()
+    public static final ArchRule classesWithConfigurationAnnotationShouldBeInConfigurationPackage = classes()
             .that().areAnnotatedWith(Configuration.class)
             .should().resideInAPackage("..configuration..");
+
+    @ArchTest
+    public static final ArchRule classesWithAspectAnnotationShouldBeInAspectsPackage = classes()
+            .that().areAnnotatedWith(Aspect.class)
+            .should().resideInAPackage("..aspects..");
+
+    @ArchTest
+    public static final ArchRule classesWithServiceAnnotationShouldBeInServicePackage = classes()
+            .that().areAnnotatedWith(Service.class)
+            .should().resideInAnyPackage("..service..", "..model.clock.."); //hay que mover el clock?
 
 }
