@@ -2,7 +2,6 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.controller;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos.*;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisementType;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.Transaction;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.TransactionState;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
