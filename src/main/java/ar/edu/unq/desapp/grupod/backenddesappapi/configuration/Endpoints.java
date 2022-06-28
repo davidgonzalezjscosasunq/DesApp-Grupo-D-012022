@@ -10,6 +10,7 @@ public class Endpoints {
 
     public String apiBinancePriceURL =  "/api/v3/ticker/price?symbol=";
 
-    @Value("${api_estadisticasbcra_base_url}")
-    public String apiEstadisticasbcraBaseURL;
+    @Value("${api_dollar_to_peso_conversion_ratio_url}")
+    public String apiDollarToPesoConversionRatioURL;
+
 }

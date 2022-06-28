@@ -3,6 +3,7 @@ package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -11,8 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.BinanceRatesResponse;
 import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.CoinRate;
-import ar.edu.unq.desapp.grupod.backenddesappapi.service.types.UsdResponse;
-import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.SecurityProperties;
 import ar.edu.unq.desapp.grupod.backenddesappapi.configuration.Endpoints;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.Clock;
 
@@ -22,9 +21,6 @@ public class RateService {
 
     @Autowired
     private Endpoints endpoints;
-
-    @Autowired
-    private SecurityProperties securityProperties;
 
     @Autowired
     Clock clock;
@@ -67,16 +63,26 @@ public class RateService {
     }
 
     public Float dollarToPesoConversionRate(){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + securityProperties.bcraToken);
-
         var response = new RestTemplate().exchange(
-                endpoints.apiEstadisticasbcraBaseURL + "/usd",
+                endpoints.apiDollarToPesoConversionRatioURL,
                 HttpMethod.GET,
-                new HttpEntity(headers),
-                new ParameterizedTypeReference<List<UsdResponse>>(){});
+                new HttpEntity(new HttpHeaders()),
+                new ParameterizedTypeReference<List<JsonNode>>(){});
 
-        // TODO: la peticion a la API trae mas de 5000 precios. Ver como hacer para pedirle el ultimo o buscar otra API
-        return response.getBody().get(response.getBody().size() - 1).dollarToPesoConversionRate();
+        return response.getBody().stream()
+                .filter(objectNode -> isDollarBlue(objectNode))
+                .map(objectNode -> parseSellPrice(objectNode))
+                .findFirst()
+                .get();
     }
+
+    private Boolean isDollarBlue(JsonNode objectNode) {
+        return objectNode.get("casa").get("nombre").asText().equals("Blue");
+    }
+
+    private Float parseSellPrice(JsonNode objectNode) {
+        var priceAsString = objectNode.get("casa").get("venta").asText().replace(',', '.');
+        return Float.parseFloat(priceAsString);
+    }
+
 }
