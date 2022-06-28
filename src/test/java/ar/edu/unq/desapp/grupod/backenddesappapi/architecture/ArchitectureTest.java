@@ -18,17 +18,17 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 public class ArchitectureTest {
 
     @ArchTest
-    public static final ArchRule servicesShouldOnlyBeAccessedByControllersAndAspects = classes()
+    public static final ArchRule serviceClassesShouldOnlyBeAccessedByControllersAndAspectsPackages = classes()
             .that().resideInAPackage ("..service..")
             .should().onlyBeAccessed().byAnyPackage("..controller..", "..service..", "..aspects..");
 
     @ArchTest
-    public static final ArchRule controllersShouldNotBeAccessedByAnyone = classes()
+    public static final ArchRule controllerClassesShouldNotBeAccessedByAnyOtherPackage = classes()
             .that().resideInAPackage("..controller..")
             .should().onlyBeAccessed().byAnyPackage("..controller..");
 
     @ArchTest
-    public static final ArchRule persistenceClassesShouldOnlyBeAccessedByServices = classes()
+    public static final ArchRule persistenceClassesShouldOnlyBeAccessedByServicePackage = classes()
             .that().resideInAPackage("..persistence..")
             .should().onlyBeAccessed().byAnyPackage("..service..", "..persistence..");
 
