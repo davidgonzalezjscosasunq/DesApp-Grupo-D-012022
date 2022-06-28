@@ -1,4 +1,4 @@
-package ar.edu.unq.desapp.grupod.backenddesappapi.controller;
+package ar.edu.unq.desapp.grupod.backenddesappapi.controller.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
