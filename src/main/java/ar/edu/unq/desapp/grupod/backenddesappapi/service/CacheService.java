@@ -15,7 +15,7 @@ public class CacheService {
     @Autowired
     Clock clock;
 
-    private Map<String, CacheEntry> cache = new HashMap<>();
+    private Map<String, CacheEntry> cacheEntries = new HashMap<>();
 
     public Object handle(String key, ThrowableSupplier valueSupplier, Long validityDurationInSeconds) throws Throwable {
         var now = clock.now();
@@ -34,11 +34,11 @@ public class CacheService {
     }
 
     private CacheEntry save(String key, Object objectToSave, LocalDateTime expirationLocalDate) {
-        return cache.put(key, new CacheEntry(expirationLocalDate, objectToSave));
+        return cacheEntries.put(key, new CacheEntry(expirationLocalDate, objectToSave));
     }
 
     private Object find(String key) {
-        return cache.get(key).value();
+        return cacheEntries.get(key).value();
     }
 
     private boolean shouldUpdateValue(String key, LocalDateTime now) {
@@ -46,11 +46,11 @@ public class CacheService {
     }
 
     private boolean hasKey(String key) {
-        return cache.containsKey(key);
+        return cacheEntries.containsKey(key);
     }
 
     private boolean isKeyExpiredOn(String key, LocalDateTime now) {
-        return cache.get(key).expiredOn(now);
+        return cacheEntries.get(key).expiredOn(now);
     }
 
 }
