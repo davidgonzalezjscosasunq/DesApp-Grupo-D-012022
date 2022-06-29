@@ -6,25 +6,40 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.AssetAdvertisementType;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.AssetAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.time.LocalDateTime;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract public class ControllerTest {
+
+    private static WireMockServer binanceMockServer;
+    private static WireMockServer dollarToPesoConversionRateMockServer;
 
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
         // Esto se agrego para desactivar la autenticacion para los tests de controllers y que funcionen en la demo con Postman
         // Lo ideal seria modificar todos los tests de controllers y todos los controllers para que esten autenticados
         dynamicPropertyRegistry.add("security.bypassAuthentication", () -> true);
+        dynamicPropertyRegistry.add("api_dollar_to_peso_conversion_ratio_url", dollarToPesoConversionRateMockServer::baseUrl);
+        dynamicPropertyRegistry.add("api_binance_base_url", binanceMockServer::baseUrl);
     }
 
     @LocalServerPort
@@ -49,6 +64,48 @@ abstract public class ControllerTest {
         userRepository.deleteAll();
     }
 
+    @BeforeAll
+    static void beforeAll() {
+        startMockedServers();
+    }
+
+    @AfterAll
+    static void afterAll() {
+        stopMockedServers();
+    }
+
+    static public void startMockedServers() {
+        binanceMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
+        binanceMockServer.start();
+
+        dollarToPesoConversionRateMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
+        dollarToPesoConversionRateMockServer.start();
+    }
+
+    static public void stopMockedServers() {
+        binanceMockServer.stop();
+        dollarToPesoConversionRateMockServer.stop();
+    }
+
+    public void mockServerToRespondWithDollarToPesoRatioOf(Float dollarToPesoRatioToReturn) {
+        var dollarToPesoRatioToReturnAsString = dollarToPesoRatioToReturn.toString().replace('.', ',');
+
+        dollarToPesoConversionRateMockServer.stubFor(get("/")
+                .willReturn(
+                        aResponse()
+                                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                                .withBody("[{\"casa\": {\"nombre\": \"Blue\", \"venta\": \"" + dollarToPesoRatioToReturnAsString + "\"}}]")));
+    }
+
+    public void mockServerToRespondWithSymbolPrice(String symbol, Float assetPrice) {
+        binanceMockServer.stubFor(get("/api/v3/ticker/price?symbol=" + symbol)
+                .willReturn(
+                        aResponse()
+                                .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                                .withBody("{\"symbol\": \"BTC\", \"price\": " +  assetPrice + "}")));
+    }
+
+
     protected String baseURL() {
         return "http://localhost:" + port;
     }
@@ -71,6 +128,10 @@ abstract public class ControllerTest {
 
     protected String transactionInformedByUserURL(Long userId) {
         return transactionURL() + "/users/" + userId;
+    }
+
+    protected String tradedVolumeByUserURL(Long userId) {
+        return assetAdvertisementURL() + "/tradedVolume/users/" + userId;
     }
 
     protected UserRegistrationDTO createPepeGomezRegistrationDTO() {
@@ -97,8 +158,8 @@ abstract public class ControllerTest {
         return restTemplate.getForObject(userURLWithId(userId), UserDTO.class);
     }
 
-    protected AssetAdvertisementDTO postAssetAdvertisementFor(UserDTO pepeGomezDTO) {
-        return postAssetAdvertisement(createAssetAdvertisementCreationDTOFor(pepeGomezDTO)).getBody();
+    protected AssetAdvertisementDTO postAssetAdvertisementFor(UserDTO userDTO) {
+        return postAssetAdvertisement(createAssetAdvertisementCreationDTOFor(userDTO)).getBody();
     }
     
     protected ResponseEntity<AssetAdvertisementDTO> postAssetAdvertisement(PostAdvertisementCreationDTO assetAdvertisementCreationDTO) {
@@ -142,6 +203,10 @@ abstract public class ControllerTest {
         return restTemplate.getForEntity(transactionInformedByUserURL(userDTO.id()), TransactionDTO[].class);
     }
 
+    protected ResponseEntity<TradedVolumeDTO> getTradedVolumeBy(UserDTO userDTO, TradedVolumeBodyDTO tradedVolumeBodyDTO){
+        return restTemplate.exchange(tradedVolumeByUserURL(userDTO.id()), HttpMethod.GET, new HttpEntity<TradedVolumeBodyDTO>(tradedVolumeBodyDTO), TradedVolumeDTO.class);
+    }
+
     protected PostAdvertisementCreationDTO createAssetAdvertisementCreationDTOFor(UserDTO userDTO) {
         return createBuyAssetAdvertisementCreationDTOFor(userDTO);
     }
@@ -152,5 +217,9 @@ abstract public class ControllerTest {
 
     protected PostAdvertisementCreationDTO createSellAssetAdvertisementCreationDTOFor(UserDTO userDTO) {
         return new PostAdvertisementCreationDTO(AssetAdvertisementType.SELL_ADVERTISEMENT, userDTO.id(), "BNB", 10, 100.0);
+    }
+
+    protected TradedVolumeBodyDTO createTradedVolumeBodyDTO(){
+        return new TradedVolumeBodyDTO(LocalDateTime.parse("2021-12-30T19:34:50.63"), LocalDateTime.now());
     }
 }

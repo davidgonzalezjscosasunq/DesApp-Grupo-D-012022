@@ -220,6 +220,28 @@ public class TradingControllerTest extends ControllerTest {
         assertThat(responseEntity.getBody()[0].transactionId()).isEqualTo(transactionDTO.transactionId());
     }
 
+    @Test
+    public void getTradedVolumeSuccessfully() {
+        var pepeGomezDTO = registerPepeGomez();
+        var juanPerezDTO = registerJuanPerez();
+        var assetAdvertisementDTO = postAssetAdvertisementFor(pepeGomezDTO);
+
+        var assetPriceInDollars = 10.f;
+        var dollarToPesoConversionRatio = 202.f;
+        var assetPesoPrice = assetPriceInDollars * dollarToPesoConversionRatio;
+
+        mockServerToRespondWithSymbolPrice(assetAdvertisementDTO.assetSymbol(), assetPriceInDollars);
+        mockServerToRespondWithDollarToPesoRatioOf(dollarToPesoConversionRatio);
+
+        var transactionDTO = informTransaction(juanPerezDTO, assetAdvertisementDTO).getBody();
+        var confirmedTransactionDTO = confirmTransaction(pepeGomezDTO, transactionDTO).getBody();
+
+        var responseEntity = getTradedVolumeBy(juanPerezDTO, createTradedVolumeBodyDTO());
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().getTradedValueInPesos()).isEqualTo(assetPesoPrice * assetAdvertisementDTO.quantity());
+    }
+
     private void assertEqualAssetAdvertisementDTO(AssetAdvertisementDTO expectedAssetAdvertisement, AssetAdvertisementDTO actualAssetAdvertisement) {
         assertThat(actualAssetAdvertisement.id()).isNotNull();
         assertThat(actualAssetAdvertisement.id()).isEqualTo(expectedAssetAdvertisement.id());

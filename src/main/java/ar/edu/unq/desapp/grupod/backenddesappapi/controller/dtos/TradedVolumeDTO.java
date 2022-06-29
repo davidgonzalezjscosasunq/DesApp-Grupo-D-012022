@@ -33,4 +33,24 @@ public class TradedVolumeDTO {
         this.tradedValueInPesos = tradedValueInPesos;
         this.assets = assets;
     }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public Float getTradedValueInUsd(){
+        return tradedValueInUsd;
+    }
+
+    public Float getTradedValueInPesos() {
+        return tradedValueInPesos;
+    }
+
+    public List<ActiveCrypto> getAssets() {
+        return assets;
+    }
+
+    public LocalDateTime getDateAndTimeRequest() {
+        return dateAndTimeRequest;
+    }
 }
