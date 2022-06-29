@@ -7,4 +7,4 @@ NEW FEATURES:
 * List of rates in high performance added.
 
 NOTES:
-* To do: Add tests for RatesController. Research on how to mock third party api responses in ControllerTest as it was done for services tests.
+* To do: Add tests for RatesController. Add third party api mock responses in ControllerTest as it was done for services tests.
