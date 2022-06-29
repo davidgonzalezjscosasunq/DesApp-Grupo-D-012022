@@ -26,7 +26,7 @@ public class RatesController {
     }
 
     @GetMapping(value = "/rates/activeCryptos")
-    public ResponseEntity<List<CoinRateDTO>> getCoinRate() {
+    public ResponseEntity<List<CoinRateDTO>> getCoinRateForActiveCrypto() {
         var activeCoinRates = rateService.getActiveCoinRates();
 
         return ResponseEntity.status(HttpStatus.OK).body(activeCoinRates.stream().map(CoinRateDTO::from).collect(Collectors.toList()));
