@@ -97,8 +97,8 @@ abstract public class ControllerTest {
         return restTemplate.getForObject(userURLWithId(userId), UserDTO.class);
     }
 
-    protected AssetAdvertisementDTO postAssetAdvertisementFor(UserDTO pepeGomezDTO) {
-        return postAssetAdvertisement(createAssetAdvertisementCreationDTOFor(pepeGomezDTO)).getBody();
+    protected AssetAdvertisementDTO postAssetAdvertisementFor(UserDTO userDTO) {
+        return postAssetAdvertisement(createAssetAdvertisementCreationDTOFor(userDTO)).getBody();
     }
     
     protected ResponseEntity<AssetAdvertisementDTO> postAssetAdvertisement(PostAdvertisementCreationDTO assetAdvertisementCreationDTO) {
