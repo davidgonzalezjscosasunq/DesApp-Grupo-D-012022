@@ -95,6 +95,6 @@ public class ArchitectureTest {
     @ArchTest
     public static final ArchRule classesWithServiceAnnotationShouldBeInServicePackage = classes()
             .that().areAnnotatedWith(Service.class)
-            .should().resideInAnyPackage("..service..", "..model.clock.."); //hay que mover el clock?
+            .should().resideInAnyPackage("..service..", "..model.clock..");
 
 }
