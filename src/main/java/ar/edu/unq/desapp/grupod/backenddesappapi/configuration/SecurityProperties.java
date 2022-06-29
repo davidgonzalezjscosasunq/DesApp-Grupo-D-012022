@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SecurityProperties {
 
- @Value("${security.bcra_token}")
-    public String bcraToken;
+    @Value("${jwt.secret}")
+    public String jwtSecret;
+
 }

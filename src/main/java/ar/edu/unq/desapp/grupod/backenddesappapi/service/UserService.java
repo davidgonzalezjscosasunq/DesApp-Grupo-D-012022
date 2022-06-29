@@ -1,11 +1,12 @@
 package ar.edu.unq.desapp.grupod.backenddesappapi.service;
 
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.EntityNotFoundException;
-import ar.edu.unq.desapp.grupod.backenddesappapi.model.ModelException;
 import ar.edu.unq.desapp.grupod.backenddesappapi.model.User;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -23,8 +24,13 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("user.not_found"));
     }
 
+    public List<User> findUsers() {
+        return userRepository.findAll();
+    }
+
     public Integer reputationPointsOf(Long userId) {
         var user = userRepository.findById(userId).get();
-        return user.points();
+        return user.reputationPoints();
     }
+
 }

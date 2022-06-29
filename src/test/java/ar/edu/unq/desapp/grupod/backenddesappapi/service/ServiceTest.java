@@ -6,19 +6,11 @@ import ar.edu.unq.desapp.grupod.backenddesappapi.model.clock.SimulatedClock;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.AssetAdvertisementsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.TransactionsRepository;
 import ar.edu.unq.desapp.grupod.backenddesappapi.persistence.UserRepository;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-
 import java.time.LocalDateTime;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTest {
@@ -142,6 +134,15 @@ public class ServiceTest {
 
     protected User registerUserWithCryptoWalletAddress(String cryptoWalletAddress) {
         return userService.registerUser(UserTestFactory.VALID_FIRST_NAME, UserTestFactory.VALID_LAST_NAME, UserTestFactory.VALID_EMAIL, UserTestFactory.VALID_ADDRESS, UserTestFactory.VALID_PASSWORD, UserTestFactory.VALID_CVU, cryptoWalletAddress);
+    }
+
+    protected void assertIsTheSameUser(User userToCheck, User expectedUser) {
+        assertThat(userToCheck.id()).isEqualTo(expectedUser.id());
+        assertThat(userToCheck.lastName()).isEqualTo(expectedUser.lastName());
+        assertThat(userToCheck.lastName()).isEqualTo(expectedUser.lastName());
+        assertThat(userToCheck.email()).isEqualTo(expectedUser.email());
+        assertThat(userToCheck.cvu()).isEqualTo(expectedUser.cvu());
+        assertThat(userToCheck.cryptoActiveWalletAddress()).isEqualTo(expectedUser.cryptoActiveWalletAddress());
     }
 
     protected void assertHasNoInformedTransactions(User aBuyer) {

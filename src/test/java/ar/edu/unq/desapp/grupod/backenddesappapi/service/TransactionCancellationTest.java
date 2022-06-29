@@ -64,6 +64,21 @@ public class TransactionCancellationTest extends ServiceTest {
     }
 
     @Test
+    void aPublisherIncrementsHisNumberOfOperationsForEveryCancelledTransaction() {
+        var anInterestedUser = registerPepe();
+        var aPublisher = registerJuan();
+        var anAdvertisement = publishSellAdvertisementFor(aPublisher);
+
+        tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), 1);
+        var aTransactionToCancel = tradingService.informTransaction(anInterestedUser.id(), anAdvertisement.id(), 2);
+
+        tradingService.cancelTransaction(aPublisher.id(), aTransactionToCancel.id());
+
+        var publisherAfterTwoConfirmedTransactions = userService.findUserById(aPublisher.id());
+        assertEquals(1, publisherAfterTwoConfirmedTransactions.numberOfOperations());
+    }
+
+    @Test
     void aTransactionForAnAdvertisementsCannotBeCancelledByAUserDifferentToThePublisherOfTheAdvertisementOrTheUserThatInformIt() {
         var anInterestedUser = registerPepe();
         var aPublisher = registerJuan();
