@@ -1,14 +1,10 @@
-TAG Entrega 2 1.0
+TAG Entrega 3 1.0
 ---------------------------------------------------------------------
 NEW FEATURES:
-* Controllers for TradingService functionality, and their tests added.
-* Error handlers added.
-* Tests that involved requests to binance and BCRA api tested with wiremock to mock response.
-* Code refactors (private fields on classes and public getters, endpoints moved to another file, get token from application properties, some variable names updated, query to find traded volume updated).
-* Active crypto list (get a list of coin rates with symbol, rate date, price in dollars and price in pesos).
-* The project was configured to run with h2 in dev and with postgres in prod.
-* Internationalization added.
+* Architecture tests added.
+* Audit of Web-Services. The information (timestamp, user, operation/method, parameters, runtime) of the services published with Spring are logged using logback.
+* API access security with JWT added.
+* List of rates in high performance added.
 
 NOTES:
-* To do: Add tests for RatesController.
-* To do: Search a way to get just the last dollar rate from BCRA api.
+* To do: Add tests for RatesController. Add third party api mock responses in ControllerTest as it was done for services tests.
